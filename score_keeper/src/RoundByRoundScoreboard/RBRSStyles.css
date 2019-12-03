@@ -1,0 +1,85 @@
+h1 {
+  margin: 10px;
+  font-size: 40px;
+}
+
+table {
+  width: 40vw;
+  margin: 1vw;
+  float: left;
+}
+
+td {
+  border: 1px solid black;
+  font-size: 1vw;
+  padding: 0.1vw;
+  text-align: center;
+}
+
+th {
+  border: 1px solid black;
+  font-size: 1.5vw;
+  font-weight: bold;
+  padding: 0.1vw;
+  text-align: center;
+}
+
+.saveScoreboardWarning {
+  font-size: 1vw;
+  width: 15vw;
+  height: 5vw;
+}
+
+.mainButtons {
+  width: 56vw;
+  margin: 0 auto;
+}
+
+.gameLimit {
+  font-size: 1.25vw;
+  width: 35vw;
+  margin: 0 auto;
+}
+
+.highWins {
+  margin-left: 2vw;
+}
+
+.switch {
+  color: blue;
+  font-size: 1.25vw;
+}
+
+.addPoints {
+  font-size: 1.25vw;
+  width: 28vw;
+  margin: 0 auto;
+}
+
+.emptyCell {
+  border: none;
+  width: 2.25vw;
+}
+
+.emptyScoreboard {
+  margin: 2vw;
+  font-size: 1.5vw;
+  border: 1px solid black;
+  width: 45vw;
+}
+
+.roundNumber {
+  font-weight: bold;
+}
+
+.lineChart {
+  float: right;
+  width: 55vw;
+  height: 40vw;
+}
+
+.modal {
+  width: 30vw;
+  font-size: 1.5vw;
+  font-weight: bold;
+}
