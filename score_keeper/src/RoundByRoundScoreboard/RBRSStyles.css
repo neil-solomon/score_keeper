@@ -31,28 +31,24 @@ th {
 }
 
 .mainButtons {
-  width: 56vw;
+  width: 60vw;
   margin: 0 auto;
 }
 
 .gameLimit {
   font-size: 1.25vw;
-  width: 35vw;
+  width: 34vw;
   margin: 0 auto;
+  margin-bottom: 0.5vw;
 }
 
 .highWins {
   margin-left: 2vw;
 }
 
-.switch {
-  color: blue;
-  font-size: 1.25vw;
-}
-
 .addPoints {
   font-size: 1.25vw;
-  width: 28vw;
+  width: 25vw;
   margin: 0 auto;
 }
 
@@ -66,6 +62,7 @@ th {
   font-size: 1.5vw;
   border: 1px solid black;
   width: 45vw;
+  padding: 2vw;
 }
 
 .roundNumber {

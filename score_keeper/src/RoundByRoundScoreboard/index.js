@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Modal, Icon, Popconfirm, Radio } from "antd";
+import { Button, Modal, Icon, Popconfirm, Radio, notification } from "antd";
 import "./RBRSStyles.css";
 import LineChart from "./LineChart.js";
 import LoadButton from "./LoadButton.js";
@@ -15,7 +15,9 @@ class RBRS extends React.Component {
     modalVisible: [false, false, false], // load scoreboard, save scoreboard, add player
     savedScoreboards: {},
     scoreboardsList: [],
-    loadButtonSelect: []
+    loadButtonSelect: [],
+    pointsOrRoundsRadio: 0,
+    highScoreWinsRadio: 0
   };
 
   buttonStyle = {
@@ -31,9 +33,15 @@ class RBRS extends React.Component {
 
   radioStyle = {
     display: "block",
-    height: "1.1vw",
+    height: "1.5vw",
     fontSize: "1vw",
     marginLeft: ".2vw"
+  };
+
+  notificationStyle = {
+    height: "10vw",
+    width: "30vw",
+    backgroundColor: "rgb(255,255,0,.1)"
   };
 
   componentDidMount() {
@@ -51,7 +59,10 @@ class RBRS extends React.Component {
   }
 
   addPoints = () => {
-    var newPoints = document.getElementById("addPoints").value.split(" ");
+    var points = [...this.state.points],
+      totalPoints = [...this.state.totalPoints],
+      newPoints = document.getElementById("addPoints").value.split(" ");
+    var oldLeaderboard = this.makeLeaderboard(totalPoints);
     for (let i = 0; i < newPoints.length; ++i) {
       if (newPoints[i] === "") {
         newPoints[i] = 0;
@@ -68,15 +79,74 @@ class RBRS extends React.Component {
       newPoints.push(0);
     }
     if (newPoints.length > 0) {
-      var points = [...this.state.points];
       points.push(newPoints);
-      var totalPoints = [...this.state.totalPoints];
       for (let i = 0; i < newPoints.length; ++i) {
         totalPoints[i] += newPoints[i];
       }
-      this.setState({ points });
-      this.setState({ totalPoints });
     }
+    var newLeaderboard = this.makeLeaderboard(totalPoints);
+    if (this.state.highScoreWins) {
+      if (newLeaderboard[0] !== oldLeaderboard[0]) {
+        notification["warning"]({
+          message: newLeaderboard[0] + " takes the lead!",
+          description: "",
+          placement: "bottomLeft",
+          duration: 5,
+          icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
+          style: this.notificationStyle
+        });
+      } else if (newLeaderboard[1] !== oldLeaderboard[1]) {
+        notification["warning"]({
+          message: newLeaderboard[1] + " falls to last place!",
+          description: "",
+          placement: "bottomLeft",
+          duration: 5,
+          icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
+          style: this.notificationStyle
+        });
+      }
+    } else {
+      if (newLeaderboard[1] !== oldLeaderboard[1]) {
+        notification["warning"]({
+          message: newLeaderboard[1] + " takes the lead!",
+          description: "",
+          placement: "bottomLeft",
+          duration: 5,
+          icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
+          style: this.notificationStyle
+        });
+      } else if (newLeaderboard[0] !== oldLeaderboard[0]) {
+        notification["warning"]({
+          message: newLeaderboard[0] + " falls to last place!",
+          description: "",
+          placement: "bottomLeft",
+          duration: 5,
+          icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
+          style: this.notificationStyle
+        });
+      }
+    }
+
+    this.setState({ points });
+    this.setState({ totalPoints });
+  };
+
+  makeLeaderboard = totalPoints => {
+    var maxPoints = -1,
+      minPoints = 100000,
+      maxIx,
+      minIx;
+    for (let i = 0; i < totalPoints.length; i++) {
+      if (totalPoints[i] > maxPoints) {
+        maxPoints = totalPoints[i];
+        maxIx = i;
+      }
+      if (totalPoints[i] < minPoints) {
+        minPoints = totalPoints[i];
+        minIx = i;
+      }
+    }
+    return [this.state.players[maxIx], this.state.players[minIx]];
   };
 
   loadScoreboard = () => {
@@ -258,16 +328,20 @@ class RBRS extends React.Component {
   pointsOrRounds = radio => {
     if (radio.target.value) {
       this.setState({ pointsOrRounds: [false, true] });
+      this.setState({ pointsOrRoundsRadio: 1 });
     } else {
       this.setState({ pointsOrRounds: [true, false] });
+      this.setState({ pointsOrRoundsRadio: 0 });
     }
   };
 
   highScoreWins = radio => {
     if (radio.target.value) {
       this.setState({ highScoreWins: false });
+      this.setState({ highScoreWinsRadio: 1 });
     } else {
       this.setState({ highScoreWins: true });
+      this.setState({ highScoreWinsRadio: 0 });
     }
   };
 
@@ -329,8 +403,10 @@ class RBRS extends React.Component {
       chartXmax = this.state.gameLimit + 1;
     }
 
-    var playerIcons = [];
-    var pointsGameIsOver = false;
+    var playerIcons = [],
+      pointsGameIsOver = false,
+      noOneIsMax = true,
+      noOneIsMin = true;
     for (let player = 0; player < this.state.players.length; ++player) {
       if (this.state.totalPoints[player] >= this.state.gameLimit) {
         pointsGameIsOver = true;
@@ -356,11 +432,13 @@ class RBRS extends React.Component {
             );
           } else if (
             this.state.totalPoints[player] === maxPoints &&
-            this.state.points.length > 0
+            this.state.points.length > 0 &&
+            noOneIsMax
           ) {
             playerIcons.push(
               <Icon type="smile" theme="twoTone" twoToneColor="#0dff00"></Icon>
             );
+            noOneIsMax = false;
           } else if (
             this.state.totalPoints[player] === minPoints &&
             this.state.points.length > 0
@@ -390,11 +468,13 @@ class RBRS extends React.Component {
             );
           } else if (
             this.state.totalPoints[player] === minPoints &&
-            this.state.points.length > 0
+            this.state.points.length > 0 &&
+            noOneIsMin
           ) {
             playerIcons.push(
               <Icon type="smile" theme="twoTone" twoToneColor="#0dff00"></Icon>
             );
+            noOneIsMin = false;
           } else if (
             this.state.totalPoints[player] === maxPoints &&
             this.state.points.length > 0
@@ -426,11 +506,13 @@ class RBRS extends React.Component {
             );
           } else if (
             this.state.totalPoints[player] === maxPoints &&
-            this.state.points.length > 0
+            this.state.points.length > 0 &&
+            noOneIsMax
           ) {
             playerIcons.push(
               <Icon type="smile" theme="twoTone" twoToneColor="#0dff00"></Icon>
             );
+            noOneIsMax = false;
           } else if (
             this.state.totalPoints[player] === minPoints &&
             this.state.points.length > 0
@@ -459,11 +541,13 @@ class RBRS extends React.Component {
             );
           } else if (
             this.state.totalPoints[player] === minPoints &&
-            this.state.points.length > 0
+            this.state.points.length > 0 &&
+            noOneIsMin
           ) {
             playerIcons.push(
               <Icon type="smile" theme="twoTone" twoToneColor="#0dff00"></Icon>
             );
+            noOneIsMin = false;
           } else if (
             this.state.totalPoints[player] === maxPoints &&
             this.state.points.length > 0
@@ -537,9 +621,13 @@ class RBRS extends React.Component {
               type="text"
               size="5"
               id="gameLimit"
+              placeholder="100"
               onChange={this.changeGameLimit}
             ></input>
-            <Radio.Group onChange={this.pointsOrRounds}>
+            <Radio.Group
+              onChange={this.pointsOrRounds}
+              value={this.state.pointsOrRoundsRadio}
+            >
               <Radio value={0} style={this.radioStyle}>
                 Points
               </Radio>
@@ -548,7 +636,10 @@ class RBRS extends React.Component {
               </Radio>
             </Radio.Group>
             <span className="highWins">
-              <Radio.Group onChange={this.highScoreWins}>
+              <Radio.Group
+                onChange={this.highScoreWins}
+                value={this.state.highScoreWinsRadio}
+              >
                 <Radio value={0} style={this.radioStyle}>
                   Highest Score Wins
                 </Radio>

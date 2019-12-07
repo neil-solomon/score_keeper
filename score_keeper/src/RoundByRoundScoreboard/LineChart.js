@@ -3,7 +3,7 @@ import { ResponsiveLine } from "@nivo/line";
 
 class LineChart extends React.Component {
   theme = {
-    fontSize: "25px"
+    fontSize: "1.25vw"
   };
 
   render() {
@@ -90,7 +90,7 @@ class LineChart extends React.Component {
             itemsSpacing: 0,
             itemDirection: "left-to-right",
             itemWidth: 80,
-            itemHeight: 40,
+            itemHeight: 35,
             itemOpacity: 0.75,
             symbolSize: 12,
             symbolShape: "circle",
