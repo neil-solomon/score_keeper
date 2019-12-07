@@ -1,4 +1,5 @@
 import React from "react";
+import ls from "local-storage";
 import { Button, Modal, Icon, Popconfirm, Radio, notification } from "antd";
 import "./RBRSStyles.css";
 import LineChart from "./LineChart.js";
@@ -45,7 +46,7 @@ class RBRS extends React.Component {
   };
 
   componentDidMount() {
-    var savedScoreboards = require("./savedScoreboards");
+    var savedScoreboards = ls.get("savedScoreboards") || [];
     var scoreboardsList = [];
     for (var scoreboard in savedScoreboards) {
       scoreboardsList.push({
@@ -215,6 +216,7 @@ class RBRS extends React.Component {
       selected: false
     });
     this.setState({ savedScoreboards });
+    ls.set("savedScoreboards", savedScoreboards);
     this.setState({ scoreboardsList });
     this.closeModals();
   };
