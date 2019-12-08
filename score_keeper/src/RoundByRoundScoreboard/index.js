@@ -1,5 +1,4 @@
 import React from "react";
-import ls from "local-storage";
 import { Button, Modal, Icon, Popconfirm, Radio, notification } from "antd";
 import "./RBRSStyles.css";
 import LineChart from "./LineChart.js";
@@ -46,7 +45,9 @@ class RBRS extends React.Component {
   };
 
   componentDidMount() {
-    var savedScoreboards = ls.get("savedScoreboards") || [];
+    //console.log("CDM", typeof Storage === "undefined");
+    var savedScoreboards =
+      JSON.parse(localStorage.getItem("savedScoreboards")) || {};
     var scoreboardsList = [];
     for (var scoreboard in savedScoreboards) {
       scoreboardsList.push({
@@ -151,13 +152,13 @@ class RBRS extends React.Component {
   };
 
   loadScoreboard = () => {
-    var newScoreboard = "none";
+    var newScoreboard = "null";
     for (let i = 0; i < this.state.scoreboardsList.length; ++i) {
       if (this.state.scoreboardsList[i].selected) {
         newScoreboard = this.state.scoreboardsList[i].title;
       }
     }
-    if (newScoreboard !== "none") {
+    if (newScoreboard !== "null") {
       this.setState({
         players: this.state.savedScoreboards[newScoreboard].players
       });
@@ -175,6 +176,11 @@ class RBRS extends React.Component {
         gameLimit: this.state.savedScoreboards[newScoreboard].gameLimit
       });
     }
+    var scoreboardsList = [...this.state.scoreboardsList];
+    for (let i = 0; i < scoreboardsList.length; ++i) {
+      scoreboardsList[i].selected = false;
+    }
+    this.setState({ scoreboardsList });
     this.closeModals();
   };
 
@@ -188,37 +194,53 @@ class RBRS extends React.Component {
   };
 
   saveScoreboard = () => {
-    var today = new Date();
-    var currentYear = today.getFullYear();
-    var currentMonth = today.getMonth() + 1;
-    var currentDate = today.getDate();
-    var todaysDate =
-      this.padNum(currentMonth.toString()) +
-      "-" +
-      this.padNum(currentDate.toString()) +
-      "-" +
-      currentYear.toString();
-    var savedScoreboards = this.state.savedScoreboards;
-    var newScoreboard = {
-      title: this.state.scoreboardTitle,
-      points: this.state.points,
-      players: this.state.players,
-      totalPoints: this.state.totalPoints,
-      pointsOrRounds: this.state.pointsOrRounds,
-      gameLimit: this.state.gameLimit,
-      dateModified: todaysDate
-    };
-    savedScoreboards[this.state.scoreboardTitle] = newScoreboard;
-    var scoreboardsList = [...this.state.scoreboardsList];
-    scoreboardsList.push({
-      title: newScoreboard.title,
-      dateModified: newScoreboard.dateModified,
-      selected: false
-    });
-    this.setState({ savedScoreboards });
-    ls.set("savedScoreboards", savedScoreboards);
-    this.setState({ scoreboardsList });
-    this.closeModals();
+    if (
+      typeof this.state.scoreboardTitle === "undefined" ||
+      this.state.scoreboardTitle === "null"
+    ) {
+      notification["warning"]({
+        message: "Saved failed",
+        description: "Title cannot be blank.",
+        placement: "bottomLeft",
+        duration: 3
+      });
+    } else {
+      var today = new Date();
+      var currentYear = today.getFullYear();
+      var currentMonth = today.getMonth() + 1;
+      var currentDate = today.getDate();
+      var todaysDate =
+        this.padNum(currentMonth.toString()) +
+        "-" +
+        this.padNum(currentDate.toString()) +
+        "-" +
+        currentYear.toString();
+      var savedScoreboards = this.state.savedScoreboards;
+      var newScoreboard = {
+        title: this.state.scoreboardTitle,
+        points: this.state.points,
+        players: this.state.players,
+        totalPoints: this.state.totalPoints,
+        pointsOrRounds: this.state.pointsOrRounds,
+        gameLimit: this.state.gameLimit,
+        dateModified: todaysDate
+      };
+      savedScoreboards[this.state.scoreboardTitle] = newScoreboard;
+      var scoreboardsList = [...this.state.scoreboardsList];
+      scoreboardsList.push({
+        title: newScoreboard.title,
+        dateModified: newScoreboard.dateModified,
+        selected: false
+      });
+      this.setState({ savedScoreboards });
+      localStorage.setItem(
+        "savedScoreboards",
+        JSON.stringify(savedScoreboards)
+      );
+      console.log(savedScoreboards, JSON.stringify(savedScoreboards));
+      this.setState({ scoreboardsList });
+      this.closeModals();
+    }
   };
 
   addPlayer = () => {
@@ -364,7 +386,19 @@ class RBRS extends React.Component {
     this.setState({ scoreboardsList });
   };
 
+  deleteScoreboard = (scoreboardTitle, index) => {
+    console.log(scoreboardTitle, index);
+    var savedScoreboards = this.state.savedScoreboards;
+    delete savedScoreboards[scoreboardTitle];
+    var scoreboardsList = [...this.state.scoreboardsList];
+    scoreboardsList.splice(index, 1);
+    this.setState({ savedScoreboards });
+    this.setState({ scoreboardsList });
+    localStorage.setItem("savedScoreboards", JSON.stringify(savedScoreboards));
+  };
+
   render() {
+    console.log(this.state.savedScoreboards);
     var emptyScoreboard;
     if (this.state.players.length === 0) {
       emptyScoreboard = (
@@ -740,6 +774,19 @@ class RBRS extends React.Component {
                   activated={this.state.scoreboardsList[index].selected}
                   onClick={this.loadButtonSelect}
                 ></LoadButton>
+                <Popconfirm
+                  title={"Delete " + scoreboard.title + " ?"}
+                  onConfirm={() =>
+                    this.deleteScoreboard(scoreboard.title, index)
+                  }
+                >
+                  <Icon
+                    type="close-circle"
+                    theme="twoTone"
+                    twoToneColor="#fc9999"
+                    style={this.iconStyle}
+                  ></Icon>
+                </Popconfirm>
               </div>
             ))}
           </div>
