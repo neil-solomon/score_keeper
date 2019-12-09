@@ -1,3 +1,9 @@
+@media (max-width: 800px) {
+  .emptyScoreboard {
+    background-color: blue;
+  }
+}
+
 h1 {
   margin: 10px;
   font-size: 40px;
@@ -31,14 +37,12 @@ th {
 }
 
 .mainButtons {
-  width: 60vw;
-  margin: 0 auto;
+  text-align: center;
 }
 
 .gameLimit {
   font-size: 1.25vw;
-  width: 34vw;
-  margin: 0 auto;
+  text-align: center;
   margin-bottom: 0.5vw;
 }
 
@@ -48,8 +52,7 @@ th {
 
 .addPoints {
   font-size: 1.25vw;
-  width: 25vw;
-  margin: 0 auto;
+  text-align: center;
 }
 
 .emptyCell {
@@ -70,8 +73,8 @@ th {
 }
 
 .lineChart {
-  float: right;
-  width: 55vw;
+  float: left;
+  width: 50vw;
   height: 40vw;
 }
 

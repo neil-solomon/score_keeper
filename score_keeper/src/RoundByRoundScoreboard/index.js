@@ -7,6 +7,20 @@ import LoadButton from "./LoadButton.js";
 class RBRS extends React.Component {
   state = {
     players: [],
+    playerColors: [
+      "hsl(0,100%,75%)",
+      "hsl(60,100%,75%)",
+      "hsl(120,100%,75%)",
+      "hsl(180,100%,75%)",
+      "hsl(240,100%,75%)",
+      "hsl(300,100%,75%)",
+      "hsl(30,100%,75%)",
+      "hsl(90,100%,75%)",
+      "hsl(150,100%,75%)",
+      "hsl(210,100%,75%)",
+      "hsl(270,100%,75%)",
+      "hsl(330,100%,75%)"
+    ],
     points: [],
     totalPoints: [],
     pointsOrRounds: [true, false], // gameLimit is points or rounds rounds
@@ -86,6 +100,7 @@ class RBRS extends React.Component {
         totalPoints[i] += newPoints[i];
       }
     }
+
     var newLeaderboard = this.makeLeaderboard(totalPoints);
     if (this.state.highScoreWins) {
       if (newLeaderboard[0] !== oldLeaderboard[0]) {
@@ -173,6 +188,17 @@ class RBRS extends React.Component {
           .pointsOrRounds
       });
       this.setState({
+        pointsOrRoundsRadio: this.state.savedScoreboards[newScoreboard]
+          .pointsOrRoundsRadio
+      });
+      this.setState({
+        highScoreWins: this.state.savedScoreboards[newScoreboard].highScoreWins
+      });
+      this.setState({
+        highScoreWinsRadio: this.state.savedScoreboards[newScoreboard]
+          .highScoreWinsRadio
+      });
+      this.setState({
         gameLimit: this.state.savedScoreboards[newScoreboard].gameLimit
       });
     }
@@ -222,6 +248,9 @@ class RBRS extends React.Component {
         players: this.state.players,
         totalPoints: this.state.totalPoints,
         pointsOrRounds: this.state.pointsOrRounds,
+        pointsOrRoundsRadio: this.state.pointsOrRoundsRadio,
+        highScoreWins: this.state.highScoreWins,
+        highScoreWinsRadio: this.state.highScoreWinsRadio,
         gameLimit: this.state.gameLimit,
         dateModified: todaysDate
       };
@@ -237,7 +266,7 @@ class RBRS extends React.Component {
         "savedScoreboards",
         JSON.stringify(savedScoreboards)
       );
-      console.log(savedScoreboards, JSON.stringify(savedScoreboards));
+      //console.log(savedScoreboards, JSON.stringify(savedScoreboards));
       this.setState({ scoreboardsList });
       this.closeModals();
     }
@@ -265,13 +294,20 @@ class RBRS extends React.Component {
     players.splice(player, 1);
     var totalPoints = [...this.state.totalPoints];
     totalPoints.splice(player, 1);
-    var points = this.state.points;
-    for (let round = 0; round < points.length; ++round) {
-      points[round].splice(player, 1);
+    var newPoints = [];
+    for (let i = 0; i < this.state.points.length; ++i) {
+      var round = [];
+      for (let j = 0; j < this.state.players.length; ++j) {
+        if (j != player) {
+          round.push(this.state.points[i][j]);
+          console.log(this.state.points[i][j]);
+        }
+      }
+      newPoints.push(round);
     }
     this.setState({ players });
     this.setState({ totalPoints });
-    this.setState({ points });
+    this.setState({ points: newPoints });
   };
 
   removeRound = round => {
@@ -387,7 +423,7 @@ class RBRS extends React.Component {
   };
 
   deleteScoreboard = (scoreboardTitle, index) => {
-    console.log(scoreboardTitle, index);
+    //console.log(scoreboardTitle, index);
     var savedScoreboards = this.state.savedScoreboards;
     delete savedScoreboards[scoreboardTitle];
     var scoreboardsList = [...this.state.scoreboardsList];
@@ -398,7 +434,17 @@ class RBRS extends React.Component {
   };
 
   render() {
-    console.log(this.state.savedScoreboards);
+    // console.log("players", this.state.players);
+    // console.log("points", this.state.points);
+    // console.log("totalPoints", this.state.totalPoints);
+    // console.log("pointsOrRounds", this.state.pointsOrRounds);
+    // console.log("pointsOrRoundsRadio", this.state.pointsOrRoundsRadio);
+    // console.log("highScoreWins", this.state.highScoreWins);
+    // console.log("highScoreWinsRadio", this.state.highScoreWinsRadio);
+    // console.log("gameLimit", this.state.gameLimit);
+    // console.log("");
+    //console.log(this.state.savedScoreboards);
+
     var emptyScoreboard;
     if (this.state.players.length === 0) {
       emptyScoreboard = (
@@ -472,7 +518,11 @@ class RBRS extends React.Component {
             noOneIsMax
           ) {
             playerIcons.push(
-              <Icon type="smile" theme="twoTone" twoToneColor="#0dff00"></Icon>
+              <Icon
+                type="smile"
+                //theme="twoTone"
+                //twoToneColor={this.state.playerColors[player]}
+              ></Icon>
             );
             noOneIsMax = false;
           } else if (
@@ -480,11 +530,19 @@ class RBRS extends React.Component {
             this.state.points.length > 0
           ) {
             playerIcons.push(
-              <Icon type="frown" theme="twoTone" twoToneColor="#fa8484"></Icon>
+              <Icon
+                type="frown"
+                //theme="twoTone"
+                //twoToneColor={this.state.playerColors[player]}
+              ></Icon>
             );
           } else {
             playerIcons.push(
-              <Icon type="meh" theme="twoTone" twoToneColor="#ffbb00"></Icon>
+              <Icon
+                type="meh"
+                //theme="twoTone"
+                //twoToneColor={this.state.playerColors[player]}
+              ></Icon>
             );
           }
         } else {
@@ -508,7 +566,11 @@ class RBRS extends React.Component {
             noOneIsMin
           ) {
             playerIcons.push(
-              <Icon type="smile" theme="twoTone" twoToneColor="#0dff00"></Icon>
+              <Icon
+                type="smile"
+                //theme="twoTone"
+                //twoToneColor={this.state.playerColors[player]}
+              ></Icon>
             );
             noOneIsMin = false;
           } else if (
@@ -516,11 +578,19 @@ class RBRS extends React.Component {
             this.state.points.length > 0
           ) {
             playerIcons.push(
-              <Icon type="frown" theme="twoTone" twoToneColor="#fa8484"></Icon>
+              <Icon
+                type="frown"
+                //theme="twoTone"
+                //twoToneColor={this.state.playerColors[player]}
+              ></Icon>
             );
           } else {
             playerIcons.push(
-              <Icon type="meh" theme="twoTone" twoToneColor="#ffbb00"></Icon>
+              <Icon
+                type="meh"
+                //theme="twoTone"
+                //twoToneColor={this.state.playerColors[player]}
+              ></Icon>
             );
           }
         }
@@ -546,7 +616,11 @@ class RBRS extends React.Component {
             noOneIsMax
           ) {
             playerIcons.push(
-              <Icon type="smile" theme="twoTone" twoToneColor="#0dff00"></Icon>
+              <Icon
+                type="smile"
+                //theme="twoTone"
+                //twoToneColor={this.state.playerColors[player]}
+              ></Icon>
             );
             noOneIsMax = false;
           } else if (
@@ -554,11 +628,19 @@ class RBRS extends React.Component {
             this.state.points.length > 0
           ) {
             playerIcons.push(
-              <Icon type="frown" theme="twoTone" twoToneColor="#fa8484"></Icon>
+              <Icon
+                type="frown"
+                //theme="twoTone"
+                //twoToneColor={this.state.playerColors[player]}
+              ></Icon>
             );
           } else {
             playerIcons.push(
-              <Icon type="meh" theme="twoTone" twoToneColor="#ffbb00"></Icon>
+              <Icon
+                type="meh"
+                //theme="twoTone"
+                //twoToneColor={this.state.playerColors[player]}
+              ></Icon>
             );
           }
         } else {
@@ -581,7 +663,11 @@ class RBRS extends React.Component {
             noOneIsMin
           ) {
             playerIcons.push(
-              <Icon type="smile" theme="twoTone" twoToneColor="#0dff00"></Icon>
+              <Icon
+                type="smile"
+                //theme="twoTone"
+                //twoToneColor={this.state.playerColors[player]}
+              ></Icon>
             );
             noOneIsMin = false;
           } else if (
@@ -589,11 +675,19 @@ class RBRS extends React.Component {
             this.state.points.length > 0
           ) {
             playerIcons.push(
-              <Icon type="frown" theme="twoTone" twoToneColor="#fa8484"></Icon>
+              <Icon
+                type="frown"
+                //theme="twoTone"
+                //twoToneColor={this.state.playerColors[player]}
+              ></Icon>
             );
           } else {
             playerIcons.push(
-              <Icon type="meh" theme="twoTone" twoToneColor="#ffbb00"></Icon>
+              <Icon
+                type="meh"
+                //theme="twoTone"
+                //twoToneColor={this.state.playerColors[player]}
+              ></Icon>
             );
           }
         }
@@ -697,65 +791,70 @@ class RBRS extends React.Component {
           </Button>
         </div>
         {emptyScoreboard}
-        <table>
-          <thead>
-            <tr>
-              <td className="emptyCell"></td>
-              {this.state.players.map((player, index) => (
-                <th key={"player" + index}>
-                  {player} <br></br>
-                  {playerIcons[index]} {this.state.totalPoints[index]}
-                  <br></br>
-                  <Popconfirm
-                    title={"Remove " + player + " from game?"}
-                    onConfirm={() => this.removePlayer(index)}
+        <div className="tableAndChart">
+          <table>
+            <thead>
+              <tr>
+                <td className="emptyCell"></td>
+                {this.state.players.map((player, index) => (
+                  <th
+                    key={"player" + index}
+                    style={{ backgroundColor: this.state.playerColors[index] }}
                   >
-                    <Icon
-                      type="close-circle"
-                      theme="twoTone"
-                      twoToneColor="#fc9999"
-                      style={this.iconStyle}
-                    ></Icon>
-                  </Popconfirm>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {this.state.points.map((round, index) => (
-              <tr key={"roundRow " + index}>
-                <td className="roundNumber">
-                  <Popconfirm
-                    title={
-                      "Delete round " +
-                      (parseInt(index, 10) + 1).toString() +
-                      " ?"
-                    }
-                    onConfirm={() => this.removeRound(index)}
-                  >
-                    <Icon
-                      type="close-circle"
-                      theme="twoTone"
-                      twoToneColor="#fc9999"
-                      style={this.iconStyle}
-                    ></Icon>
-                  </Popconfirm>
-                  {index + 1}
-                </td>
-                {round.map(player => (
-                  <td key={"roundCell " + index + " " + player}>{player}</td>
+                    {player} <br></br>
+                    {playerIcons[index]} {this.state.totalPoints[index]}
+                    <br></br>
+                    <Popconfirm
+                      title={"Remove " + player + " from game?"}
+                      onConfirm={() => this.removePlayer(index)}
+                    >
+                      <Icon
+                        type="close-circle"
+                        theme="twoTone"
+                        twoToneColor="#fc9999"
+                        style={this.iconStyle}
+                      ></Icon>
+                    </Popconfirm>
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
-        <div className="lineChart">
-          <LineChart
-            xmax={chartXmax}
-            ymax={chartYmax}
-            gameLimit={this.state.gameLimit}
-            data={chartData}
-          ></LineChart>
+            </thead>
+            <tbody>
+              {this.state.points.map((round, index1) => (
+                <tr key={"roundRow " + index1}>
+                  <td className="roundNumber">
+                    <Popconfirm
+                      title={
+                        "Delete round " +
+                        (parseInt(index1, 10) + 1).toString() +
+                        " ?"
+                      }
+                      onConfirm={() => this.removeRound(index1)}
+                    >
+                      <Icon
+                        type="close-circle"
+                        theme="twoTone"
+                        twoToneColor="#fc9999"
+                        style={this.iconStyle}
+                      ></Icon>
+                    </Popconfirm>
+                    {index1 + 1}
+                  </td>
+                  {round.map((player, index2) => (
+                    <td key={"roundCell " + round + " " + index2}>{player}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {/*<div className="lineChart">
+            <LineChart
+              xmax={chartXmax}
+              ymax={chartYmax}
+              gameLimit={this.state.gameLimit}
+              data={chartData}
+            ></LineChart>
+                  </div>*/}
         </div>
         <Modal
           visible={this.state.modalVisible[0]}
@@ -765,9 +864,9 @@ class RBRS extends React.Component {
           <div className="modal">
             Select a Scoreboard:<br></br>
             {this.state.scoreboardsList.map((scoreboard, index) => (
-              <div>
+              <div key={"loadButton" + index}>
                 <LoadButton
-                  key={"scoreboard-" + scoreboard.title}
+                  key={"scoreboard-" + index.toString()}
                   id={index}
                   name={scoreboard.title}
                   dateModified={scoreboard.dateModified}

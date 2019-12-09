@@ -29,7 +29,7 @@ class LoadButton extends React.Component {
   };
 
   styles3 = {
-    background: "rgb(66,78,191,.1)",
+    background: "rgb(66,78,191,.25)",
     color: "rgb(66,78,191,.9)",
     border: "2px solid rgb(66,78,191,.5)",
     margin: "1px",
