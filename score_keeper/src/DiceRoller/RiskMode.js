@@ -5,6 +5,7 @@ import LineChart from "./LineChart";
 
 class RiskMode extends React.Component {
   state = {
+    rollDiceInterval: "",
     numDiceAttacker: 0,
     numDiceDefender: 0,
     armiesAttacker: 0,
@@ -17,7 +18,8 @@ class RiskMode extends React.Component {
     chartData: [
       { id: "Attacker", data: [] },
       { id: "Defender", data: [] }
-    ]
+    ],
+    keepRollingSpeed: "Fast"
   };
 
   notificationStyle = {
@@ -26,7 +28,13 @@ class RiskMode extends React.Component {
     backgroundColor: "rgb(255,255,0,.25)"
   };
 
+  componentWillUnmount() {
+    clearInterval(this.state.rollDiceInterval);
+  }
+
   changeArmies = () => {
+    clearInterval(this.state.rollDiceInterval);
+    this.setState({ rollDiceInterval: "" });
     var armiesAttacker = parseInt(
       document.getElementById("startingArmiesAttacker").value
     );
@@ -63,12 +71,12 @@ class RiskMode extends React.Component {
   };
 
   updateWinProbs = (armiesAttacker, armiesDefender) => {
-    if (armiesAttacker == 0) {
+    if (armiesAttacker === 0) {
       this.setState({ winProbsAttacker: "0.0%" });
       this.setState({ winProbsDefender: "100.0%" });
       return;
     }
-    if (armiesDefender == 0) {
+    if (armiesDefender === 0) {
       this.setState({ winProbsAttacker: "100.0%" });
       this.setState({ winProbsDefender: "0.0%" });
       return;
@@ -142,10 +150,12 @@ class RiskMode extends React.Component {
     } else {
       ++attackersKilled;
     }
-    if (diceRollsAttackerSorted[1] > diceRollsDefenderSorted[1]) {
-      ++defendersKilled;
-    } else {
-      ++attackersKilled;
+    if (diceRollsAttackerSorted.length > 1) {
+      if (diceRollsAttackerSorted[1] > diceRollsDefenderSorted[1]) {
+        ++defendersKilled;
+      } else {
+        ++attackersKilled;
+      }
     }
     var newArmiesAttacker = this.state.armiesAttacker - attackersKilled;
     var newArmiesDefender = this.state.armiesDefender - defendersKilled;
@@ -155,6 +165,7 @@ class RiskMode extends React.Component {
     if (newArmiesDefender < 0) {
       newArmiesDefender = 0;
     }
+
     this.setState({ armiesAttacker: newArmiesAttacker });
     this.setState({ armiesDefender: newArmiesDefender });
     if (newArmiesAttacker < 3) {
@@ -175,6 +186,8 @@ class RiskMode extends React.Component {
         icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
         style: this.notificationStyle
       });
+      clearInterval(this.state.rollDiceInterval);
+      this.setState({ rollDiceInterval: "" });
     }
     if (newArmiesDefender === 0) {
       notification["success"]({
@@ -185,6 +198,8 @@ class RiskMode extends React.Component {
         icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
         style: this.notificationStyle
       });
+      clearInterval(this.state.rollDiceInterval);
+      this.setState({ rollDiceInterval: "" });
     }
 
     var chartData = [...this.state.chartData];
@@ -217,7 +232,43 @@ class RiskMode extends React.Component {
     return sortedArray;
   };
 
-  rollDice = () => {};
+  rollDice = () => {
+    if (
+      this.state.armiesAttacker > 0 &&
+      this.state.armiesDefender > 0 &&
+      this.state.rollDiceInterval === ""
+    ) {
+      var intervalTime;
+      switch (this.state.keepRollingSpeed) {
+        case "Fast":
+          intervalTime = 500;
+          break;
+        case "Medium":
+          intervalTime = 1000;
+          break;
+        case "Slow":
+          intervalTime = 2000;
+          break;
+      }
+      console.log("interval!!!");
+      var rollDiceInterval = setInterval(
+        () => this.rollDiceOnce(),
+        intervalTime
+      );
+      this.setState({ rollDiceInterval });
+    }
+  };
+
+  clearRollDiceInterval = () => {
+    clearInterval(this.state.rollDiceInterval);
+    this.setState({ rollDiceInterval: "" });
+  };
+
+  changeKeepRollingSpeed = () => {
+    this.setState({
+      keepRollingSpeed: document.getElementById("keepRollingSpeed").value
+    });
+  };
 
   render() {
     var diceClass;
@@ -236,15 +287,42 @@ class RiskMode extends React.Component {
       }
     }
 
+    var keepRollingButton;
+    if (this.state.rollDiceInterval === "") {
+      keepRollingButton = (
+        <span className="keepRollingSpeed">
+          <Button type="primary" onClick={this.rollDice}>
+            Keep Rolling
+          </Button>{" "}
+          <select id="keepRollingSpeed" onChange={this.changeKeepRollingSpeed}>
+            <option>Fast</option>
+            <option>Medium</option>
+            <option>Slow</option>
+          </select>
+        </span>
+      );
+    } else {
+      keepRollingButton = (
+        <span className="keepRollingSpeed">
+          <Button type="error" onClick={this.clearRollDiceInterval}>
+            Stop Rolling
+          </Button>{" "}
+          <select disabled>
+            <option>Fast</option>
+            <option>Medium</option>
+            <option>Slow</option>
+          </select>
+        </span>
+      );
+    }
+
     return (
       <div>
         <div className="chooseDice">
           <Button type="primary" onClick={this.rollDiceOnce}>
             Roll Dice Once
           </Button>{" "}
-          <Button type="primary" onClick={this.rollDice}>
-            Keep Rolling
-          </Button>
+          {keepRollingButton}
         </div>
         <table className="riskTable">
           <thead>

@@ -51,10 +51,16 @@
 }
 
 .lineChart {
-  height: 500px;
-  width: 750px;
+  height: 30vw;
+  width: 90vw;
+  margin-left: 5vw;
   animation-name: fadeIn;
   animation-duration: 1s;
+}
+
+.keepRollingSpeed {
+  margin-left: 50px;
+  font-size: 14px;
 }
 
 .winProbability {
