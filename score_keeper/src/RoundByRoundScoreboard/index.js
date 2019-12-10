@@ -55,7 +55,7 @@ class RBRS extends React.Component {
   notificationStyle = {
     height: "10vw",
     width: "30vw",
-    backgroundColor: "rgb(255,255,0,.1)"
+    backgroundColor: "rgb(255,255,0,.25)"
   };
 
   componentDidMount() {
@@ -101,9 +101,72 @@ class RBRS extends React.Component {
       }
     }
 
-    var newLeaderboard = this.makeLeaderboard(totalPoints);
+    var newLeaderboard = this.makeLeaderboard(totalPoints),
+      winner = false;
+    if (this.state.pointsOrRounds[0]) {
+      // game is to points
+      if (this.state.highScoreWins) {
+        console.log(newLeaderboard, this.state.gameLimit);
+        // high score wins
+        if (newLeaderboard[2] >= this.state.gameLimit) {
+          winner = true;
+          notification["warning"]({
+            message: newLeaderboard[0] + " wins!",
+            description: "",
+            placement: "bottomLeft",
+            duration: 10,
+            icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
+            style: this.notificationStyle
+          });
+        }
+      } else {
+        // low score wins
+        winner = true;
+        if (newLeaderboard[2] >= this.state.gameLimit) {
+          winner = true;
+          notification["warning"]({
+            message: newLeaderboard[1] + " wins!",
+            description: "",
+            placement: "bottomLeft",
+            duration: 10,
+            icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
+            style: this.notificationStyle
+          });
+        }
+      }
+    } else {
+      // game is to rounds
+      if (this.state.highScoreWins) {
+        // high score wins
+        if (points.length >= this.state.gameLimit) {
+          winner = true;
+          notification["warning"]({
+            message: newLeaderboard[0] + " wins!",
+            description: "",
+            placement: "bottomLeft",
+            duration: 10,
+            icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
+            style: this.notificationStyle
+          });
+        }
+      } else {
+        // low score wins
+        if (points.length >= this.state.gameLimit) {
+          winner = true;
+          notification["warning"]({
+            message: newLeaderboard[1] + " wins!",
+            description: "",
+            placement: "bottomLeft",
+            duration: 10,
+            icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
+            style: this.notificationStyle
+          });
+        }
+      }
+    }
+
     if (this.state.highScoreWins) {
-      if (newLeaderboard[0] !== oldLeaderboard[0]) {
+      if (newLeaderboard[0] !== oldLeaderboard[0] && !winner) {
         notification["warning"]({
           message: newLeaderboard[0] + " takes the lead!",
           description: "",
@@ -112,7 +175,7 @@ class RBRS extends React.Component {
           icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
           style: this.notificationStyle
         });
-      } else if (newLeaderboard[1] !== oldLeaderboard[1]) {
+      } else if (newLeaderboard[1] !== oldLeaderboard[1] && !winner) {
         notification["warning"]({
           message: newLeaderboard[1] + " falls to last place!",
           description: "",
@@ -123,7 +186,7 @@ class RBRS extends React.Component {
         });
       }
     } else {
-      if (newLeaderboard[1] !== oldLeaderboard[1]) {
+      if (newLeaderboard[1] !== oldLeaderboard[1] && !winner) {
         notification["warning"]({
           message: newLeaderboard[1] + " takes the lead!",
           description: "",
@@ -132,7 +195,7 @@ class RBRS extends React.Component {
           icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
           style: this.notificationStyle
         });
-      } else if (newLeaderboard[0] !== oldLeaderboard[0]) {
+      } else if (newLeaderboard[0] !== oldLeaderboard[0] && !winner) {
         notification["warning"]({
           message: newLeaderboard[0] + " falls to last place!",
           description: "",
@@ -163,7 +226,12 @@ class RBRS extends React.Component {
         minIx = i;
       }
     }
-    return [this.state.players[maxIx], this.state.players[minIx]];
+    return [
+      this.state.players[maxIx],
+      this.state.players[minIx],
+      maxPoints,
+      minPoints
+    ];
   };
 
   loadScoreboard = () => {
@@ -298,9 +366,9 @@ class RBRS extends React.Component {
     for (let i = 0; i < this.state.points.length; ++i) {
       var round = [];
       for (let j = 0; j < this.state.players.length; ++j) {
-        if (j != player) {
+        if (j !== player) {
           round.push(this.state.points[i][j]);
-          console.log(this.state.points[i][j]);
+          //console.log(this.state.points[i][j]);
         }
       }
       newPoints.push(round);
@@ -751,7 +819,7 @@ class RBRS extends React.Component {
               type="text"
               size="5"
               id="gameLimit"
-              placeholder="100"
+              placeholder={this.state.gameLimit}
               onChange={this.changeGameLimit}
             ></input>
             <Radio.Group
@@ -811,7 +879,7 @@ class RBRS extends React.Component {
                       <Icon
                         type="close-circle"
                         theme="twoTone"
-                        twoToneColor="#fc9999"
+                        twoToneColor="rgb(255,0,0)"
                         style={this.iconStyle}
                       ></Icon>
                     </Popconfirm>
@@ -834,7 +902,7 @@ class RBRS extends React.Component {
                       <Icon
                         type="close-circle"
                         theme="twoTone"
-                        twoToneColor="#fc9999"
+                        twoToneColor="rgb(255,0,0)"
                         style={this.iconStyle}
                       ></Icon>
                     </Popconfirm>
@@ -847,14 +915,14 @@ class RBRS extends React.Component {
               ))}
             </tbody>
           </table>
-          {/*<div className="lineChart">
+          <div className="lineChart">
             <LineChart
               xmax={chartXmax}
               ymax={chartYmax}
               gameLimit={this.state.gameLimit}
               data={chartData}
             ></LineChart>
-                  </div>*/}
+          </div>
         </div>
         <Modal
           visible={this.state.modalVisible[0]}
@@ -905,6 +973,12 @@ class RBRS extends React.Component {
               onChange={this.updateScoreboardTitle}
             ></input>
             {saveScoreboardWarning}
+            Saved Scoreboards:
+            {this.state.scoreboardsList.map(scoreboard => (
+              <div key={"savedScoreboadsList" + scoreboard.title}>
+                {scoreboard.title}
+              </div>
+            ))}
           </div>
         </Modal>
         <Modal

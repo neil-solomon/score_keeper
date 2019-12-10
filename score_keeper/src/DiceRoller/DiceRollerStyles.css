@@ -1,0 +1,107 @@
+.chooseMode {
+  padding: 10px;
+  font-size: 20px;
+  text-align: center;
+  animation-name: fadeIn;
+  animation-duration: 1s;
+}
+
+.riskTable {
+  width: 80vw;
+  margin-left: 10vw;
+  margin-right: 10vw;
+  animation-name: fadeIn;
+  animation-duration: 1s;
+}
+
+.riskDiceRow {
+  height: 150px;
+}
+
+.attackerHeader {
+  width: 450px;
+  font-size: 20px;
+  color: black;
+}
+
+.defenderHeader {
+  width: 350px;
+  font-size: 20px;
+  color: black;
+}
+
+.riskTableArmies {
+  color: black;
+  font-size: 16px;
+}
+
+.startingArmies {
+  color: black;
+  font-size: 16px;
+}
+
+.startingArmiesInput {
+  width: 40px;
+  height: 20px;
+}
+
+.armiesRemaining {
+  color: black;
+  font-size: 16px;
+}
+
+.lineChart {
+  height: 500px;
+  width: 750px;
+  animation-name: fadeIn;
+  animation-duration: 1s;
+}
+
+.winProbability {
+  color: black;
+  font-size: 16px;
+}
+
+.chooseDice {
+  padding: 10px;
+  font-size: 20px;
+  text-align: center;
+  animation-name: fadeIn;
+  animation-duration: 1s;
+}
+
+.diceRolls {
+  padding: 10px;
+}
+
+.diceNumImage {
+  padding: 10px;
+  width: 100px;
+  animation-name: spinDice;
+  animation-duration: 1s;
+}
+
+.diceZeroImage {
+  padding: 10px;
+  width: 100px;
+  animation-name: fadeIn;
+  animation-duration: 1s;
+}
+
+@keyframes spinDice {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

@@ -3,11 +3,12 @@ import React from "react";
 import "antd/dist/antd.css";
 import "./App.css";
 import RBRS from "./RoundByRoundScoreboard/index.js";
+import DiceRoller from "./DiceRoller/index.js";
 
 function App() {
   return (
     <div>
-      <RBRS></RBRS>
+      <DiceRoller></DiceRoller>
     </div>
   );
 }
