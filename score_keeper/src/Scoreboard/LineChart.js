@@ -42,7 +42,7 @@ class LineChart extends React.Component {
         data={this.props.data}
         theme={this.theme}
         markers={markers}
-        margin={{ top: 50, right: 150, bottom: 150, left: 150 }}
+        margin={{ top: 50, right: 150, bottom: 150, left: 50 }}
         xScale={{ type: "point", min: "auto", max: 10 /*this.props.xmax*/ }}
         yScale={{
           type: "linear",
@@ -86,7 +86,7 @@ class LineChart extends React.Component {
           "hsl(270,100%,50%)",
           "hsl(330,100%,50%)"
         ]}
-        pointSize={10}
+        pointSize={5}
         pointColor={{ theme: "background" }}
         pointBorderWidth={2}
         pointBorderColor={{ from: "serieColor" }}

@@ -859,70 +859,68 @@ class Scoreboard extends React.Component {
           </Button>
         </div>
         {emptyScoreboard}
-        <div className="tableAndChart">
-          <table>
-            <thead>
-              <tr>
-                <td className="emptyCell"></td>
-                {this.state.players.map((player, index) => (
-                  <th
-                    key={"player" + index}
-                    style={{ backgroundColor: this.state.playerColors[index] }}
+        <table>
+          <thead>
+            <tr>
+              <td className="emptyCell"></td>
+              {this.state.players.map((player, index) => (
+                <th
+                  key={"player" + index}
+                  style={{ backgroundColor: this.state.playerColors[index] }}
+                >
+                  {player} <br></br>
+                  {playerIcons[index]} {this.state.totalPoints[index]}
+                  <br></br>
+                  <Popconfirm
+                    title={"Remove " + player + " from game?"}
+                    onConfirm={() => this.removePlayer(index)}
                   >
-                    {player} <br></br>
-                    {playerIcons[index]} {this.state.totalPoints[index]}
-                    <br></br>
-                    <Popconfirm
-                      title={"Remove " + player + " from game?"}
-                      onConfirm={() => this.removePlayer(index)}
-                    >
-                      <Icon
-                        type="close-circle"
-                        theme="twoTone"
-                        twoToneColor="rgb(255,0,0)"
-                        style={this.iconStyle}
-                      ></Icon>
-                    </Popconfirm>
-                  </th>
+                    <Icon
+                      type="close-circle"
+                      theme="twoTone"
+                      twoToneColor="rgb(255,0,0)"
+                      style={this.iconStyle}
+                    ></Icon>
+                  </Popconfirm>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {this.state.points.map((round, index1) => (
+              <tr key={"roundRow " + index1}>
+                <td className="roundNumber">
+                  <Popconfirm
+                    title={
+                      "Delete round " +
+                      (parseInt(index1, 10) + 1).toString() +
+                      " ?"
+                    }
+                    onConfirm={() => this.removeRound(index1)}
+                  >
+                    <Icon
+                      type="close-circle"
+                      theme="twoTone"
+                      twoToneColor="rgb(255,0,0)"
+                      style={this.iconStyle}
+                    ></Icon>
+                  </Popconfirm>
+                  {index1 + 1}
+                </td>
+                {round.map((player, index2) => (
+                  <td key={"roundCell " + round + " " + index2}>{player}</td>
                 ))}
               </tr>
-            </thead>
-            <tbody>
-              {this.state.points.map((round, index1) => (
-                <tr key={"roundRow " + index1}>
-                  <td className="roundNumber">
-                    <Popconfirm
-                      title={
-                        "Delete round " +
-                        (parseInt(index1, 10) + 1).toString() +
-                        " ?"
-                      }
-                      onConfirm={() => this.removeRound(index1)}
-                    >
-                      <Icon
-                        type="close-circle"
-                        theme="twoTone"
-                        twoToneColor="rgb(255,0,0)"
-                        style={this.iconStyle}
-                      ></Icon>
-                    </Popconfirm>
-                    {index1 + 1}
-                  </td>
-                  {round.map((player, index2) => (
-                    <td key={"roundCell " + round + " " + index2}>{player}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="lineChart">
-            <LineChart
-              xmax={chartXmax}
-              ymax={chartYmax}
-              gameLimit={this.state.gameLimit}
-              data={chartData}
-            ></LineChart>
-          </div>
+            ))}
+          </tbody>
+        </table>
+        <div className="scoreboardLineChart">
+          <LineChart
+            xmax={chartXmax}
+            ymax={chartYmax}
+            gameLimit={this.state.gameLimit}
+            data={chartData}
+          ></LineChart>
         </div>
         <Modal
           visible={this.state.modalVisible[0]}

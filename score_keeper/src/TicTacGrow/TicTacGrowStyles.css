@@ -1,0 +1,89 @@
+.pageHeader {
+  text-align: center;
+  font-size: 30px;
+  margin: 5px;
+}
+
+.mainContainer {
+  text-align: center;
+  animation-name: fadeIn;
+  animation-duration: 2s;
+}
+
+table {
+  animation-name: fadeIn;
+  animation-duration: 3s;
+  width: 80vh;
+  height: 80vh;
+}
+
+.turn {
+  text-align: center;
+  margin: 5px;
+  font-size: 20px;
+}
+
+.menuButtons {
+  text-align: center;
+  font-size: 16px;
+}
+
+.menuButton {
+  display: inline-block;
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+.cellExists {
+  font-weight: bold;
+  border: 1px double black;
+  background-color: rgb(255, 255, 255, 1);
+  animation-name: newCell;
+  animation-duration: 1s;
+}
+
+.cellWinner {
+  font-weight: bold;
+  border: 1px double black;
+  animation: winner 1s infinite;
+}
+
+.cellEmpty {
+  background-color: rgb(205, 205, 205);
+  border: 1px solid rgb(205, 205, 205);
+}
+
+.fadeIn {
+  animation-name: fadeIn;
+  animation-duration: 1s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes newCell {
+  from {
+    background-color: red;
+  }
+  to {
+    background-color: white;
+  }
+}
+
+@keyframes winner {
+  0% {
+    background-color: rgb(255, 255, 255);
+  }
+  50% {
+    background-color: rgb(255, 255, 0);
+  }
+  100% {
+    background-color: rgb(255, 255, 255);
+  }
+}

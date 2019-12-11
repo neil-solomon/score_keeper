@@ -15,6 +15,9 @@ class Home extends React.Component {
         <a href="./#/RiskDiceRoller">
           <h2>Risk Dice Roller</h2>
         </a>
+        <a href="./#/TicTacGrow">
+          <h2>Tic-Tac-Grow</h2>
+        </a>
       </div>
     );
   }

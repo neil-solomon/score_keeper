@@ -26,6 +26,10 @@ th {
   animation-duration: 0.5s;
 }
 
+.tableAndChart {
+  text-align: center;
+}
+
 .saveScoreboardWarning {
   font-size: 1vw;
   width: 15vw;
@@ -68,8 +72,8 @@ th {
   font-weight: bold;
 }
 
-.lineChart {
-  float: left;
+.scoreboardLineChart {
+  display: inline-block;
   width: 50vw;
   height: 40vw;
 }

@@ -7,6 +7,7 @@ import Scoreboard from "./Scoreboard/index.js";
 import Home from "./Home/index.js";
 import DiceRoller from "./DiceRoller/index.js";
 import RiskDiceRoller from "./RiskDiceRoller/index.js";
+import TicTacGrow from "./TicTacGrow/index.js";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route exact path="/DiceRoller" component={DiceRoller} />
         <Route exact path="/Scoreboard" component={Scoreboard} />
         <Route exact path="/RiskDiceRoller" component={RiskDiceRoller} />
+        <Route exact path="/TicTacGrow" component={TicTacGrow} />
       </div>
     </HashRouter>
   );
