@@ -1,5 +1,6 @@
 import React from "react";
 import "./DiceRollerStyles.css";
+import { Icon, Button } from "antd";
 import Dice0 from "./images/dice0.png";
 import Dice1 from "./images/dice1.png";
 import Dice2 from "./images/dice2.png";
@@ -7,13 +8,14 @@ import Dice3 from "./images/dice3.png";
 import Dice4 from "./images/dice4.png";
 import Dice5 from "./images/dice5.png";
 import Dice6 from "./images/dice6.png";
-import RollDiceMode from "./RollDiceMode";
-import RiskMode from "./RiskMode";
 
 class DiceRoller extends React.Component {
   state = {
     mode: [false, true], // roll dice, RISK
-    diceImages: [Dice0, Dice1, Dice2, Dice3, Dice4, Dice5, Dice6]
+    diceImages: [Dice0, Dice1, Dice2, Dice3, Dice4, Dice5, Dice6],
+    numDice: 0,
+    diceRolls: [],
+    diceImageToggle: true // to make sure the key of the dice image changes
   };
 
   testRandomness = () => {
@@ -29,41 +31,61 @@ class DiceRoller extends React.Component {
     console.log(rollCount);
   };
 
-  changeMode = () => {
-    var mode = document.getElementById("modeSelect").value;
-    switch (mode) {
-      case "Roll Dice":
-        this.setState({ mode: [true, false] });
-        break;
-      case "RISK":
-        this.setState({ mode: [false, true] });
-        this.setState({ diceRolls: [] });
-        break;
-      default:
-        break;
+  changeDice = change => {
+    var numDice = this.state.numDice;
+    numDice += change;
+    if (numDice < 0) {
+      numDice = 0;
     }
+    var diceRolls = [];
+    for (let i = 0; i < numDice; ++i) {
+      diceRolls.push(0);
+    }
+    this.setState({ numDice });
+    this.setState({ diceRolls });
+  };
+
+  rollDice = () => {
+    var diceRolls = [];
+    for (let i = 0; i < this.state.numDice; ++i) {
+      diceRolls.push((Math.round(Math.random() * 1000000) % 6) + 1);
+    }
+    this.setState({ diceRolls });
+    this.setState({ diceImageToggle: !this.state.diceImageToggle });
   };
 
   render() {
-    var modeView;
-    if (this.state.mode[0]) {
-      modeView = (
-        <RollDiceMode diceImages={this.state.diceImages}></RollDiceMode>
-      );
-    } else if (this.state.mode[1]) {
-      modeView = <RiskMode diceImages={this.state.diceImages}></RiskMode>;
+    var diceClass;
+    if (this.state.diceRolls.length !== 0) {
+      if (this.state.diceRolls[0] !== 0) {
+        diceClass = "diceNumImage";
+      } else {
+        diceClass = "diceZeroImage";
+      }
     }
-
     return (
       <div>
-        <div className="chooseMode">
-          Mode:{" "}
-          <select id="modeSelect" onChange={this.changeMode}>
-            <option>Roll Dice</option>
-            <option>RISK</option>
-          </select>
+        <div className="chooseDice">
+          Number of Dice: {this.state.numDice}{" "}
+          <Icon type="plus-circle" onClick={() => this.changeDice(1)}></Icon>
+          <Icon
+            type="minus-circle"
+            onClick={() => this.changeDice(-1)}
+          ></Icon>{" "}
+          <Button type="primary" onClick={this.rollDice}>
+            Roll Dice
+          </Button>
         </div>
-        {modeView}
+        <div className="diceRolls">
+          {this.state.diceRolls.map((roll, index) => (
+            <img
+              key={"diceRoll" + index + this.state.diceImageToggle}
+              src={this.state.diceImages[roll]}
+              className={diceClass}
+              alt="diceImage"
+            ></img>
+          ))}
+        </div>
       </div>
     );
   }

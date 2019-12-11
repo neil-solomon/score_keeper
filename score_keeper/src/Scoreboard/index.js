@@ -1,10 +1,10 @@
 import React from "react";
 import { Button, Modal, Icon, Popconfirm, Radio, notification } from "antd";
-import "./RBRSStyles.css";
+import "./ScoreboardStyles.css";
 import LineChart from "./LineChart.js";
 import LoadButton from "./LoadButton.js";
 
-class RBRS extends React.Component {
+class Scoreboard extends React.Component {
   state = {
     players: [],
     playerColors: [
@@ -776,7 +776,7 @@ class RBRS extends React.Component {
     }
 
     return (
-      <div>
+      <div className="fadeIn">
         <div className="mainButtons">
           <Button
             type="secondary"
@@ -1010,4 +1010,4 @@ class RBRS extends React.Component {
   }
 }
 
-export default RBRS;
+export default Scoreboard;

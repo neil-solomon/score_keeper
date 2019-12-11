@@ -6,7 +6,7 @@ class LineChart extends React.Component {
     return (
       <ResponsiveLine
         data={this.props.data}
-        margin={{ top: 50, right: 100, bottom: 50, left: 100 }}
+        margin={{ top: 50, right: 100, bottom: 100, left: 100 }}
         xScale={{ type: "point", min: "auto", max: "auto" /*this.props.xmax*/ }}
         yScale={{
           type: "linear",
@@ -24,7 +24,7 @@ class LineChart extends React.Component {
           tickPadding: 5,
           tickRotation: 0,
           legend: "Rolls",
-          legendOffset: 75,
+          legendOffset: 30,
           legendPosition: "middle"
         }}
         axisLeft={{
@@ -33,7 +33,7 @@ class LineChart extends React.Component {
           tickPadding: 5,
           tickRotation: 0,
           legend: "Armies Remaining",
-          legendOffset: -50,
+          legendOffset: -30,
           legendPosition: "middle"
         }}
         colors={["hsl(0,75%,50%)", "hsl(250,75%,50%)"]}
@@ -49,7 +49,7 @@ class LineChart extends React.Component {
             anchor: "bottom-right",
             direction: "column",
             justify: false,
-            translateX: 100,
+            translateX: 90,
             translateY: 0,
             itemsSpacing: 0,
             itemDirection: "left-to-right",

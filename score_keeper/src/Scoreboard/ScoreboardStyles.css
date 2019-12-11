@@ -4,6 +4,11 @@ table {
   float: left;
 }
 
+tr {
+  animation-name: fadeIn;
+  animation-duration: 0.5s;
+}
+
 td {
   border: 1px solid black;
   font-size: 1vw;
@@ -17,6 +22,8 @@ th {
   font-weight: bold;
   padding: 0.1vw;
   text-align: center;
+  animation-name: fadeIn;
+  animation-duration: 0.5s;
 }
 
 .saveScoreboardWarning {
@@ -71,6 +78,20 @@ th {
   width: 30vw;
   font-size: 1.5vw;
   font-weight: bold;
+}
+
+.fadeIn {
+  animation-name: fadeIn;
+  animation-duration: 1s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @media (max-width: 800px) {

@@ -1,10 +1,18 @@
 import React from "react";
-import "./DiceRollerStyles.css";
+import "./RiskDiceRollerStyles.css";
 import { Button, notification, Icon } from "antd";
-import LineChart from "./LineChart";
+import LineChart from "./LineChart.js";
+import Dice0 from "./images/dice0.png";
+import Dice1 from "./images/dice1.png";
+import Dice2 from "./images/dice2.png";
+import Dice3 from "./images/dice3.png";
+import Dice4 from "./images/dice4.png";
+import Dice5 from "./images/dice5.png";
+import Dice6 from "./images/dice6.png";
 
-class RiskMode extends React.Component {
+class RiskDiceRoller extends React.Component {
   state = {
+    diceImages: [Dice0, Dice1, Dice2, Dice3, Dice4, Dice5, Dice6],
     rollDiceInterval: "",
     numDiceAttacker: 0,
     numDiceDefender: 0,
@@ -12,20 +20,23 @@ class RiskMode extends React.Component {
     armiesDefender: 0,
     diceRollsAttacker: [],
     diceRollsDefender: [],
-    winProbsAttacker: "",
-    winProbsDefender: "",
+    winProbsAttacker: " ",
+    winProbsDefender: " ",
+    avgArmiesAttacker: "",
+    avgArmiesDefender: "",
     diceImageToggle: true, // to make sure the key of the dice image changes
     chartData: [
       { id: "Attacker", data: [] },
       { id: "Defender", data: [] }
     ],
-    keepRollingSpeed: "Fast"
+    keepRollingSpeed: "Medium",
+    viewProbabilities: false
   };
 
   notificationStyle = {
     height: "150px",
     width: "300px",
-    backgroundColor: "rgb(255,255,0,.25)"
+    backgroundColor: "rgb(255,255,0,.5)"
   };
 
   componentWillUnmount() {
@@ -55,7 +66,7 @@ class RiskMode extends React.Component {
     });
 
     this.updateDice(armiesAttacker, armiesDefender);
-    this.updateWinProbs(armiesAttacker, armiesDefender);
+    this.updateProbabilities(armiesAttacker, armiesDefender);
     this.setState({
       chartData: [
         {
@@ -70,35 +81,54 @@ class RiskMode extends React.Component {
     });
   };
 
-  updateWinProbs = (armiesAttacker, armiesDefender) => {
+  updateProbabilities = (armiesAttacker, armiesDefender) => {
     if (armiesAttacker === 0) {
       this.setState({ winProbsAttacker: "0.0%" });
       this.setState({ winProbsDefender: "100.0%" });
+      this.setState({ avgArmiesAttacker: 0 });
+      this.setState({ avgArmiesDefender: this.state.armiesDefender });
       return;
     }
     if (armiesDefender === 0) {
       this.setState({ winProbsAttacker: "100.0%" });
       this.setState({ winProbsDefender: "0.0%" });
+      this.setState({ avgArmiesAttacker: this.state.armiesAttacker });
+      this.setState({ avgArmiesDefender: 0 });
       return;
     }
     var key = armiesAttacker.toString() + "vs" + armiesDefender.toString();
-    var winProbs = [];
+    var probabilities = [];
     try {
-      winProbs = require("./riskProbs/riskProbs_A1-100_D1-100_1000.json")[key];
+      probabilities = require("./riskProbs/riskProbs_A1-100_D1-100_1000.json")[
+        key
+      ];
     } catch (error) {
-      console.log("updateWinProbs:", error);
+      console.log("updateProbabilities:", error);
     }
-    if (typeof winProbs !== "undefined") {
-      if (winProbs.length > 0) {
+    if (typeof probabilities !== "undefined") {
+      if (probabilities.length > 0) {
         if (
-          typeof winProbs[0] !== "undefined" &&
-          typeof winProbs[1] !== "undefined"
+          typeof probabilities[0] !== "undefined" &&
+          typeof probabilities[1] !== "undefined"
         ) {
           this.setState({
-            winProbsAttacker: (winProbs[0] * 100).toFixed(1).toString() + "%"
+            winProbsAttacker:
+              (probabilities[0] * 100).toFixed(1).toString() + "%"
           });
           this.setState({
-            winProbsDefender: (winProbs[1] * 100).toFixed(1).toString() + "%"
+            winProbsDefender:
+              (probabilities[1] * 100).toFixed(1).toString() + "%"
+          });
+        }
+        if (
+          typeof probabilities[2] !== "undefined" &&
+          typeof probabilities[3] !== "undefined"
+        ) {
+          this.setState({
+            avgArmiesAttacker: probabilities[2].toFixed(1).toString()
+          });
+          this.setState({
+            avgArmiesDefender: probabilities[3].toFixed(1).toString()
           });
         }
       }
@@ -175,7 +205,7 @@ class RiskMode extends React.Component {
       this.setState({ numDiceDefender: newArmiesDefender });
     }
 
-    this.updateWinProbs(newArmiesAttacker, newArmiesDefender);
+    this.updateProbabilities(newArmiesAttacker, newArmiesDefender);
 
     if (newArmiesAttacker === 0) {
       notification["success"]({
@@ -270,6 +300,10 @@ class RiskMode extends React.Component {
     });
   };
 
+  toggleProbabilities = () => {
+    this.setState({ viewProbabilities: !this.state.viewProbabilities });
+  };
+
   render() {
     var diceClass;
     if (this.state.diceRollsAttacker.length !== 0) {
@@ -292,20 +326,24 @@ class RiskMode extends React.Component {
       keepRollingButton = (
         <span className="keepRollingSpeed">
           <Button type="primary" onClick={this.rollDice}>
-            Keep Rolling
+            Roll Dice Forever
           </Button>{" "}
-          <select id="keepRollingSpeed" onChange={this.changeKeepRollingSpeed}>
-            <option>Fast</option>
-            <option>Medium</option>
-            <option>Slow</option>
+          <select
+            id="keepRollingSpeed"
+            value={this.state.keepRollingSpeed}
+            onChange={this.changeKeepRollingSpeed}
+          >
+            <option value="Fast">Fast</option>
+            <option value="Medium">Medium</option>
+            <option value="Slow">Slow</option>
           </select>
         </span>
       );
     } else {
       keepRollingButton = (
         <span className="keepRollingSpeed">
-          <Button type="error" onClick={this.clearRollDiceInterval}>
-            Stop Rolling
+          <Button type="seconday" onClick={this.clearRollDiceInterval}>
+            Roll Dice Stop
           </Button>{" "}
           <select disabled>
             <option>Fast</option>
@@ -316,15 +354,51 @@ class RiskMode extends React.Component {
       );
     }
 
+    var vpButtonType, probabilitiesViewA, probabilitiesViewD;
+    if (this.state.viewProbabilities) {
+      vpButtonType = "primary";
+      probabilitiesViewA = (
+        <div
+          className="probabilities"
+          key={"probsA" + this.state.viewProbabilities}
+        >
+          <span>Win Probability: {this.state.winProbsAttacker}</span>
+          <span style={{ marginLeft: "30px" }}>
+            Avg Armies Remaining: {this.state.avgArmiesAttacker}
+          </span>
+        </div>
+      );
+      probabilitiesViewD = (
+        <div
+          className="probabilities"
+          key={"probsD" + this.state.viewProbabilities}
+        >
+          <span>Win Probability: {this.state.winProbsDefender}</span>
+          <span style={{ marginLeft: "30px" }}>
+            Avg Armies Remaining: {this.state.avgArmiesDefender}
+          </span>
+        </div>
+      );
+    } else {
+      vpButtonType = "secondary";
+      probabilitiesViewA = <div className="probabilities"></div>;
+      probabilitiesViewD = <div className="probabilities"></div>;
+    }
+
     return (
       <div>
         <div className="chooseDice">
-          <Button type="primary" onClick={this.rollDiceOnce}>
-            Roll Dice Once
-          </Button>{" "}
+          <Button type={vpButtonType} onClick={this.toggleProbabilities}>
+            View Probabilities
+          </Button>
+          <span className="keepRollingSpeed">
+            <Button type="primary" onClick={this.rollDiceOnce}>
+              Roll Dice Once
+            </Button>{" "}
+          </span>
           {keepRollingButton}
         </div>
-        <table className="riskTable">
+        <table>
           <thead>
             <tr>
               <th
@@ -347,9 +421,7 @@ class RiskMode extends React.Component {
                   Armies Remaining: {this.state.armiesAttacker}
                 </span>
                 <br></br>
-                <span className="winProbability">
-                  Win Probability: {this.state.winProbsAttacker}
-                </span>
+                {probabilitiesViewA}
               </th>
               <th
                 className="defenderHeader"
@@ -371,32 +443,30 @@ class RiskMode extends React.Component {
                   Armies Remaining: {this.state.armiesDefender}
                 </span>
                 <br></br>
-                <span className="winProbability">
-                  Win Probability: {this.state.winProbsDefender}
-                </span>
+                {probabilitiesViewD}
               </th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td className="riskDiceRow">
+              <td className="diceRow">
                 <div className="diceRolls">
                   {this.state.diceRollsAttacker.map((roll, index) => (
                     <img
                       key={"diceRoll" + index + this.state.diceImageToggle}
-                      src={this.props.diceImages[roll]}
+                      src={this.state.diceImages[roll]}
                       className={diceClass}
                       alt="diceImage"
                     ></img>
                   ))}
                 </div>
               </td>
-              <td className="riskDiceRow">
+              <td className="diceRow">
                 <div className="diceRolls">
                   {this.state.diceRollsDefender.map((roll, index) => (
                     <img
                       key={"diceRoll" + index + this.state.diceImageToggle}
-                      src={this.props.diceImages[roll]}
+                      src={this.state.diceImages[roll]}
                       className={diceClass}
                       alt="diceImage"
                     ></img>
@@ -404,14 +474,18 @@ class RiskMode extends React.Component {
                 </div>
               </td>
             </tr>
+            <tr>
+              <td colSpan="2">
+                <div className="lineChart">
+                  <LineChart data={this.state.chartData}></LineChart>
+                </div>
+              </td>
+            </tr>
           </tbody>
         </table>
-        <div className="lineChart">
-          <LineChart data={this.state.chartData}></LineChart>
-        </div>
       </div>
     );
   }
 }
 
-export default RiskMode;
+export default RiskDiceRoller;

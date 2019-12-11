@@ -12,9 +12,10 @@ startTime = time.time()
 for numAttackers in range(attackerFrom, attackerTo+1):
     for numDefenders in range(defenderFrom, defenderTo+1):
         print(numAttackers, "vs", numDefenders, " ", end="\r")
-        outcomes = [0, 0]  # attacker wins, defenders wins
+        # attacker wins, defenders wins, attacking armies remaining, defending armies remaining
+        outcomes = [0, 0, 0, 0]
         start = time.time()
-        while (sum(outcomes) < numSims):
+        while (outcomes[0]+outcomes[1] < numSims):
             attackers = numAttackers
             defenders = numDefenders
             while (attackers > 0 and defenders > 0):
@@ -42,12 +43,13 @@ for numAttackers in range(attackerFrom, attackerTo+1):
                     ix += 1
             if (attackers > defenders):
                 outcomes[0] += 1
+                outcomes[2] += attackers
             else:
                 outcomes[1] += 1
-        outcomes[0] = outcomes[0]/numSims
-        outcomes[1] = outcomes[1]/numSims
+                outcomes[3] += defenders
+        outcomesAdjusted = [i/numSims for i in outcomes]
         key = str(numAttackers) + "vs" + str(numDefenders)
-        riskProbs[key] = outcomes
+        riskProbs[key] = outcomesAdjusted
 totalTime = time.time() - startTime
 print("")
 print(numSims, "simulations for", (attackerTo-attackerFrom+1)*(defenderTo-defenderFrom+1), "battles in",

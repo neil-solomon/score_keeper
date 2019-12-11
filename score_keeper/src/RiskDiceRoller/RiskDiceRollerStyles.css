@@ -1,0 +1,100 @@
+table {
+  width: 90vw;
+  margin-left: 5vw;
+  margin-right: 5vw;
+  animation-name: fadeIn;
+  animation-duration: 1s;
+}
+
+.diceRow {
+  height: 150px;
+}
+
+.attackerHeader {
+  width: 40vw;
+  font-size: 20px;
+  color: black;
+}
+
+.defenderHeader {
+  width: 40vw;
+  font-size: 20px;
+  color: black;
+}
+
+.startingArmies {
+  color: black;
+  font-size: 16px;
+}
+
+.startingArmiesInput {
+  width: 40px;
+  height: 20px;
+}
+
+.armiesRemaining {
+  color: black;
+  font-size: 16px;
+}
+
+.lineChart {
+  height: 25vw;
+  width: 90vw;
+}
+
+.keepRollingSpeed {
+  margin-left: 50px;
+  font-size: 14px;
+}
+
+.probabilities {
+  color: black;
+  font-size: 16px;
+  height: 30px;
+  animation-name: fadeIn;
+  animation-duration: 1s;
+}
+
+.chooseDice {
+  padding: 10px;
+  font-size: 20px;
+  text-align: center;
+  animation-name: fadeIn;
+  animation-duration: 1s;
+}
+
+.diceRolls {
+  padding: 10px;
+}
+
+.diceNumImage {
+  padding: 10px;
+  width: 100px;
+  animation-name: spinDice;
+  animation-duration: 1s;
+}
+
+.diceZeroImage {
+  padding: 10px;
+  width: 100px;
+  animation-name: fadeIn;
+  animation-duration: 1s;
+}
+
+@keyframes spinDice {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
