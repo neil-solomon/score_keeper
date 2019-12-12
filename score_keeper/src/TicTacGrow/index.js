@@ -1,7 +1,6 @@
 import React from "react";
 import { Button, Icon } from "antd";
 import "./TicTacGrowStyles.css";
-import { thisExpression } from "@babel/types";
 
 class TicTacGrow extends React.Component {
   state = {
@@ -11,7 +10,7 @@ class TicTacGrow extends React.Component {
     boardReset: false,
     randomClicksInterval: "",
     numToWin: 4,
-    gridSize: 21,
+    gridSize: 11,
     maxGridSize: 31,
     someoneWon: false,
     cellExistsStyle: {
@@ -36,6 +35,11 @@ class TicTacGrow extends React.Component {
     var gridSize = newGridSize;
     var midGrid = Math.floor(gridSize / 2);
     var grid = [];
+    var cellExistsStyle = {};
+    cellExistsStyle.width = (80 / gridSize).toString() + "vh";
+    cellExistsStyle.height = cellExistsStyle.width;
+    cellExistsStyle.fontSize = (80 / (gridSize * 2)).toString() + "vh";
+
     for (let i = 0; i < gridSize; ++i) {
       var row = [];
       for (let j = 0; j < gridSize; ++j) {
@@ -49,7 +53,7 @@ class TicTacGrow extends React.Component {
             exists: true,
             player1: false,
             player2: false,
-            style: this.state.cellExistsStyle,
+            style: cellExistsStyle,
             className: "cellExists",
             text: ""
           });
@@ -81,11 +85,6 @@ class TicTacGrow extends React.Component {
       [midGrid - 2, midGrid],
       [midGrid - 2, midGrid - 1]
     ];
-
-    var cellExistsStyle = {};
-    cellExistsStyle.width = (80 / gridSize).toString() + "vh";
-    cellExistsStyle.height = cellExistsStyle.width;
-    cellExistsStyle.fontSize = (80 / (gridSize * 2)).toString() + "vh";
 
     clearInterval(this.state.randomClicksInterval);
     this.setState({ cellExistsStyle });
@@ -179,7 +178,7 @@ class TicTacGrow extends React.Component {
 
   startRandomClicks = () => {
     if (this.state.randomClicksInterval === "") {
-      var randomClicksInterval = setInterval(() => this.randomClicks(), 100);
+      var randomClicksInterval = setInterval(() => this.randomClicks(), 10);
       this.setState({ randomClicksInterval });
     }
   };
@@ -339,9 +338,117 @@ class TicTacGrow extends React.Component {
       clearInterval(this.state.randomClicksInterval);
       return;
     }
+
+    for (
+      let i = this.state.numToWin - 1;
+      i < grid.length - this.state.numToWin && !diagUpWinner;
+      ++i
+    ) {
+      for (
+        let j = 0;
+        j < grid.length - this.state.numToWin && !diagUpWinner;
+        ++j
+      ) {
+        if (grid[i][j].exists) {
+          if (grid[i][j].player1) {
+            winner = true;
+            for (let k = 1; k < this.state.numToWin && winner; ++k) {
+              if (!grid[i - k][j + k].player1) {
+                winner = false;
+              }
+            }
+            if (winner) {
+              diagUpWinner = true;
+              winnerStartIx = [i, j];
+            }
+          } else if (grid[i][j].player2) {
+            winner = true;
+            for (let k = 1; k < this.state.numToWin && winner; ++k) {
+              if (!grid[i - k][j + k].player2) {
+                winner = false;
+              }
+            }
+            if (winner) {
+              diagUpWinner = true;
+              winnerStartIx = [i, j];
+            }
+          }
+        }
+      }
+    }
+    if (diagUpWinner) {
+      for (let i = 0; i < this.state.numToWin; ++i) {
+        grid[winnerStartIx[0] - i][winnerStartIx[1] + i].className =
+          "cellWinner";
+        grid[winnerStartIx[0] - i][
+          winnerStartIx[1] + i
+        ].style = this.state.cellExistsStyle;
+      }
+      this.setState({ grid });
+      this.setState({ someoneWon: true });
+      clearInterval(this.state.randomClicksInterval);
+      return;
+    }
+
+    for (
+      let i = 0;
+      i < grid.length - this.state.numToWin && !diagDownWinner;
+      ++i
+    ) {
+      for (
+        let j = 0;
+        j < grid.length - this.state.numToWin && !diagDownWinner;
+        ++j
+      ) {
+        if (grid[i][j].exists) {
+          if (grid[i][j].player1) {
+            winner = true;
+            for (let k = 1; k < this.state.numToWin && winner; ++k) {
+              if (!grid[i + k][j + k].player1) {
+                winner = false;
+              }
+            }
+            if (winner) {
+              diagDownWinner = true;
+              winnerStartIx = [i, j];
+            }
+          } else if (grid[i][j].player2) {
+            winner = true;
+            for (let k = 1; k < this.state.numToWin && winner; ++k) {
+              if (!grid[i + k][j + k].player2) {
+                winner = false;
+              }
+            }
+            if (winner) {
+              diagDownWinner = true;
+              winnerStartIx = [i, j];
+            }
+          }
+        }
+      }
+    }
+    if (diagDownWinner) {
+      for (let i = 0; i < this.state.numToWin; ++i) {
+        grid[winnerStartIx[0] + i][winnerStartIx[1] + i].className =
+          "cellWinner";
+        grid[winnerStartIx[0] + i][
+          winnerStartIx[1] + i
+        ].style = this.state.cellExistsStyle;
+      }
+      this.setState({ grid });
+      this.setState({ someoneWon: true });
+      clearInterval(this.state.randomClicksInterval);
+      return;
+    }
   };
 
   render() {
+    if (window.innerHeight > window.innerWidth) {
+      console.log("Portrait!");
+    } else {
+      console.log("Landscape!");
+    }
+
     var boardMessage;
     if (this.state.player1Turn) {
       if (this.state.someoneWon) {
@@ -356,6 +463,7 @@ class TicTacGrow extends React.Component {
         boardMessage = <div className="turn">Player&nbsp;2's&nbsp;Turn</div>;
       }
     }
+
     return (
       <div className="mainContainer">
         <h1 className="pageHeader">Tic-Tac-Grow</h1>
