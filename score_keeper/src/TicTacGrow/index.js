@@ -36,9 +36,17 @@ class TicTacGrow extends React.Component {
     var midGrid = Math.floor(gridSize / 2);
     var grid = [];
     var cellExistsStyle = {};
-    cellExistsStyle.width = (80 / gridSize).toString() + "vh";
-    cellExistsStyle.height = cellExistsStyle.width;
-    cellExistsStyle.fontSize = (80 / (gridSize * 2)).toString() + "vh";
+    if (window.innerHeight > window.innerWidth) {
+      //portrait
+      cellExistsStyle.width = (100 / gridSize).toString() + "vw";
+      cellExistsStyle.height = cellExistsStyle.width;
+      cellExistsStyle.fontSize = (100 / (gridSize * 2)).toString() + "vw";
+    } else {
+      //landscape
+      cellExistsStyle.width = (80 / gridSize).toString() + "vh";
+      cellExistsStyle.height = cellExistsStyle.width;
+      cellExistsStyle.fontSize = (80 / (gridSize * 2)).toString() + "vh";
+    }
 
     for (let i = 0; i < gridSize; ++i) {
       var row = [];
@@ -103,6 +111,9 @@ class TicTacGrow extends React.Component {
   }
 
   addCell = () => {
+    if (this.state.numToWin === this.state.gridSize) {
+      return;
+    }
     var candidateCells = [...this.state.candidateCells];
     if (candidateCells.length < 1) return;
     var random = Math.round(Math.random() * 1000000) % candidateCells.length;
@@ -170,7 +181,7 @@ class TicTacGrow extends React.Component {
       grid[row][column].player2 = true;
       grid[row][column].text = "O";
     }
-    this.checkForWinner();
+    this.checkForWinner(grid);
     this.setState({ grid });
     this.setState({ player1Turn: !this.state.player1Turn });
     this.addCell();
@@ -178,7 +189,7 @@ class TicTacGrow extends React.Component {
 
   startRandomClicks = () => {
     if (this.state.randomClicksInterval === "") {
-      var randomClicksInterval = setInterval(() => this.randomClicks(), 10);
+      var randomClicksInterval = setInterval(() => this.randomClicks(), 100);
       this.setState({ randomClicksInterval });
     }
   };
@@ -238,8 +249,8 @@ class TicTacGrow extends React.Component {
     }
   };
 
-  checkForWinner = () => {
-    var grid = [...this.state.grid],
+  checkForWinner = newGrid => {
+    var grid = newGrid,
       winner,
       rowWinner = false,
       colWinner = false,
@@ -250,7 +261,7 @@ class TicTacGrow extends React.Component {
     for (let i = 0; i < grid.length && !rowWinner; ++i) {
       for (
         let j = 0;
-        j < grid.length - this.state.numToWin && !rowWinner;
+        j < grid.length - this.state.numToWin + 1 && !rowWinner;
         ++j
       ) {
         if (grid[i][j].exists) {
@@ -296,7 +307,7 @@ class TicTacGrow extends React.Component {
     for (let i = 0; i < grid.length && !colWinner; ++i) {
       for (
         let j = 0;
-        j < grid.length - this.state.numToWin && !colWinner;
+        j < grid.length - this.state.numToWin + 1 && !colWinner;
         ++j
       ) {
         if (grid[j][i].exists) {
@@ -341,12 +352,12 @@ class TicTacGrow extends React.Component {
 
     for (
       let i = this.state.numToWin - 1;
-      i < grid.length - this.state.numToWin && !diagUpWinner;
+      i < grid.length && !diagUpWinner;
       ++i
     ) {
       for (
         let j = 0;
-        j < grid.length - this.state.numToWin && !diagUpWinner;
+        j < grid.length - this.state.numToWin + 1 && !diagUpWinner;
         ++j
       ) {
         if (grid[i][j].exists) {
@@ -392,12 +403,12 @@ class TicTacGrow extends React.Component {
 
     for (
       let i = 0;
-      i < grid.length - this.state.numToWin && !diagDownWinner;
+      i < grid.length - this.state.numToWin + 1 && !diagDownWinner;
       ++i
     ) {
       for (
         let j = 0;
-        j < grid.length - this.state.numToWin && !diagDownWinner;
+        j < grid.length - this.state.numToWin + 1 && !diagDownWinner;
         ++j
       ) {
         if (grid[i][j].exists) {
@@ -464,6 +475,15 @@ class TicTacGrow extends React.Component {
       }
     }
 
+    var numToWinString = this.state.numToWin.toString(),
+      gridSizeString = this.state.gridSize.toString();
+    if (numToWinString.length < 2) {
+      numToWinString = "0" + numToWinString;
+    }
+    if (gridSizeString.length < 2) {
+      gridSizeString = "0" + gridSizeString;
+    }
+
     return (
       <div className="mainContainer">
         <h1 className="pageHeader">Tic-Tac-Grow</h1>
@@ -491,7 +511,7 @@ class TicTacGrow extends React.Component {
           </div>
           <div className="menuButton">
             {" "}
-            Number in a row to win: <strong>{this.state.numToWin}</strong>{" "}
+            Number in a row to win: <strong>{numToWinString}</strong>{" "}
             <Icon
               type="minus-circle"
               onClick={() => this.changeNumToWin(0)}
@@ -503,7 +523,7 @@ class TicTacGrow extends React.Component {
           </div>
           <div className="menuButton">
             {" "}
-            Maximum grid size: <strong>{this.state.gridSize}</strong>{" "}
+            Maximum grid size: <strong>{gridSizeString}</strong>{" "}
             <Icon
               type="minus-circle"
               onClick={() => this.changeGridSize(0)}

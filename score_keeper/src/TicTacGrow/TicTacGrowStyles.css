@@ -11,6 +11,7 @@
 }
 
 table {
+  margin-left: 30vw;
   animation-name: fadeIn;
   animation-duration: 3s;
   width: 80vh;
@@ -89,4 +90,9 @@ table {
 }
 
 @media (orientation: portrait) {
+  table {
+    margin-left: 0;
+    width: 100vw;
+    height: 100vw;
+  }
 }
