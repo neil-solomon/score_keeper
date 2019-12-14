@@ -1,23 +1,28 @@
-.chooseDice {
-  padding: 10px;
-  font-size: 20px;
+.DiceRoller_menuButtons {
+  margin-top: 10px;
   text-align: center;
-  animation-name: fadeIn;
-  animation-duration: 1s;
 }
 
-.diceRolls {
+.DiceRoller_menuItem {
+  font-size: 20px;
+  display: inline-block;
+  margin-left: 30px;
+  margin-top: 10px;
+}
+
+.DiceRoller_diceRolls {
+  text-align: center;
   padding: 10px;
 }
 
-.diceNumImage {
+.DiceRoller_diceNumImage {
   padding: 10px;
   width: 100px;
   animation-name: spinDice;
   animation-duration: 1s;
 }
 
-.diceZeroImage {
+.DiceRoller_diceZeroImage {
   padding: 10px;
   width: 100px;
   animation-name: fadeIn;

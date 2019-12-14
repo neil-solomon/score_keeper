@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Modal, Icon, Popconfirm, Radio, notification } from "antd";
-import "./ScoreboardStyles.css";
+import "./Scoreboard.css";
 import LineChart from "./LineChart.js";
 import LoadButton from "./LoadButton.js";
 
@@ -516,7 +516,7 @@ class Scoreboard extends React.Component {
     var emptyScoreboard;
     if (this.state.players.length === 0) {
       emptyScoreboard = (
-        <div className="emptyScoreboard">
+        <div className="Scoreboard_emptyScoreboard">
           The scoreboard is empty!{" "}
           <Button
             type="secondary"
@@ -762,13 +762,15 @@ class Scoreboard extends React.Component {
       }
     }
 
-    var saveScoreboardWarning = <div className="saveScoreboardWarning"></div>;
+    var saveScoreboardWarning = (
+      <div className="Scoreboard_saveScoreboardWarning"></div>
+    );
     if (
       typeof this.state.savedScoreboards[this.state.scoreboardTitle] !==
       "undefined"
     ) {
       saveScoreboardWarning = (
-        <div className="saveScoreboardWarning">
+        <div className="Scoreboard_saveScoreboardWarning">
           WARNING: This scoreboard title already exists. Saving now will
           overwrite.
         </div>
@@ -776,8 +778,9 @@ class Scoreboard extends React.Component {
     }
 
     return (
-      <div className="fadeIn">
-        <div className="mainButtons">
+      <div className="mainContainer">
+        <h1 className="pageHeader">Scoreboard</h1>
+        <div className="Scoreboard_mainButtons">
           <Button
             type="secondary"
             style={this.buttonStyle}
@@ -813,7 +816,7 @@ class Scoreboard extends React.Component {
           >
             Clear Players
           </Button>
-          <div className="gameLimit">
+          <div className="Scoreboard_gameLimit">
             Game is to:{" "}
             <input
               type="text"
@@ -833,7 +836,7 @@ class Scoreboard extends React.Component {
                 Rounds
               </Radio>
             </Radio.Group>
-            <span className="highWins">
+            <span className="Scoreboard_highWins">
               <Radio.Group
                 onChange={this.highScoreWins}
                 value={this.state.highScoreWinsRadio}
@@ -848,7 +851,7 @@ class Scoreboard extends React.Component {
             </span>
           </div>
         </div>
-        <div className="addPoints">
+        <div className="Scoreboard_addPoints">
           <input type="text" placeholder="Enter points." id="addPoints"></input>
           <Button
             type="primary"
@@ -859,14 +862,15 @@ class Scoreboard extends React.Component {
           </Button>
         </div>
         {emptyScoreboard}
-        <table>
+        <table className="Scoreboard_table">
           <thead>
-            <tr>
-              <td className="emptyCell"></td>
+            <tr className="Scoreboard_tr">
+              <td className="Scoreboard_emptyCell"></td>
               {this.state.players.map((player, index) => (
                 <th
                   key={"player" + index}
                   style={{ backgroundColor: this.state.playerColors[index] }}
+                  className="Scoreboard_th"
                 >
                   {player} <br></br>
                   {playerIcons[index]} {this.state.totalPoints[index]}
@@ -888,8 +892,8 @@ class Scoreboard extends React.Component {
           </thead>
           <tbody>
             {this.state.points.map((round, index1) => (
-              <tr key={"roundRow " + index1}>
-                <td className="roundNumber">
+              <tr key={"roundRow " + index1} className="Scoreboard_tr">
+                <td className="Scoreboard_roundNumber">
                   <Popconfirm
                     title={
                       "Delete round " +
@@ -908,13 +912,18 @@ class Scoreboard extends React.Component {
                   {index1 + 1}
                 </td>
                 {round.map((player, index2) => (
-                  <td key={"roundCell " + round + " " + index2}>{player}</td>
+                  <td
+                    key={"roundCell " + round + " " + index2}
+                    className="Scoreboard_td"
+                  >
+                    {player}
+                  </td>
                 ))}
               </tr>
             ))}
           </tbody>
         </table>
-        <div className="scoreboardLineChart">
+        <div className="Scoreboard_scoreboardLineChart">
           <LineChart
             xmax={chartXmax}
             ymax={chartYmax}
@@ -927,7 +936,7 @@ class Scoreboard extends React.Component {
           onCancel={this.closeModals}
           onOk={this.loadScoreboard}
         >
-          <div className="modal">
+          <div className="Scoreboard_modal">
             Select a Scoreboard:<br></br>
             {this.state.scoreboardsList.map((scoreboard, index) => (
               <div key={"loadButton" + index}>
@@ -962,7 +971,7 @@ class Scoreboard extends React.Component {
           onOk={this.saveScoreboard}
           okText="Save"
         >
-          <div className="modal">
+          <div className="Scoreboard_modal">
             Title of Scoreboard:<br></br>
             <input
               type="text"
@@ -985,7 +994,7 @@ class Scoreboard extends React.Component {
           cancelText="Done"
           onOk={this.closeModals}
         >
-          <div className="modal">
+          <div className="Scoreboard_modal">
             Add Players:<br></br>
             <input
               type="text"

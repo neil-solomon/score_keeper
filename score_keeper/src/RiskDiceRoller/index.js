@@ -1,5 +1,5 @@
 import React from "react";
-import "./RiskDiceRollerStyles.css";
+import "./RiskDiceRoller.css";
 import { Button, notification, Icon } from "antd";
 import LineChart from "./LineChart.js";
 import Dice0 from "./images/dice0.png";
@@ -33,10 +33,14 @@ class RiskDiceRoller extends React.Component {
     viewProbabilities: false
   };
 
+  buttonStyle = {
+    fontSize: "20px"
+  };
+
   notificationStyle = {
     height: "150px",
     width: "300px",
-    backgroundColor: "rgb(255,255,0,.5)"
+    backgroundColor: "rgb(255,255,0,.75)"
   };
 
   componentWillUnmount() {
@@ -308,24 +312,28 @@ class RiskDiceRoller extends React.Component {
     var diceClass;
     if (this.state.diceRollsAttacker.length !== 0) {
       if (this.state.diceRollsAttacker[0] !== 0) {
-        diceClass = "diceNumImage";
+        diceClass = "RiskDiceRoller_diceNumImage";
       } else {
-        diceClass = "diceZeroImage";
+        diceClass = "RiskDiceRoller_diceZeroImage";
       }
     }
     if (this.state.diceRollsDefender.length !== 0) {
       if (this.state.diceRollsDefender[0] !== 0) {
-        diceClass = "diceNumImage";
+        diceClass = "RiskDiceRoller_diceNumImage";
       } else {
-        diceClass = "diceZeroImage";
+        diceClass = "RiskDiceRoller_diceZeroImage";
       }
     }
 
     var keepRollingButton;
     if (this.state.rollDiceInterval === "") {
       keepRollingButton = (
-        <span className="keepRollingSpeed">
-          <Button type="primary" onClick={this.rollDice}>
+        <span className="RiskDiceRoller_menuItem">
+          <Button
+            type="primary"
+            onClick={this.rollDice}
+            style={this.buttonStyle}
+          >
             Roll Dice Forever
           </Button>{" "}
           <select
@@ -341,8 +349,12 @@ class RiskDiceRoller extends React.Component {
       );
     } else {
       keepRollingButton = (
-        <span className="keepRollingSpeed">
-          <Button type="seconday" onClick={this.clearRollDiceInterval}>
+        <span className="RiskDiceRoller_menuItem">
+          <Button
+            type="seconday"
+            onClick={this.clearRollDiceInterval}
+            style={this.buttonStyle}
+          >
             Roll Dice Stop
           </Button>{" "}
           <select disabled>
@@ -359,87 +371,104 @@ class RiskDiceRoller extends React.Component {
       vpButtonType = "primary";
       probabilitiesViewA = (
         <div
-          className="probabilities"
+          className="RiskDiceRoller_probabilities"
           key={"probsA" + this.state.viewProbabilities}
         >
-          <span>Win Probability: {this.state.winProbsAttacker}</span>
-          <span style={{ marginLeft: "30px" }}>
+          <div style={{ display: "inline-block" }}>
+            Win Probability: {this.state.winProbsAttacker}
+          </div>
+          <br></br>
+          <div style={{ display: "inline-block" }}>
             Avg Armies Remaining: {this.state.avgArmiesAttacker}
-          </span>
+          </div>
         </div>
       );
       probabilitiesViewD = (
         <div
-          className="probabilities"
+          className="RiskDiceRoller_probabilities"
           key={"probsD" + this.state.viewProbabilities}
         >
-          <span>Win Probability: {this.state.winProbsDefender}</span>
-          <span style={{ marginLeft: "30px" }}>
+          <div style={{ display: "inline-block" }}>
+            Win Probability: {this.state.winProbsDefender}
+          </div>
+          <br></br>
+          <div style={{ display: "inline-block" }}>
             Avg Armies Remaining: {this.state.avgArmiesDefender}
-          </span>
+          </div>
         </div>
       );
     } else {
       vpButtonType = "secondary";
-      probabilitiesViewA = <div className="probabilities"></div>;
-      probabilitiesViewD = <div className="probabilities"></div>;
+      probabilitiesViewA = <div className="RiskDiceRoller_probabilities"></div>;
+      probabilitiesViewD = <div className="RiskDiceRoller_probabilities"></div>;
     }
 
     return (
-      <div>
-        <div className="chooseDice">
-          <Button type={vpButtonType} onClick={this.toggleProbabilities}>
-            View Probabilities
-          </Button>
-          <span className="keepRollingSpeed">
-            <Button type="primary" onClick={this.rollDiceOnce}>
+      <div className="mainContainer">
+        <h1 className="pageHeader">Risk Dice Roller</h1>
+        <div className="RiskDiceRoller_menuButtons">
+          <div className="RiskDiceRoller_menuItem">
+            <Button
+              type="primary"
+              onClick={this.rollDiceOnce}
+              style={this.buttonStyle}
+            >
               Roll Dice Once
             </Button>{" "}
-          </span>
+          </div>
           {keepRollingButton}
+          <div className="RiskDiceRoller_menuItem">
+            <Button
+              type={vpButtonType}
+              onClick={this.toggleProbabilities}
+              style={this.buttonStyle}
+            >
+              View Probabilities
+            </Button>
+          </div>
         </div>
-        <table>
+        <table className="RiskDiceRoller_table">
           <thead>
             <tr>
               <th
-                className="attackerHeader"
-                style={{ background: "rgb(255,0,0,.5)" }}
+                className="RiskDiceRoller_playerHeader"
+                style={{ background: "rgb(255,0,0,.75)" }}
               >
                 Attacker<br></br>
-                <span className="startingArmies">
+                <span className="RiskDiceRoller_startingArmies">
                   Starting Armies:{" "}
                   <input
                     id="startingArmiesAttacker"
-                    className="startingArmiesInput"
+                    className="RiskDiceRoller_startingArmiesInput"
                     min={0}
                     type="number"
                     onChange={this.changeArmies}
                   ></input>
                 </span>
                 <br></br>
-                <span className="armiesRemaining">
+                <span className="RiskDiceRoller_armiesRemaining">
                   Armies Remaining: {this.state.armiesAttacker}
                 </span>
                 <br></br>
                 {probabilitiesViewA}
               </th>
               <th
-                className="defenderHeader"
-                style={{ background: "rgb(0,0,255,.5)" }}
+                className="RiskDiceRoller_playerHeader"
+                style={{ background: "rgb(0,0,255,.75)" }}
               >
                 Defender<br></br>
-                <span className="startingArmies">
+                <span className="RiskDiceRoller_startingArmies">
                   Starting Armies:{" "}
                   <input
                     id="startingArmiesDefender"
-                    className="startingArmiesInput"
+                    className="RiskDiceRoller_startingArmiesInput"
                     type="number"
                     onChange={this.changeArmies}
                     min={0}
                   ></input>
                 </span>
                 <br></br>
-                <span className="armiesRemaining">
+                <span className="RiskDiceRoller_armiesRemaining">
                   Armies Remaining: {this.state.armiesDefender}
                 </span>
                 <br></br>
@@ -449,8 +478,8 @@ class RiskDiceRoller extends React.Component {
           </thead>
           <tbody>
             <tr>
-              <td className="diceRow">
-                <div className="diceRolls">
+              <td className="RiskDiceRoller_diceRow">
+                <div className="RiskDiceRoller_diceRolls">
                   {this.state.diceRollsAttacker.map((roll, index) => (
                     <img
                       key={"diceRoll" + index + this.state.diceImageToggle}
@@ -461,8 +490,8 @@ class RiskDiceRoller extends React.Component {
                   ))}
                 </div>
               </td>
-              <td className="diceRow">
-                <div className="diceRolls">
+              <td className="RiskDiceRoller_diceRow">
+                <div className="RiskDiceRoller_diceRolls">
                   {this.state.diceRollsDefender.map((roll, index) => (
                     <img
                       key={"diceRoll" + index + this.state.diceImageToggle}
@@ -475,8 +504,8 @@ class RiskDiceRoller extends React.Component {
               </td>
             </tr>
             <tr>
-              <td colSpan="2">
-                <div className="lineChart">
+              <td colSpan="2" className="RiskDiceRoller_lineChartTd">
+                <div className="RiskDiceRoller_lineChartDiv">
                   <LineChart data={this.state.chartData}></LineChart>
                 </div>
               </td>

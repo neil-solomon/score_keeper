@@ -1,5 +1,5 @@
 import React from "react";
-import "./DiceRollerStyles.css";
+import "./DiceRoller.css";
 import { Icon, Button } from "antd";
 import Dice0 from "./images/dice0.png";
 import Dice1 from "./images/dice1.png";
@@ -12,10 +12,33 @@ import Dice6 from "./images/dice6.png";
 class DiceRoller extends React.Component {
   state = {
     mode: [false, true], // roll dice, RISK
-    diceImages: [Dice0, Dice1, Dice2, Dice3, Dice4, Dice5, Dice6],
-    numDice: 0,
-    diceRolls: [],
+    diceImagesAll: [Dice0, Dice1, Dice2, Dice3, Dice4, Dice5, Dice6],
+    diceImages: [],
+    numDice: 1,
+    numSides: 6,
+    diceRolls: [0],
     diceImageToggle: true // to make sure the key of the dice image changes
+  };
+
+  iconStyle = {
+    fontSize: "20px",
+    margin: "3px",
+    color: "rgb(0,150,255,.75)"
+  };
+
+  buttonStyle = {
+    fontSize: "20px",
+    height: "32px"
+  };
+
+  componentDidMount() {
+    this.makeDiceImages(6);
+  }
+
+  makeDiceImages = newNumSides => {
+    this.setState({
+      diceImages: this.state.diceImagesAll.splice(this.state.newNumSides)
+    });
   };
 
   testRandomness = () => {
@@ -31,17 +54,32 @@ class DiceRoller extends React.Component {
     console.log(rollCount);
   };
 
-  changeDice = change => {
+  changeNumDice = change => {
+    if (this.state.numDice + change < 1 || this.state.numDice + change > 100) {
+      return;
+    }
     var numDice = this.state.numDice;
     numDice += change;
-    if (numDice < 0) {
-      numDice = 0;
-    }
     var diceRolls = [];
     for (let i = 0; i < numDice; ++i) {
       diceRolls.push(0);
     }
     this.setState({ numDice });
+    this.setState({ diceRolls });
+  };
+
+  changeNumSides = change => {
+    return;
+    if (this.state.numSides + change < 2 || this.state.numSides + change > 20) {
+      return;
+    }
+    var numSides = this.state.numSides;
+    numSides += change;
+    var diceRolls = [];
+    for (let i = 0; i < this.state.numDice; ++i) {
+      diceRolls.push(0);
+    }
+    this.setState({ numSides });
     this.setState({ diceRolls });
   };
 
@@ -58,25 +96,62 @@ class DiceRoller extends React.Component {
     var diceClass;
     if (this.state.diceRolls.length !== 0) {
       if (this.state.diceRolls[0] !== 0) {
-        diceClass = "diceNumImage";
+        diceClass = "DiceRoller_diceNumImage";
       } else {
-        diceClass = "diceZeroImage";
+        diceClass = "DiceRoller_diceZeroImage";
       }
     }
+
+    var numDiceString = this.state.numDice.toString();
+    var numSidesString = this.state.numSides.toString();
+    if (numDiceString.length < 2) {
+      numDiceString = "0" + numDiceString;
+    }
+    if (numSidesString.length < 2) {
+      numSidesString = "0" + numSidesString;
+    }
+
     return (
-      <div>
-        <div className="chooseDice">
-          Number of Dice: {this.state.numDice}{" "}
-          <Icon type="plus-circle" onClick={() => this.changeDice(1)}></Icon>
-          <Icon
-            type="minus-circle"
-            onClick={() => this.changeDice(-1)}
-          ></Icon>{" "}
-          <Button type="primary" onClick={this.rollDice}>
-            Roll Dice
-          </Button>
+      <div className="mainContainer">
+        <h1 className="pageHeader">Dice Roller</h1>
+        <div className="DiceRoller_menuButtons">
+          <div className="DiceRoller_menuItem">
+            <Button
+              type="primary"
+              style={this.buttonStyle}
+              onClick={this.rollDice}
+            >
+              Roll Dice
+            </Button>
+          </div>
+          <div className="DiceRoller_menuItem">
+            Number of Dice: {numDiceString}
+            <Icon
+              type="minus-circle"
+              style={this.iconStyle}
+              onClick={() => this.changeNumDice(-1)}
+            ></Icon>
+            <Icon
+              type="plus-circle"
+              style={this.iconStyle}
+              onClick={() => this.changeNumDice(1)}
+            ></Icon>
+          </div>
+          <div className="DiceRoller_menuItem">
+            Number of Sides: {numSidesString}
+            <Icon
+              type="minus-circle"
+              style={this.iconStyle}
+              onClick={() => this.changeNumSides(-1)}
+            ></Icon>
+            <Icon
+              type="plus-circle"
+              style={this.iconStyle}
+              onClick={() => this.changeNumSides(1)}
+            ></Icon>
+          </div>
         </div>
-        <div className="diceRolls">
+        <div className="DiceRoller_diceRolls">
           {this.state.diceRolls.map((roll, index) => (
             <img
               key={"diceRoll" + index + this.state.diceImageToggle}

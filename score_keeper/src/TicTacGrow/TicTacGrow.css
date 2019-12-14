@@ -1,41 +1,30 @@
-.pageHeader {
-  text-align: center;
-  font-size: 30px;
-  margin: 5px;
-}
-
-.mainContainer {
-  text-align: center;
-  animation-name: fadeIn;
-  animation-duration: 2s;
-}
-
-table {
-  margin-left: 30vw;
+.TicTacGrow_table {
   animation-name: fadeIn;
   animation-duration: 3s;
   width: 80vh;
   height: 80vh;
 }
 
-.turn {
+.TicTacGrow_turn {
   text-align: center;
   margin: 5px;
   font-size: 20px;
 }
 
-.menuButtons {
+.TicTacGrow_menuButtons {
   text-align: center;
   font-size: 16px;
 }
 
-.menuButton {
+.TicTacGrow_menuButton {
   display: inline-block;
+  font-size: 18px;
+  margin-top: 5px;
   margin-left: 15px;
   margin-right: 15px;
 }
 
-.cellExists {
+.TicTacGrow_cellExists {
   font-weight: bold;
   border: 1px double black;
   background-color: rgb(255, 255, 255, 1);
@@ -43,18 +32,18 @@ table {
   animation-duration: 1s;
 }
 
-.cellWinner {
+.TicTacGrow_cellWinner {
   font-weight: bold;
   border: 1px double black;
   animation: winner 1s infinite;
 }
 
-.cellEmpty {
+.TicTacGrow_cellEmpty {
   background-color: rgb(205, 205, 205);
   border: 1px solid rgb(205, 205, 205);
 }
 
-.fadeIn {
+.TicTacGrow_fadeIn {
   animation-name: fadeIn;
   animation-duration: 1s;
 }
@@ -90,7 +79,7 @@ table {
 }
 
 @media (orientation: portrait) {
-  table {
+  .TicTacGrow_table {
     margin-left: 0;
     width: 100vw;
     height: 100vw;

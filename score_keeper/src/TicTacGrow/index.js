@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Icon } from "antd";
-import "./TicTacGrowStyles.css";
+import "./TicTacGrow.css";
 
 class TicTacGrow extends React.Component {
   state = {
@@ -21,9 +21,16 @@ class TicTacGrow extends React.Component {
   };
 
   buttonStyle = {
-    fontSize: "16px",
-    height: "25px",
-    width: "125px"
+    textAlign: "center",
+    fontSize: "18px",
+    height: "36px",
+    width: "140px"
+  };
+
+  iconStyle = {
+    fontSize: "18px",
+    margin: "3px",
+    color: "rgb(0,150,255,.75)"
   };
 
   componentDidMount() {
@@ -62,7 +69,7 @@ class TicTacGrow extends React.Component {
             player1: false,
             player2: false,
             style: cellExistsStyle,
-            className: "cellExists",
+            className: "TicTacGrow_cellExists",
             text: ""
           });
         } else {
@@ -71,7 +78,7 @@ class TicTacGrow extends React.Component {
             player1: false,
             player2: false,
             style: {},
-            className: "cellEmpty",
+            className: "TicTacGrow_cellEmpty",
             text: ""
           });
         }
@@ -111,7 +118,7 @@ class TicTacGrow extends React.Component {
   }
 
   addCell = () => {
-    if (this.state.numToWin === this.state.gridSize) {
+    if (this.state.numToWin === 3 && this.state.gridSize === 3) {
       return;
     }
     var candidateCells = [...this.state.candidateCells];
@@ -119,7 +126,7 @@ class TicTacGrow extends React.Component {
     var random = Math.round(Math.random() * 1000000) % candidateCells.length;
     var newCell = candidateCells[random];
     var grid = [...this.state.grid];
-    grid[newCell[0]][newCell[1]].className = "cellExists";
+    grid[newCell[0]][newCell[1]].className = "TicTacGrow_cellExists";
     grid[newCell[0]][newCell[1]].style = this.state.cellExistsStyle;
     grid[newCell[0]][newCell[1]].exists = true;
 
@@ -293,7 +300,8 @@ class TicTacGrow extends React.Component {
     }
     if (rowWinner) {
       for (let i = 0; i < this.state.numToWin; ++i) {
-        grid[winnerStartIx[0]][winnerStartIx[1] + i].className = "cellWinner";
+        grid[winnerStartIx[0]][winnerStartIx[1] + i].className =
+          "TicTacGrow_cellWinner";
         grid[winnerStartIx[0]][
           winnerStartIx[1] + i
         ].style = this.state.cellExistsStyle;
@@ -339,7 +347,8 @@ class TicTacGrow extends React.Component {
     }
     if (colWinner) {
       for (let i = 0; i < this.state.numToWin; ++i) {
-        grid[winnerStartIx[0] + i][winnerStartIx[1]].className = "cellWinner";
+        grid[winnerStartIx[0] + i][winnerStartIx[1]].className =
+          "TicTacGrow_cellWinner";
         grid[winnerStartIx[0] + i][
           winnerStartIx[1]
         ].style = this.state.cellExistsStyle;
@@ -390,7 +399,7 @@ class TicTacGrow extends React.Component {
     if (diagUpWinner) {
       for (let i = 0; i < this.state.numToWin; ++i) {
         grid[winnerStartIx[0] - i][winnerStartIx[1] + i].className =
-          "cellWinner";
+          "TicTacGrow_cellWinner";
         grid[winnerStartIx[0] - i][
           winnerStartIx[1] + i
         ].style = this.state.cellExistsStyle;
@@ -441,7 +450,7 @@ class TicTacGrow extends React.Component {
     if (diagDownWinner) {
       for (let i = 0; i < this.state.numToWin; ++i) {
         grid[winnerStartIx[0] + i][winnerStartIx[1] + i].className =
-          "cellWinner";
+          "TicTacGrow_cellWinner";
         grid[winnerStartIx[0] + i][
           winnerStartIx[1] + i
         ].style = this.state.cellExistsStyle;
@@ -463,15 +472,23 @@ class TicTacGrow extends React.Component {
     var boardMessage;
     if (this.state.player1Turn) {
       if (this.state.someoneWon) {
-        boardMessage = <div className="turn">Player&nbsp;2&nbsp;Wins!!!</div>;
+        boardMessage = (
+          <div className="TicTacGrow_turn">Player&nbsp;2&nbsp;Wins!!!</div>
+        );
       } else {
-        boardMessage = <div className="turn">Player&nbsp;1's&nbsp;Turn</div>;
+        boardMessage = (
+          <div className="TicTacGrow_turn">Player&nbsp;1's&nbsp;Turn</div>
+        );
       }
     } else {
       if (this.state.someoneWon) {
-        boardMessage = <div className="turn">Player&nbsp;1&nbsp;Wins!!!</div>;
+        boardMessage = (
+          <div className="TicTacGrow_turn">Player&nbsp;1&nbsp;Wins!!!</div>
+        );
       } else {
-        boardMessage = <div className="turn">Player&nbsp;2's&nbsp;Turn</div>;
+        boardMessage = (
+          <div className="TicTacGrow_turn">Player&nbsp;2's&nbsp;Turn</div>
+        );
       }
     }
 
@@ -487,8 +504,8 @@ class TicTacGrow extends React.Component {
     return (
       <div className="mainContainer">
         <h1 className="pageHeader">Tic-Tac-Grow</h1>
-        <div className="menuButtons">
-          <div className="menuButton">
+        <div className="TicTacGrow_menuButtons">
+          <div className="TicTacGrow_menuButton">
             <Button
               type="primary"
               style={this.buttonStyle}
@@ -499,7 +516,7 @@ class TicTacGrow extends React.Component {
               Reset Board
             </Button>
           </div>
-          <div className="menuButton">
+          <div className="TicTacGrow_menuButton">
             {" "}
             <Button
               type="danger"
@@ -509,33 +526,41 @@ class TicTacGrow extends React.Component {
               Random Clicks
             </Button>
           </div>
-          <div className="menuButton">
+          <div className="TicTacGrow_menuButton">
             {" "}
             Number in a row to win: <strong>{numToWinString}</strong>{" "}
             <Icon
               type="minus-circle"
+              style={this.iconStyle}
               onClick={() => this.changeNumToWin(0)}
             ></Icon>
             <Icon
               type="plus-circle"
+              style={this.iconStyle}
               onClick={() => this.changeNumToWin(1)}
             ></Icon>
           </div>
-          <div className="menuButton">
+          <div className="TicTacGrow_menuButton">
             {" "}
             Maximum grid size: <strong>{gridSizeString}</strong>{" "}
             <Icon
               type="minus-circle"
+              style={this.iconStyle}
               onClick={() => this.changeGridSize(0)}
             ></Icon>
             <Icon
               type="plus-circle"
+              style={this.iconStyle}
               onClick={() => this.changeGridSize(1)}
             ></Icon>
           </div>
         </div>
         <h2>{boardMessage}</h2>
-        <table key={this.state.boardReset}>
+        <table
+          key={this.state.boardReset}
+          className="TicTacGrow_table"
+          align="center"
+        >
           <tbody>
             {this.state.grid.map((row, index1) => (
               <tr key={"gridRow" + index1}>

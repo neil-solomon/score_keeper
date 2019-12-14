@@ -1,3 +1,24 @@
+.mainContainer {
+  text-align: center;
+  animation-name: fadeIn;
+  animation-duration: 0.5s;
+}
+
+.pageHeader {
+  /* color: white;
+  text-shadow: -1px -1px 0 rgb(0, 200, 255), -1px 1px 0 rgb(0, 200, 255),
+    1px -1px 0 rgb(0, 200, 255), 1px 1px 0 rgb(0, 200, 255); */
+  /* color: rgb(0, 200, 255);
+  text-shadow: -1px -1px 0 rgb(0, 0, 0), -1px 1px 0 rgb(0, 0, 0),
+    1px -1px 0 rgb(0, 0, 0), 1px 1px 0 rgb(0, 0, 0); */
+  color: white;
+  text-shadow: -1px -1px 0 black, -1px 1px 0 black, 1px -1px 0 black,
+    1px 1px 0 black;
+  text-align: center;
+  font-size: 26px;
+  font-weight: bold;
+}
+
 .App {
   text-align: center;
 }
@@ -19,4 +40,13 @@
 
 .App-link {
   color: #09d3ac;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

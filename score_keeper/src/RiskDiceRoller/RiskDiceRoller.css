@@ -1,0 +1,138 @@
+.RiskDiceRoller_table {
+  width: 100vw;
+}
+
+.RiskDiceRoller_playerHeader {
+  width: 40vw;
+  font-size: 20px;
+  color: black;
+  border: 1px solid black;
+}
+
+.RiskDiceRoller_startingArmies {
+  color: black;
+  font-size: 16px;
+}
+
+.RiskDiceRoller_startingArmiesInput {
+  width: 40px;
+  height: 20px;
+}
+
+.RiskDiceRoller_armiesRemaining {
+  color: black;
+  font-size: 16px;
+}
+
+.RiskDiceRoller_lineChartDiv {
+  height: 30vw;
+  width: 100vw;
+}
+
+.RiskDiceRoller_lineChartTd {
+  border: 1px solid black;
+}
+
+.RiskDiceRoller_probabilities {
+  color: black;
+  font-weight: normal;
+  font-size: 16px;
+  height: 55px;
+  animation-name: fadeIn;
+  animation-duration: 1s;
+}
+
+.RiskDiceRoller_menuButtons {
+  margin-bottom: 10px;
+  margin-top: 10px;
+  font-size: 20px;
+  text-align: center;
+  animation-name: fadeIn;
+  animation-duration: 1s;
+}
+
+.RiskDiceRoller_menuItem {
+  display: inline-block;
+  margin-bottom: 10px;
+  margin-left: 3vw;
+  margin-right: 3vw;
+  font-size: 18px;
+}
+
+.RiskDiceRoller_diceRolls {
+  padding: 10px;
+}
+
+.RiskDiceRoller_diceNumImage {
+  padding: 10px;
+  width: 100px;
+  animation-name: spinDice;
+  animation-duration: 1s;
+}
+
+.RiskDiceRoller_diceZeroImage {
+  padding: 10px;
+  width: 100px;
+  animation-name: fadeIn;
+  animation-duration: 1s;
+}
+
+.RiskDiceRoller_diceRow {
+  border: 1px solid black;
+  height: 125px;
+}
+
+@keyframes spinDice {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (orientation: portrait) {
+  .RiskDiceRoller_diceNumImage {
+    padding: 5px;
+    width: 50px;
+  }
+
+  .RiskDiceRoller_diceZeroImage {
+    padding: 5px;
+    width: 50px;
+  }
+
+  .RiskDiceRoller_lineChartDiv {
+    display: none;
+  }
+
+  .RiskDiceRoller_lineChartTd {
+    border: none;
+  }
+
+  .RiskDiceRoller_startingArmies {
+    font-size: 12px;
+  }
+
+  .RiskDiceRoller_armiesRemaining {
+    font-size: 12px;
+  }
+
+  .RiskDiceRoller_probabilities {
+    font-size: 12px;
+    height: 45px;
+  }
+
+  .RiskDiceRoller_diceRow {
+    height: 100px;
+  }
+}
