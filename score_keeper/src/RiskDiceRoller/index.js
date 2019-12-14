@@ -432,7 +432,7 @@ class RiskDiceRoller extends React.Component {
             <tr>
               <th
                 className="RiskDiceRoller_playerHeader"
-                style={{ background: "rgb(255,0,0,.75)" }}
+                style={{ background: "rgb(255,0,0,.65)" }}
               >
                 Attacker<br></br>
                 <span className="RiskDiceRoller_startingArmies">
@@ -454,7 +454,7 @@ class RiskDiceRoller extends React.Component {
               </th>
               <th
                 className="RiskDiceRoller_playerHeader"
-                style={{ background: "rgb(0,0,255,.75)" }}
+                style={{ background: "rgb(0,0,255,.65)" }}
               >
                 Defender<br></br>
                 <span className="RiskDiceRoller_startingArmies">

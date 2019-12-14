@@ -41,7 +41,7 @@ class NavBar extends React.Component {
             bodyStyle={{}}
             headerStyle={{
               height: "51px",
-              backgroundColor: "rgb(0, 200, 255)",
+              backgroundColor: "rgb(0, 200, 255,.75)",
               borderRadius: 0
             }}
           >
