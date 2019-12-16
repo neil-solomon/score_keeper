@@ -2,61 +2,20 @@ import React from "react";
 import { ResponsiveLine } from "@nivo/line";
 
 class LineChart extends React.Component {
-  theme = {
-    //fontSize: "1.25vw"
-  };
-
   render() {
-    var markers;
-    if (this.props.ymax === "auto") {
-      // game is to rounds
-      if (typeof this.props.data[0] !== "undefined") {
-        if (this.props.data[0].data.length >= this.props.gameLimit) {
-          markers = [
-            {
-              axis: "x",
-              value: this.props.gameLimit,
-              lineStyle: { stroke: "#000000", strokeWidth: 1 },
-              legend: "Game Over!"
-            }
-          ];
-        } else {
-          markers = [];
-        }
-      } else {
-        markers = [];
-      }
-    } else {
-      // game is to points
-      markers = [
-        {
-          axis: "y",
-          value: this.props.gameLimit,
-          lineStyle: { stroke: "#000000", strokeWidth: 1 },
-          legend: "Game Over!"
-        }
-      ];
-    }
     return (
       <ResponsiveLine
         data={this.props.data}
-        theme={this.theme}
-        markers={markers}
-        margin={{
-          top: this.props.chartMargins[0],
-          right: this.props.chartMargins[1],
-          bottom: this.props.chartMargins[2],
-          left: this.props.chartMargins[3]
-        }}
-        xScale={{ type: "point", min: "auto", max: 10 /*this.props.xmax*/ }}
+        margin={{ top: 10, right: 10, bottom: 10, left: 10 }}
+        xScale={{ type: "point", min: "auto", max: "auto" }}
         yScale={{
           type: "linear",
           stacked: false,
           min: "auto",
-          max: this.props.ymax
+          max: "auto"
         }}
-        motionStiffness={10}
-        motionDamping={5}
+        motionStiffness={100}
+        motionDamping={10}
         axisTop={null}
         axisRight={null}
         axisBottom={{
@@ -64,8 +23,8 @@ class LineChart extends React.Component {
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          legend: "Round",
-          legendOffset: 30,
+          legend: "",
+          legendOffset: 75,
           legendPosition: "middle"
         }}
         axisLeft={{
@@ -73,8 +32,8 @@ class LineChart extends React.Component {
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          legend: "Points",
-          legendOffset: -30,
+          legend: "",
+          legendOffset: -75,
           legendPosition: "middle"
         }}
         colors={[

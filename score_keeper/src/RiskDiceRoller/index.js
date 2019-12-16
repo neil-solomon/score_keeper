@@ -33,13 +33,10 @@ class RiskDiceRoller extends React.Component {
     viewProbabilities: false
   };
 
-  buttonStyle = {
-    fontSize: "20px"
-  };
-
   notificationStyle = {
-    height: "150px",
+    height: "100px",
     width: "300px",
+    fontSize: "20px",
     backgroundColor: "rgb(255,255,0,.75)"
   };
 
@@ -215,7 +212,7 @@ class RiskDiceRoller extends React.Component {
       notification["success"]({
         message: "Defender wins!",
         description: "",
-        placement: "bottomLeft",
+        placement: "bottomRight",
         duration: 10,
         icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
         style: this.notificationStyle
@@ -227,7 +224,7 @@ class RiskDiceRoller extends React.Component {
       notification["success"]({
         message: "Attacker wins!",
         description: "",
-        placement: "bottomLeft",
+        placement: "bottomRight",
         duration: 10,
         icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
         style: this.notificationStyle
@@ -329,11 +326,7 @@ class RiskDiceRoller extends React.Component {
     if (this.state.rollDiceInterval === "") {
       keepRollingButton = (
         <span className="RiskDiceRoller_menuItem">
-          <Button
-            type="primary"
-            onClick={this.rollDice}
-            style={this.buttonStyle}
-          >
+          <Button type="primary" onClick={this.rollDice} className="menuButton">
             Roll Dice Forever
           </Button>{" "}
           <select
@@ -353,7 +346,7 @@ class RiskDiceRoller extends React.Component {
           <Button
             type="seconday"
             onClick={this.clearRollDiceInterval}
-            style={this.buttonStyle}
+            className="menuButton"
           >
             Roll Dice Stop
           </Button>{" "}
@@ -403,6 +396,13 @@ class RiskDiceRoller extends React.Component {
       probabilitiesViewD = <div className="RiskDiceRoller_probabilities"></div>;
     }
 
+    var chartMargins;
+    if (window.innerHeight > window.innerWidth) {
+      chartMargins = [5, 5, 5, 5];
+    } else {
+      chartMargins = [50, 100, 100, 100];
+    }
+
     return (
       <div className="mainContainer">
         <h1 className="pageHeader">Risk Dice Roller</h1>
@@ -411,7 +411,7 @@ class RiskDiceRoller extends React.Component {
             <Button
               type="primary"
               onClick={this.rollDiceOnce}
-              style={this.buttonStyle}
+              className="menuButton"
             >
               Roll Dice Once
             </Button>{" "}
@@ -421,13 +421,13 @@ class RiskDiceRoller extends React.Component {
             <Button
               type={vpButtonType}
               onClick={this.toggleProbabilities}
-              style={this.buttonStyle}
+              className="menuButton"
             >
               View Probabilities
             </Button>
           </div>
         </div>
-        <table className="RiskDiceRoller_table">
+        <table className="RiskDiceRoller_table" align="center">
           <thead>
             <tr>
               <th
@@ -506,7 +506,10 @@ class RiskDiceRoller extends React.Component {
             <tr>
               <td colSpan="2" className="RiskDiceRoller_lineChartTd">
                 <div className="RiskDiceRoller_lineChartDiv">
-                  <LineChart data={this.state.chartData}></LineChart>
+                  <LineChart
+                    data={this.state.chartData}
+                    chartMargins={chartMargins}
+                  ></LineChart>
                 </div>
               </td>
             </tr>

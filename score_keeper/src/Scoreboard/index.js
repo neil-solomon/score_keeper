@@ -3,6 +3,9 @@ import { Button, Modal, Icon, Popconfirm, Radio, notification } from "antd";
 import "./Scoreboard.css";
 import LineChart from "./LineChart.js";
 import LoadButton from "./LoadButton.js";
+import PlayerElement from "./PlayerElement";
+import RoundElement from "./RoundElement.js";
+import ManageScoreboardButtton from "./ManageScoreboardButtton.js";
 
 class Scoreboard extends React.Component {
   state = {
@@ -31,31 +34,31 @@ class Scoreboard extends React.Component {
     scoreboardsList: [],
     loadButtonSelect: [],
     pointsOrRoundsRadio: 0,
-    highScoreWinsRadio: 0
+    highScoreWinsRadio: 0,
+    deleteUsersActivated: false,
+    deleteRoundsActivated: false,
+    notificationEnable: true
   };
 
   buttonStyle = {
-    fontSize: "1.25vw",
-    height: "2vw",
-    margin: ".5vw"
-  };
-
-  iconStyle = {
-    margin: ".1vw",
-    fontSize: ".5vw"
+    fontSize: "20px",
+    height: "40px",
+    margin: "5px"
   };
 
   radioStyle = {
     display: "block",
-    height: "1.5vw",
-    fontSize: "1vw",
-    marginLeft: ".2vw"
+    height: "18px",
+    fontSize: "15px",
+    marginLeft: "5px",
+    textAlign: "center"
   };
 
   notificationStyle = {
-    height: "10vw",
-    width: "30vw",
-    backgroundColor: "rgb(255,255,0,.25)"
+    height: "100px",
+    width: "300px",
+    fontSize: "20px",
+    backgroundColor: "rgb(255,255,0,.75)"
   };
 
   componentDidMount() {
@@ -70,50 +73,35 @@ class Scoreboard extends React.Component {
         selected: false
       });
     }
+    if (window.innerWidth < window.innerHeight) {
+      this.setState({ notificationEnable: false });
+    }
     this.setState({ savedScoreboards });
     this.setState({ scoreboardsList });
   }
 
-  addPoints = () => {
-    var points = [...this.state.points],
-      totalPoints = [...this.state.totalPoints],
-      newPoints = document.getElementById("addPoints").value.split(" ");
+  updatePoints = (pointsIndex, newPoints) => {
+    var points = [...this.state.points];
+    console.log(points);
+    points[pointsIndex[0]][pointsIndex[1]] = newPoints;
+    var totalPoints = [...this.state.totalPoints];
     var oldLeaderboard = this.makeLeaderboard(totalPoints);
-    for (let i = 0; i < newPoints.length; ++i) {
-      if (newPoints[i] === "") {
-        newPoints[i] = 0;
-      } else if (isNaN(parseInt(newPoints[i]))) {
-        newPoints[i] = 0;
-      } else {
-        newPoints[i] = parseInt(newPoints[i], 10);
-      }
-    }
-    while (newPoints.length > this.state.players.length) {
-      newPoints.pop();
-    }
-    while (newPoints.length < this.state.players.length) {
-      newPoints.push(0);
-    }
-    if (newPoints.length > 0) {
-      points.push(newPoints);
-      for (let i = 0; i < newPoints.length; ++i) {
-        totalPoints[i] += newPoints[i];
-      }
-    }
-
+    totalPoints[pointsIndex[1]] += newPoints;
     var newLeaderboard = this.makeLeaderboard(totalPoints),
       winner = false;
     if (this.state.pointsOrRounds[0]) {
       // game is to points
       if (this.state.highScoreWins) {
-        console.log(newLeaderboard, this.state.gameLimit);
         // high score wins
-        if (newLeaderboard[2] >= this.state.gameLimit) {
+        if (
+          newLeaderboard[2] >= this.state.gameLimit &&
+          this.state.notificationEnable
+        ) {
           winner = true;
           notification["warning"]({
             message: newLeaderboard[0] + " wins!",
             description: "",
-            placement: "bottomLeft",
+            placement: "bottomRight",
             duration: 10,
             icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
             style: this.notificationStyle
@@ -122,12 +110,15 @@ class Scoreboard extends React.Component {
       } else {
         // low score wins
         winner = true;
-        if (newLeaderboard[2] >= this.state.gameLimit) {
+        if (
+          newLeaderboard[2] >= this.state.gameLimit &&
+          this.state.notificationEnable
+        ) {
           winner = true;
           notification["warning"]({
             message: newLeaderboard[1] + " wins!",
             description: "",
-            placement: "bottomLeft",
+            placement: "bottomRight",
             duration: 10,
             icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
             style: this.notificationStyle
@@ -138,12 +129,15 @@ class Scoreboard extends React.Component {
       // game is to rounds
       if (this.state.highScoreWins) {
         // high score wins
-        if (points.length >= this.state.gameLimit) {
+        if (
+          points.length >= this.state.gameLimit &&
+          this.state.notificationEnable
+        ) {
           winner = true;
           notification["warning"]({
             message: newLeaderboard[0] + " wins!",
             description: "",
-            placement: "bottomLeft",
+            placement: "bottomRight",
             duration: 10,
             icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
             style: this.notificationStyle
@@ -151,12 +145,15 @@ class Scoreboard extends React.Component {
         }
       } else {
         // low score wins
-        if (points.length >= this.state.gameLimit) {
+        if (
+          points.length >= this.state.gameLimit &&
+          this.state.notificationEnable
+        ) {
           winner = true;
           notification["warning"]({
             message: newLeaderboard[1] + " wins!",
             description: "",
-            placement: "bottomLeft",
+            placement: "bottomRight",
             duration: 10,
             icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
             style: this.notificationStyle
@@ -166,40 +163,56 @@ class Scoreboard extends React.Component {
     }
 
     if (this.state.highScoreWins) {
-      if (newLeaderboard[0] !== oldLeaderboard[0] && !winner) {
+      if (
+        newLeaderboard[0] !== oldLeaderboard[0] &&
+        !winner &&
+        this.state.notificationEnable
+      ) {
         notification["warning"]({
           message: newLeaderboard[0] + " takes the lead!",
           description: "",
-          placement: "bottomLeft",
+          placement: "bottomRight",
           duration: 5,
           icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
           style: this.notificationStyle
         });
-      } else if (newLeaderboard[1] !== oldLeaderboard[1] && !winner) {
+      } else if (
+        newLeaderboard[1] !== oldLeaderboard[1] &&
+        !winner &&
+        this.state.notificationEnable
+      ) {
         notification["warning"]({
           message: newLeaderboard[1] + " falls to last place!",
           description: "",
-          placement: "bottomLeft",
+          placement: "bottomRight",
           duration: 5,
           icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
           style: this.notificationStyle
         });
       }
     } else {
-      if (newLeaderboard[1] !== oldLeaderboard[1] && !winner) {
+      if (
+        newLeaderboard[1] !== oldLeaderboard[1] &&
+        !winner &&
+        this.state.notificationEnable
+      ) {
         notification["warning"]({
           message: newLeaderboard[1] + " takes the lead!",
           description: "",
-          placement: "bottomLeft",
+          placement: "bottomRight",
           duration: 5,
           icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
           style: this.notificationStyle
         });
-      } else if (newLeaderboard[0] !== oldLeaderboard[0] && !winner) {
+      } else if (
+        newLeaderboard[0] !== oldLeaderboard[0] &&
+        !winner &&
+        this.state.notificationEnable
+      ) {
         notification["warning"]({
           message: newLeaderboard[0] + " falls to last place!",
           description: "",
-          placement: "bottomLeft",
+          placement: "bottomRight",
           duration: 5,
           icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
           style: this.notificationStyle
@@ -295,7 +308,7 @@ class Scoreboard extends React.Component {
       notification["warning"]({
         message: "Saved failed",
         description: "Title cannot be blank.",
-        placement: "bottomLeft",
+        placement: "bottomRight",
         duration: 3
       });
     } else {
@@ -340,21 +353,23 @@ class Scoreboard extends React.Component {
     }
   };
 
+  toggleDeleteUsersActivated = () => {
+    this.setState({ deleteUsersActivated: !this.state.deleteUsersActivated });
+  };
+
   addPlayer = () => {
-    var newPlayer = document.getElementById("playerName").value;
-    if (newPlayer !== "") {
-      var players = [...this.state.players];
-      var totalPoints = [...this.state.totalPoints];
-      var points = [...this.state.points];
-      players.push(newPlayer);
-      totalPoints.push(0);
-      for (let i = 0; i < points.length; ++i) {
-        points[i].push(0);
-      }
-      this.setState({ players });
-      this.setState({ totalPoints });
-      this.setState({ points });
+    var players = [...this.state.players];
+    var totalPoints = [...this.state.totalPoints];
+    var points = [...this.state.points];
+    var newPlayer = "New" + this.state.players.length.toString();
+    players.push(newPlayer);
+    totalPoints.push(0);
+    for (let i = 0; i < points.length; ++i) {
+      points[i].push(0);
     }
+    this.setState({ players });
+    this.setState({ totalPoints });
+    this.setState({ points });
   };
 
   removePlayer = player => {
@@ -378,6 +393,12 @@ class Scoreboard extends React.Component {
     this.setState({ points: newPoints });
   };
 
+  changePlayerName = (newName, playerIndex) => {
+    var players = [...this.state.players];
+    players[playerIndex] = newName;
+    this.setState({ players });
+  };
+
   removeRound = round => {
     var points = [...this.state.points];
     var totalPoints = [...this.state.totalPoints];
@@ -387,6 +408,23 @@ class Scoreboard extends React.Component {
     points.splice(round, 1);
     this.setState({ points });
     this.setState({ totalPoints });
+  };
+
+  addRound = () => {
+    if (this.state.players.length === 0) {
+      return;
+    }
+    var points = [...this.state.points];
+    var newRound = [];
+    for (let i = 0; i < this.state.players.length; ++i) {
+      newRound.push(0);
+    }
+    points.push(newRound);
+    this.setState({ points });
+  };
+
+  toggleDeleteRoundsActivated = () => {
+    this.setState({ deleteRoundsActivated: !this.state.deleteRoundsActivated });
   };
 
   clearPoints = () => {
@@ -502,30 +540,18 @@ class Scoreboard extends React.Component {
   };
 
   render() {
-    // console.log("players", this.state.players);
-    // console.log("points", this.state.points);
-    // console.log("totalPoints", this.state.totalPoints);
-    // console.log("pointsOrRounds", this.state.pointsOrRounds);
-    // console.log("pointsOrRoundsRadio", this.state.pointsOrRoundsRadio);
-    // console.log("highScoreWins", this.state.highScoreWins);
-    // console.log("highScoreWinsRadio", this.state.highScoreWinsRadio);
-    // console.log("gameLimit", this.state.gameLimit);
-    // console.log("");
-    //console.log(this.state.savedScoreboards);
-
     var emptyScoreboard;
     if (this.state.players.length === 0) {
       emptyScoreboard = (
-        <div className="Scoreboard_emptyScoreboard">
-          The scoreboard is empty!{" "}
-          <Button
-            type="secondary"
-            style={this.buttonStyle}
-            onClick={() => this.modalClick(2)}
-          >
-            Add Players
-          </Button>
-        </div>
+        <th className="Scoreboard_emptyScoreboard">
+          The scoreboard is empty. Add a player!
+          <ManageScoreboardButtton
+            type="user-add"
+            description="Add a player."
+            activated={false}
+            handleClick={this.addPlayer}
+          ></ManageScoreboardButtton>{" "}
+        </th>
       );
     }
 
@@ -777,41 +803,43 @@ class Scoreboard extends React.Component {
       );
     }
 
+    var chartMargins, tableAlign;
+    if (window.innerHeight > window.innerWidth) {
+      chartMargins = [25, 0, 5, 5];
+      tableAlign = "center";
+    } else {
+      chartMargins = [50, 100, 100, 50];
+      tableAlign = "left";
+    }
+
     return (
       <div className="mainContainer">
         <h1 className="pageHeader">Scoreboard</h1>
         <div className="Scoreboard_mainButtons">
           <Button
             type="secondary"
-            style={this.buttonStyle}
+            className="menuButton"
             onClick={() => this.modalClick(0)}
           >
             Load Scoreboard
           </Button>
           <Button
             type="secondary"
-            style={this.buttonStyle}
+            className="menuButton"
             onClick={() => this.modalClick(1)}
           >
             Save Scoreboard
           </Button>
           <Button
-            type="secondary"
-            style={this.buttonStyle}
-            onClick={() => this.modalClick(2)}
-          >
-            Add Players
-          </Button>
-          <Button
             type="danger"
-            style={this.buttonStyle}
+            className="menuButton"
             onClick={this.clearPoints}
           >
             Clear Points
           </Button>
           <Button
             type="danger"
-            style={this.buttonStyle}
+            className="menuButton"
             onClick={this.clearPlayers}
           >
             Clear Players
@@ -851,75 +879,62 @@ class Scoreboard extends React.Component {
             </span>
           </div>
         </div>
-        <div className="Scoreboard_addPoints">
-          <input type="text" placeholder="Enter points." id="addPoints"></input>
-          <Button
-            type="primary"
-            style={this.buttonStyle}
-            onClick={this.addPoints}
-          >
-            Add Points
-          </Button>
-        </div>
-        {emptyScoreboard}
-        <table className="Scoreboard_table">
+        <table className="Scoreboard_table" align={tableAlign}>
           <thead>
-            <tr className="Scoreboard_tr">
-              <td className="Scoreboard_emptyCell"></td>
+            <tr>
+              <th className="Scoreboard_manageUsers">
+                <ManageScoreboardButtton
+                  type="user-add"
+                  description="Add a player."
+                  activated={false}
+                  handleClick={this.addPlayer}
+                ></ManageScoreboardButtton>
+                <ManageScoreboardButtton
+                  type="usergroup-delete"
+                  description="Remove players."
+                  activated={this.state.deleteUsersActivated}
+                  handleClick={this.toggleDeleteUsersActivated}
+                ></ManageScoreboardButtton>
+                <ManageScoreboardButtton
+                  type="plus-circle"
+                  description="Add a round."
+                  activated={false}
+                  handleClick={this.addRound}
+                ></ManageScoreboardButtton>
+                <ManageScoreboardButtton
+                  type="minus-circle"
+                  description="Remove rounds."
+                  activated={this.state.deleteRoundsActivated}
+                  handleClick={this.toggleDeleteRoundsActivated}
+                ></ManageScoreboardButtton>
+              </th>
+              {emptyScoreboard}
               {this.state.players.map((player, index) => (
-                <th
-                  key={"player" + index}
-                  style={{ backgroundColor: this.state.playerColors[index] }}
-                  className="Scoreboard_th"
-                >
-                  {player} <br></br>
-                  {playerIcons[index]} {this.state.totalPoints[index]}
-                  <br></br>
-                  <Popconfirm
-                    title={"Remove " + player + " from game?"}
-                    onConfirm={() => this.removePlayer(index)}
-                  >
-                    <Icon
-                      type="close-circle"
-                      theme="twoTone"
-                      twoToneColor="rgb(255,0,0)"
-                      style={this.iconStyle}
-                    ></Icon>
-                  </Popconfirm>
-                </th>
+                <PlayerElement
+                  key={"player" + index + this.state.players.length}
+                  playerName={player}
+                  playerIndex={index}
+                  backgroundColor={this.state.playerColors[index]}
+                  icon={playerIcons[index]}
+                  totalPoints={this.state.totalPoints[index]}
+                  numPlayers={this.state.players.length}
+                  deleteUsersActivated={this.state.deleteUsersActivated}
+                  removePlayer={this.removePlayer}
+                  changePlayerName={this.changePlayerName}
+                ></PlayerElement>
               ))}
             </tr>
           </thead>
           <tbody>
-            {this.state.points.map((round, index1) => (
-              <tr key={"roundRow " + index1} className="Scoreboard_tr">
-                <td className="Scoreboard_roundNumber">
-                  <Popconfirm
-                    title={
-                      "Delete round " +
-                      (parseInt(index1, 10) + 1).toString() +
-                      " ?"
-                    }
-                    onConfirm={() => this.removeRound(index1)}
-                  >
-                    <Icon
-                      type="close-circle"
-                      theme="twoTone"
-                      twoToneColor="rgb(255,0,0)"
-                      style={this.iconStyle}
-                    ></Icon>
-                  </Popconfirm>
-                  {index1 + 1}
-                </td>
-                {round.map((player, index2) => (
-                  <td
-                    key={"roundCell " + round + " " + index2}
-                    className="Scoreboard_td"
-                  >
-                    {player}
-                  </td>
-                ))}
-              </tr>
+            {this.state.points.map((round, index) => (
+              <RoundElement
+                key={"roundElement" + index}
+                roundNumber={index}
+                roundPoints={round}
+                deleteRoundsActivated={this.state.deleteRoundsActivated}
+                updatePoints={this.updatePoints}
+                removeRound={this.removeRound}
+              ></RoundElement>
             ))}
           </tbody>
         </table>
@@ -929,15 +944,18 @@ class Scoreboard extends React.Component {
             ymax={chartYmax}
             gameLimit={this.state.gameLimit}
             data={chartData}
+            chartMargins={chartMargins}
           ></LineChart>
         </div>
         <Modal
           visible={this.state.modalVisible[0]}
           onCancel={this.closeModals}
           onOk={this.loadScoreboard}
+          okText="Load"
         >
           <div className="Scoreboard_modal">
-            Select a Scoreboard:<br></br>
+            <strong> Select a Scoreboard:</strong>
+            <br></br>
             {this.state.scoreboardsList.map((scoreboard, index) => (
               <div key={"loadButton" + index}>
                 <LoadButton
@@ -958,7 +976,7 @@ class Scoreboard extends React.Component {
                     type="close-circle"
                     theme="twoTone"
                     twoToneColor="#fc9999"
-                    style={this.iconStyle}
+                    style={{ margin: "5px", fontSize: "20px" }}
                   ></Icon>
                 </Popconfirm>
               </div>
@@ -972,7 +990,8 @@ class Scoreboard extends React.Component {
           okText="Save"
         >
           <div className="Scoreboard_modal">
-            Title of Scoreboard:<br></br>
+            <strong>Title of Scoreboard:</strong>
+            <br></br>
             <input
               type="text"
               placeholder="Title"
@@ -980,36 +999,12 @@ class Scoreboard extends React.Component {
               onChange={this.updateScoreboardTitle}
             ></input>
             {saveScoreboardWarning}
-            Saved Scoreboards:
+            <strong> Saved Scoreboards:</strong>
             {this.state.scoreboardsList.map(scoreboard => (
               <div key={"savedScoreboadsList" + scoreboard.title}>
                 {scoreboard.title}
               </div>
             ))}
-          </div>
-        </Modal>
-        <Modal
-          visible={this.state.modalVisible[2]}
-          onCancel={this.closeModals}
-          cancelText="Done"
-          onOk={this.closeModals}
-        >
-          <div className="Scoreboard_modal">
-            Add Players:<br></br>
-            <input
-              type="text"
-              placeholder="Player Name"
-              id="playerName"
-            ></input>
-            <br></br>
-            <Button
-              style={this.buttonStyle}
-              type="primary"
-              size="large"
-              onClick={this.addPlayer}
-            >
-              Add Player
-            </Button>
           </div>
         </Modal>
       </div>

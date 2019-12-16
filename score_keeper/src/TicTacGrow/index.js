@@ -10,7 +10,7 @@ class TicTacGrow extends React.Component {
     boardReset: false,
     randomClicksInterval: "",
     numToWin: 4,
-    gridSize: 11,
+    gridSize: 7,
     maxGridSize: 31,
     someoneWon: false,
     cellExistsStyle: {
@@ -508,7 +508,7 @@ class TicTacGrow extends React.Component {
           <div className="TicTacGrow_menuButton">
             <Button
               type="primary"
-              style={this.buttonStyle}
+              className="menuButton"
               onClick={() =>
                 this.initializeBoard(this.state.numToWin, this.state.gridSize)
               }
@@ -517,17 +517,15 @@ class TicTacGrow extends React.Component {
             </Button>
           </div>
           <div className="TicTacGrow_menuButton">
-            {" "}
             <Button
               type="danger"
-              style={this.buttonStyle}
+              className="menuButton"
               onClick={this.startRandomClicks}
             >
               Random Clicks
             </Button>
           </div>
           <div className="TicTacGrow_menuButton">
-            {" "}
             Number in a row to win: <strong>{numToWinString}</strong>{" "}
             <Icon
               type="minus-circle"

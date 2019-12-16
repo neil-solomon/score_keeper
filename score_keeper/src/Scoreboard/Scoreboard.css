@@ -1,39 +1,12 @@
 .Scoreboard_table {
-  width: 40vw;
-  margin: 1vw;
-  float: left;
-}
-
-.Scoreboard_tr {
-  animation-name: fadeIn;
-  animation-duration: 0.5s;
-}
-
-.Scoreboard_td {
-  border: 1px solid black;
-  font-size: 1vw;
-  padding: 0.1vw;
-  text-align: center;
-}
-
-.Scoreboard_th {
-  border: 1px solid black;
-  font-size: 1.5vw;
-  font-weight: bold;
-  padding: 0.1vw;
-  text-align: center;
-  animation-name: fadeIn;
-  animation-duration: 0.5s;
-}
-
-..Scoreboard_tableAndChart {
-  text-align: center;
+  width: 45vw;
+  margin-left: 10px;
 }
 
 .Scoreboard_saveScoreboardWarning {
-  font-size: 1vw;
-  width: 15vw;
-  height: 5vw;
+  font-size: 14px;
+  width: 250px;
+  height: 50px;
 }
 
 .Scoreboard_mainButtons {
@@ -41,47 +14,36 @@
 }
 
 .Scoreboard_gameLimit {
-  font-size: 1.25vw;
+  font-size: 18px;
   text-align: center;
-  margin-bottom: 0.5vw;
+  margin-bottom: 20px;
 }
 
 .Scoreboard_highWins {
-  margin-left: 2vw;
+  margin-left: 10px;
 }
 
-.Scoreboard_addPoints {
-  font-size: 1.25vw;
-  text-align: center;
-}
-
-.Scoreboard_emptyCell {
-  border: none;
-  width: 2.25vw;
+.Scoreboard_manageUsers {
+  border: 1px solid black;
+  width: 35px;
 }
 
 .Scoreboard_emptyScoreboard {
-  margin: 2vw;
-  font-size: 1.5vw;
+  font-weight: normal;
+  font-size: 20px;
   border: 1px solid black;
-  width: 45vw;
-  padding: 2vw;
-}
-
-.Scoreboard_roundNumber {
-  font-weight: bold;
 }
 
 .Scoreboard_scoreboardLineChart {
   display: inline-block;
-  width: 50vw;
-  height: 40vw;
+  width: 45vw;
+  height: 35vw;
 }
 
 .Scoreboard_modal {
-  width: 30vw;
-  font-size: 1.5vw;
-  font-weight: bold;
+  width: 300px;
+  height: 200px;
+  font-size: 20px;
 }
 
 .Scoreboard_fadeIn {
@@ -98,8 +60,24 @@
   }
 }
 
-/* @media (max-width: 800px) {
-  .emptyScoreboard {
-    background-color: rgb(0, 0, 255, 0.25);
+@media (max-aspect-ratio: 13/9) {
+  .Scoreboard_modal {
+    width: 95vw;
   }
-} */
+
+  .Scoreboard_scoreboardLineChart {
+    display: block;
+    width: 95vw;
+    height: 40vw;
+  }
+
+  .Scoreboard_table {
+    width: 95vw;
+  }
+
+  .Scoreboard_gameLimit {
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 0px;
+  }
+}

@@ -1,5 +1,4 @@
 import React from "react";
-import { Button } from "antd";
 
 class LoadButton extends React.Component {
   state = {
@@ -7,36 +6,36 @@ class LoadButton extends React.Component {
   };
 
   styles1 = {
+    fontSize: "18px",
+    display: "inline-block",
     background: "rgb(255,255,255,1)",
-    color: "rgb(0,0,0,.60)",
-    border: "2px solid rgb(66,78,191,.25)",
+    color: "rgb(0,0,0,.75)",
+    border: "2px solid rgb(0,200,255,.5)",
+    width: "250px",
     margin: "1px",
-    width: "20vw",
-    height: "4vw",
-    fontSize: "1vw",
-    fontWeight: "bold"
+    cursor: "pointer"
   };
 
   styles2 = {
+    fontSize: "18px",
+    display: "inline-block",
     background: "rgb(255,255,255,1)",
-    color: "rgb(66,78,191,.9)",
-    border: "2px solid rgb(66,78,191,.5)",
+    color: "rgb(0,100,255,.75)",
+    border: "2px solid rgb(0,200,255,.75)",
+    width: "250px",
     margin: "1px",
-    width: "20vw",
-    height: "4vw",
-    fontSize: "1vw",
-    fontWeight: "bold"
+    cursor: "pointer"
   };
 
   styles3 = {
-    background: "rgb(66,78,191,.25)",
-    color: "rgb(66,78,191,.9)",
-    border: "2px solid rgb(66,78,191,.5)",
+    fontSize: "18px",
+    display: "inline-block",
+    background: "rgb(0,200,255,.25)",
+    color: "rgb(0,100,255,.75)",
+    border: "2px solid rgb(0,200,255,1)",
+    width: "250px",
     margin: "1px",
-    width: "20vw",
-    height: "4vw",
-    fontSize: "1vw",
-    fontWeight: "bold"
+    cursor: "pointer"
   };
 
   toggleHover = () => {
@@ -53,19 +52,15 @@ class LoadButton extends React.Component {
     }
 
     return (
-      <div style={this.divStyle}>
-        <Button
-          style={styles}
-          size="large"
-          type="primary"
-          onMouseEnter={() => this.toggleHover()}
-          onMouseLeave={() => this.toggleHover()}
-          onClick={() => this.props.onClick(this.props.id)}
-        >
-          {this.props.name}
-          <br></br>
-          {this.props.dateModified}
-        </Button>
+      <div
+        style={styles}
+        onMouseEnter={() => this.toggleHover()}
+        onMouseLeave={() => this.toggleHover()}
+        onClick={() => this.props.onClick(this.props.id)}
+      >
+        <strong>{this.props.name}</strong>
+        <br></br>
+        {this.props.dateModified}
       </div>
     );
   }

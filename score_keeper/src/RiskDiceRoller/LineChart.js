@@ -6,7 +6,12 @@ class LineChart extends React.Component {
     return (
       <ResponsiveLine
         data={this.props.data}
-        margin={{ top: 50, right: 100, bottom: 100, left: 100 }}
+        margin={{
+          top: this.props.chartMargins[0],
+          right: this.props.chartMargins[1],
+          bottom: this.props.chartMargins[2],
+          left: this.props.chartMargins[3]
+        }}
         xScale={{ type: "point", min: "auto", max: "auto" /*this.props.xmax*/ }}
         yScale={{
           type: "linear",

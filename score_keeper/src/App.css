@@ -1,3 +1,11 @@
+.menuButton {
+  font-size: 18px;
+  height: 30px;
+  width: 180px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
 .mainContainer {
   text-align: center;
   animation-name: fadeIn;
@@ -36,11 +44,33 @@
   color: #09d3ac;
 }
 
+a,
+a:hover,
+a:focus,
+a:active {
+  text-decoration: none;
+  color: inherit;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
   }
   to {
     opacity: 1;
+  }
+}
+
+@media (max-aspect-ratio: 13/9) {
+  .menuButton {
+    font-size: 14px;
+    height: 25px;
+    width: 140px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  .pageHeader {
+    font-size: 20px;
   }
 }

@@ -1,0 +1,204 @@
+@media (max-aspect-ratio: 13/9) {
+  .Bank_middleTableHeader {
+    width: 250px;
+  }
+}
+
+.Bank_middleTableHeader {
+  width: 400px;
+}
+
+.Bank_addPlayerButton {
+  color: rgb(0, 0, 200);
+}
+
+.Bank_addPlayerButtonHoverIn {
+  animation: addPlayerButtonHoverIn 0.5s forwards;
+}
+
+.Bank_addPlayerButtonHoverOut {
+  animation: addPlayerButtonHoverOut 0.5s forwards;
+}
+
+.Bank_addPlayerButtonClicked {
+  animation: addPlayerButtonClicked 0.5s forwards;
+}
+
+@keyframes addPlayerButtonClicked {
+  0% {
+    color: rgb(0, 100, 225);
+  }
+  50% {
+    color: rgb(0, 175, 255);
+  }
+  100% {
+    color: rgb(0, 100, 225);
+  }
+}
+
+@keyframes addPlayerButtonHoverIn {
+  0% {
+    color: rgb(0, 0, 200);
+  }
+  100% {
+    color: rgb(0, 125, 255);
+  }
+}
+
+@keyframes addPlayerButtonHoverOut {
+  0% {
+    color: rgb(0, 125, 255);
+  }
+  100% {
+    color: rgb(0, 0, 200);
+  }
+}
+
+.Bank_transferArrow {
+  color: rgb(0, 150, 0);
+}
+
+.Bank_transferArrowHoverIn {
+  animation: transferArrowHoverIn 0.5s forwards;
+}
+
+.Bank_transferArrowHoverOut {
+  animation: transferArrowHoverOut 0.5s forwards;
+}
+
+.Bank_transferArrowClicked {
+  animation: transferArrowClicked 0.5s forwards;
+}
+
+@keyframes transferArrowClicked {
+  0% {
+    color: rgb(0, 205, 0);
+  }
+  50% {
+    color: rgb(0, 255, 125);
+  }
+  100% {
+    color: rgb(0, 205, 0);
+  }
+}
+
+@keyframes transferArrowHoverIn {
+  0% {
+    color: rgb(0, 150, 0);
+  }
+  100% {
+    color: rgb(0, 205, 0);
+  }
+}
+
+@keyframes transferArrowHoverOut {
+  0% {
+    color: rgb(0, 205, 0);
+  }
+  100% {
+    color: rgb(0, 150, 0);
+  }
+}
+
+.Bank_playerElement {
+  border-color: rgb(185, 185, 0, 0.5);
+  background-color: rgb(225, 225, 0, 0.25);
+}
+
+.Bank_playerElementHoverIn {
+  animation: playerElementHoverIn 0.5s forwards;
+}
+
+.Bank_playerElementHoverOut {
+  animation: playerElementHoverOut 0.5s forwards;
+}
+
+.Bank_playerElementClickOnLandscape {
+  animation: playerElementClickOnLandscape 0.5s forwards;
+}
+
+.Bank_playerElementClickOffLandscape {
+  animation: playerElementClickOffLandscape 0.5s forwards;
+}
+
+.Bank_playerElementClickOnPortrait {
+  animation: playerElementClickOnPortrait 0.5s forwards;
+}
+
+.Bank_playerElementClickOffPortrait {
+  animation: playerElementClickOffPortrait 0.5s forwards;
+}
+
+@keyframes playerElementClickOnLandscape {
+  0% {
+    border-color: rgb(185, 185, 0, 0.75);
+    background-color: rgb(225, 225, 0, 0.5);
+    font-weight: normal;
+  }
+  100% {
+    border-color: rgb(185, 185, 0, 1);
+    background-color: rgb(225, 225, 0, 0.75);
+    font-weight: bold;
+  }
+}
+
+@keyframes playerElementClickOffLandscape {
+  0% {
+    border-color: rgb(185, 185, 0, 1);
+    background-color: rgb(225, 225, 0, 0.75);
+    font-weight: bold;
+  }
+  100% {
+    border-color: rgb(185, 185, 0, 0.75);
+    background-color: rgb(225, 225, 0, 0.5);
+    font-weight: normal;
+  }
+}
+
+@keyframes playerElementClickOnPortrait {
+  0% {
+    border-color: rgb(185, 185, 0, 0.5);
+    background-color: rgb(225, 225, 0, 0.25);
+    font-weight: normal;
+  }
+  100% {
+    border-color: rgb(185, 185, 0, 1);
+    background-color: rgb(225, 225, 0, 0.75);
+    font-weight: bold;
+  }
+}
+
+@keyframes playerElementClickOffPortrait {
+  0% {
+    border-color: rgb(185, 185, 0, 1);
+    background-color: rgb(225, 225, 0, 0.75);
+    font-weight: bold;
+  }
+  100% {
+    border-color: rgb(185, 185, 0, 0.5);
+    background-color: rgb(225, 225, 0, 0.25);
+    font-weight: normal;
+  }
+}
+
+@keyframes playerElementHoverIn {
+  0% {
+    border-color: rgb(185, 185, 0, 0.5);
+    background-color: rgb(225, 225, 0, 0.25);
+  }
+  100% {
+    border-color: rgb(185, 185, 0, 0.75);
+    background-color: rgb(225, 225, 0, 0.5);
+  }
+}
+
+@keyframes playerElementHoverOut {
+  0% {
+    border-color: rgb(185, 185, 0, 0.75);
+    background-color: rgb(225, 225, 0, 0.5);
+  }
+  100% {
+    border-color: rgb(185, 185, 0, 0.5);
+    background-color: rgb(225, 225, 0, 0.25);
+  }
+}

@@ -118,7 +118,7 @@ class DiceRoller extends React.Component {
           <div className="DiceRoller_menuItem">
             <Button
               type="primary"
-              style={this.buttonStyle}
+              className="menuButton"
               onClick={this.rollDice}
             >
               Roll Dice
