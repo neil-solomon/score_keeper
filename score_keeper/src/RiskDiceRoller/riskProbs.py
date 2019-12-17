@@ -5,9 +5,9 @@ import json
 riskProbs = {}
 numSims = 1000
 attackerFrom = 1
-attackerTo = 100
+attackerTo = 200
 defenderFrom = 1
-defenderTo = 100
+defenderTo = 200
 startTime = time.time()
 for numAttackers in range(attackerFrom, attackerTo+1):
     for numDefenders in range(defenderFrom, defenderTo+1):
@@ -50,10 +50,20 @@ for numAttackers in range(attackerFrom, attackerTo+1):
         outcomesAdjusted = [i/numSims for i in outcomes]
         key = str(numAttackers) + "vs" + str(numDefenders)
         riskProbs[key] = outcomesAdjusted
+
 totalTime = time.time() - startTime
+minutes = str(round(totalTime//60))
+if (len(minutes) < 2):
+    minutes = "0"+minutes
+seconds = str(round(totalTime % 60))
+if (len(seconds) < 2):
+    seconds = "0"+seconds
+totalTimeString = minutes+":"+seconds
+
 print("")
-print(numSims, "simulations for", (attackerTo-attackerFrom+1)*(defenderTo-defenderFrom+1), "battles in",
-      totalTime, "seconds.")
+print(numSims, "simulations for", (attackerTo-attackerFrom+1) *
+      (defenderTo-defenderFrom+1), "battles. Time:", totalTimeString)
+
 filename = "./riskProbs/riskProbs_"+"A"+str(attackerFrom)+"-"+str(attackerTo) + \
     "_D"+str(defenderFrom)+"-"+str(defenderTo)+"_"+str(numSims)+".json"
 with open(filename, "w+") as f:

@@ -17,7 +17,8 @@ class TicTacGrow extends React.Component {
       fontSize: "2vh",
       height: "4vh",
       width: "4vh"
-    }
+    },
+    gridNotInitialized: true
   };
 
   buttonStyle = {
@@ -35,7 +36,43 @@ class TicTacGrow extends React.Component {
 
   componentDidMount() {
     this.initializeBoard(this.state.numToWin, this.state.gridSize);
+    this.resizeGrid();
+    window.addEventListener("resize", this.resizeGrid);
   }
+
+  componentWillUnmount() {
+    clearInterval(this.state.randomClicksInterval);
+    window.removeEventListener("resize", this.resizeGrid);
+  }
+
+  resizeGrid = () => {
+    if (this.state.gridNotInitialized) {
+      return;
+    }
+    if (window.innerWidth > window.innerHeight) {
+      var cellExistsStyle = {
+        width: (80 / this.state.gridSize).toString() + "vh",
+        height: (80 / this.state.gridSize).toString() + "vh",
+        fontSize: (80 / (this.state.gridSize * 2)).toString() + "vh"
+      };
+    } else {
+      var cellExistsStyle = {
+        width: (100 / this.state.gridSize).toString() + "vw",
+        height: (100 / this.state.gridSize).toString() + "vw",
+        fontSize: (100 / (this.state.gridSize * 2)).toString() + "vw"
+      };
+    }
+    var grid = [...this.state.grid];
+    for (let i = 0; i < grid.length; ++i) {
+      for (let j = 0; j < grid[0].length; ++j) {
+        if (grid[i][j].exists) {
+          grid[i][j].style = cellExistsStyle;
+        }
+      }
+    }
+    this.setState({ grid });
+    this.setState({ cellExistsStyle });
+  };
 
   initializeBoard = (newNumToWin, newGridSize) => {
     var numToWin = newNumToWin;
@@ -111,11 +148,8 @@ class TicTacGrow extends React.Component {
     this.setState({ grid });
     this.setState({ candidateCells });
     this.setState({ boardReset: !this.state.boardReset });
+    this.setState({ gridNotInitialized: false });
   };
-
-  componentWillUnmount() {
-    clearInterval(this.state.randomClicksInterval);
-  }
 
   addCell = () => {
     if (this.state.numToWin === 3 && this.state.gridSize === 3) {
@@ -463,12 +497,6 @@ class TicTacGrow extends React.Component {
   };
 
   render() {
-    if (window.innerHeight > window.innerWidth) {
-      console.log("Portrait!");
-    } else {
-      console.log("Landscape!");
-    }
-
     var boardMessage;
     if (this.state.player1Turn) {
       if (this.state.someoneWon) {

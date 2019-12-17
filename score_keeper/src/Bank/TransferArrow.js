@@ -14,8 +14,15 @@ class TransferArrow extends React.Component {
   };
 
   render() {
+    var fontSize;
+    if (this.props.windowIsLandscape) {
+      fontSize = "35px";
+    } else {
+      fontSize = "25px";
+    }
+
     return (
-      <div style={{ fontSize: "35px" }} className={this.state.className}>
+      <div style={{ fontSize: fontSize }} className={this.state.className}>
         <Icon
           type="arrow-right"
           onMouseEnter={() => this.changeClassName("Bank_transferArrowHoverIn")}

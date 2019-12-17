@@ -37,7 +37,8 @@ class Scoreboard extends React.Component {
     highScoreWinsRadio: 0,
     deleteUsersActivated: false,
     deleteRoundsActivated: false,
-    notificationEnable: true
+    notificationEnable: true,
+    windowIsLandscape: true
   };
 
   buttonStyle = {
@@ -64,7 +65,7 @@ class Scoreboard extends React.Component {
   componentDidMount() {
     //console.log("CDM", typeof Storage === "undefined");
     var savedScoreboards =
-      JSON.parse(localStorage.getItem("savedScoreboards")) || {};
+      JSON.parse(localStorage.getItem("GameNight_savedScoreboards")) || {};
     var scoreboardsList = [];
     for (var scoreboard in savedScoreboards) {
       scoreboardsList.push({
@@ -73,12 +74,22 @@ class Scoreboard extends React.Component {
         selected: false
       });
     }
-    if (window.innerWidth < window.innerHeight) {
-      this.setState({ notificationEnable: false });
-    }
     this.setState({ savedScoreboards });
     this.setState({ scoreboardsList });
+
+    this.checkWindowOrientation();
+    window.addEventListener("resize", this.checkWindowOrientation);
   }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.checkWindowOrientation);
+  }
+
+  checkWindowOrientation = () => {
+    this.setState({
+      windowIsLandscape: window.innerWidth > window.innerHeight
+    });
+  };
 
   updatePoints = (pointsIndex, newPoints) => {
     var points = [...this.state.points];
@@ -303,9 +314,10 @@ class Scoreboard extends React.Component {
   saveScoreboard = () => {
     if (
       typeof this.state.scoreboardTitle === "undefined" ||
-      this.state.scoreboardTitle === "null"
+      this.state.scoreboardTitle === "null" ||
+      this.state.scoreboardTitle === ""
     ) {
-      notification["warning"]({
+      notification["error"]({
         message: "Saved failed",
         description: "Title cannot be blank.",
         placement: "bottomRight",
@@ -344,7 +356,7 @@ class Scoreboard extends React.Component {
       });
       this.setState({ savedScoreboards });
       localStorage.setItem(
-        "savedScoreboards",
+        "GameNight_savedScoreboards",
         JSON.stringify(savedScoreboards)
       );
       //console.log(savedScoreboards, JSON.stringify(savedScoreboards));
@@ -536,7 +548,10 @@ class Scoreboard extends React.Component {
     scoreboardsList.splice(index, 1);
     this.setState({ savedScoreboards });
     this.setState({ scoreboardsList });
-    localStorage.setItem("savedScoreboards", JSON.stringify(savedScoreboards));
+    localStorage.setItem(
+      "GameNight_savedScoreboards",
+      JSON.stringify(savedScoreboards)
+    );
   };
 
   render() {
@@ -796,7 +811,10 @@ class Scoreboard extends React.Component {
       "undefined"
     ) {
       saveScoreboardWarning = (
-        <div className="Scoreboard_saveScoreboardWarning">
+        <div
+          key={this.state.scoreboardTitle}
+          className="Scoreboard_saveScoreboardWarning"
+        >
           WARNING: This scoreboard title already exists. Saving now will
           overwrite.
         </div>
@@ -804,12 +822,12 @@ class Scoreboard extends React.Component {
     }
 
     var chartMargins, tableAlign;
-    if (window.innerHeight > window.innerWidth) {
-      chartMargins = [25, 0, 5, 5];
-      tableAlign = "center";
-    } else {
+    if (this.state.windowIsLandscape) {
       chartMargins = [50, 100, 100, 50];
       tableAlign = "left";
+    } else {
+      chartMargins = [25, 0, 5, 5];
+      tableAlign = "center";
     }
 
     return (

@@ -15,7 +15,7 @@
 }
 
 .RiskDiceRoller_startingArmiesInput {
-  width: 40px;
+  width: 50px;
   height: 20px;
 }
 
@@ -103,12 +103,12 @@
 @media (max-aspect-ratio: 13/9) {
   .RiskDiceRoller_diceNumImage {
     padding: 5px;
-    width: 50px;
+    width: 45px;
   }
 
   .RiskDiceRoller_diceZeroImage {
     padding: 5px;
-    width: 50px;
+    width: 45px;
   }
 
   .RiskDiceRoller_lineChartDiv {
@@ -117,6 +117,11 @@
 
   .RiskDiceRoller_startingArmies {
     font-size: 12px;
+  }
+
+  .RiskDiceRoller_startingArmiesInput {
+    width: 40px;
+    height: 15px;
   }
 
   .RiskDiceRoller_armiesRemaining {
@@ -129,7 +134,7 @@
   }
 
   .RiskDiceRoller_diceRow {
-    height: 100px;
+    height: 50px;
   }
 
   .RiskDiceRoller_menuItem {

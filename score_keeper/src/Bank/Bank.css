@@ -2,6 +2,23 @@
   .Bank_middleTableHeader {
     width: 250px;
   }
+  .Bank_table {
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+}
+
+.Bank_modalWarning {
+  height: 35px;
+  font-size: 14px;
+  font-weight: normal;
+  color: rgb(200, 0, 0);
+  animation: fadeIn 0.5s forwards;
+}
+
+.Bank_table {
+  margin-left: none;
+  margin-right: none;
 }
 
 .Bank_middleTableHeader {
@@ -24,18 +41,6 @@
   animation: addPlayerButtonClicked 0.5s forwards;
 }
 
-@keyframes addPlayerButtonClicked {
-  0% {
-    color: rgb(0, 100, 225);
-  }
-  50% {
-    color: rgb(0, 175, 255);
-  }
-  100% {
-    color: rgb(0, 100, 225);
-  }
-}
-
 @keyframes addPlayerButtonHoverIn {
   0% {
     color: rgb(0, 0, 200);
@@ -51,6 +56,48 @@
   }
   100% {
     color: rgb(0, 0, 200);
+  }
+}
+
+@keyframes addPlayerButtonClicked {
+  0% {
+    color: rgb(0, 125, 255);
+  }
+  50% {
+    color: rgb(0, 195, 255);
+  }
+  100% {
+    color: rgb(0, 125, 255);
+  }
+}
+
+.Bank_saveLoadButton {
+  color: rgb(100, 100, 100);
+}
+
+.Bank_saveLoadButtonHoverIn {
+  animation: saveLoadButtonHoverIn 0.5s forwards;
+}
+
+.Bank_saveLoadButtonHoverOut {
+  animation: saveLoadButtonHoverOut 0.5s forwards;
+}
+
+@keyframes saveLoadButtonHoverIn {
+  0% {
+    color: rgb(100, 100, 100);
+  }
+  100% {
+    color: rgb(0, 0, 0);
+  }
+}
+
+@keyframes saveLoadButtonHoverOut {
+  0% {
+    color: rgb(0, 0, 0);
+  }
+  100% {
+    color: rgb(100, 100, 100);
   }
 }
 
@@ -200,5 +247,139 @@
   100% {
     border-color: rgb(185, 185, 0, 0.5);
     background-color: rgb(225, 225, 0, 0.25);
+  }
+}
+
+.Bank_loadBankButton {
+  border-color: rgb(0, 150, 255, 0.5);
+  background-color: rgb(0, 150, 255, 0.25);
+  color: black;
+}
+
+.Bank_loadBankButtonHoverIn {
+  animation: loadBankButtonHoverIn 0.5s forwards;
+}
+
+.Bank_loadBankButtonHoverOut {
+  animation: loadBankButtonHoverOut 0.5s forwards;
+}
+
+.Bank_loadBankButtonClickOnLandscape {
+  animation: loadBankButtonClickOnLandscape 0.5s forwards;
+}
+
+.Bank_loadBankButtonClickOffLandscape {
+  animation: loadBankButtonClickOffLandscape 0.5s forwards;
+}
+
+.Bank_loadBankButtonClickOnPortrait {
+  animation: loadBankButtonClickOnPortrait 0.5s forwards;
+}
+
+.Bank_loadBankButtonClickOffPortrait {
+  animation: loadBankButtonClickOffPortrait 0.5s forwards;
+}
+
+.Bank_loadBankButtonClickOffNoHover {
+  animation: loadBankButtonClickOffNoHover 0.5s forwards;
+}
+
+@keyframes loadBankButtonClickOffNoHover {
+  0% {
+    border-color: rgb(0, 150, 255, 1);
+    background-color: rgb(0, 150, 255, 0.5);
+    color: rgb(0, 50, 255);
+  }
+  100% {
+    border-color: rgb(0, 150, 255, 0.75);
+    background-color: rgb(0, 150, 255, 0.25);
+    color: black;
+  }
+}
+
+@keyframes loadBankButtonClickOnLandscape {
+  0% {
+    border-color: rgb(0, 150, 255, 0.75);
+    background-color: rgb(0, 150, 255, 0.25);
+    color: rgb(0, 50, 255);
+  }
+  100% {
+    border-color: rgb(0, 150, 255, 1);
+    background-color: rgb(0, 150, 255, 0.5);
+    color: rgb(0, 50, 255);
+  }
+}
+
+@keyframes loadBankButtonClickOffLandscape {
+  0% {
+    border-color: rgb(0, 150, 255, 1);
+    background-color: rgb(0, 150, 255, 0.5);
+    color: rgb(0, 50, 255);
+  }
+  100% {
+    border-color: rgb(0, 150, 255, 0.75);
+    background-color: rgb(0, 150, 255, 0.25);
+    color: rgb(0, 50, 255);
+  }
+}
+
+@keyframes loadBankButtonClickOnPortrait {
+  0% {
+    border-color: rgb(0, 150, 255, 0.75);
+    background-color: rgb(0, 150, 255, 0.25);
+    color: black;
+  }
+  100% {
+    border-color: rgb(0, 150, 255, 1);
+    background-color: rgb(0, 150, 255, 0.5);
+    color: rgb(0, 50, 255);
+  }
+}
+
+@keyframes loadBankButtonClickOffPortrait {
+  0% {
+    border-color: rgb(0, 150, 255, 1);
+    background-color: rgb(0, 150, 255, 0.5);
+    color: rgb(0, 50, 255);
+  }
+  100% {
+    border-color: rgb(0, 150, 255, 0.75);
+    background-color: rgb(0, 150, 255, 0.25);
+    color: black;
+  }
+}
+
+@keyframes loadBankButtonHoverIn {
+  0% {
+    border-color: rgb(0, 150, 255, 0.5);
+    background-color: rgb(0, 150, 255, 0.25);
+    color: black;
+  }
+  100% {
+    border-color: rgb(0, 150, 255, 0.75);
+    background-color: rgb(0, 150, 255, 0.25);
+    color: rgb(0, 50, 255);
+  }
+}
+
+@keyframes loadBankButtonHoverOut {
+  0% {
+    border-color: rgb(0, 150, 255, 0.75);
+    background-color: rgb(0, 150, 255, 0.25);
+    color: rgb(0, 50, 255);
+  }
+  100% {
+    border-color: rgb(0, 150, 255, 0.5);
+    background-color: rgb(0, 150, 255, 0.25);
+    color: black;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }

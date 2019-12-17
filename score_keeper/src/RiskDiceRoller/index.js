@@ -30,7 +30,8 @@ class RiskDiceRoller extends React.Component {
       { id: "Defender", data: [] }
     ],
     keepRollingSpeed: "Medium",
-    viewProbabilities: false
+    viewProbabilities: false,
+    windowIsLandscape: true
   };
 
   notificationStyle = {
@@ -40,9 +41,21 @@ class RiskDiceRoller extends React.Component {
     backgroundColor: "rgb(255,255,0,.75)"
   };
 
+  componentDidMount() {
+    this.checkWindowOrientation();
+    window.addEventListener("resize", this.checkWindowOrientation);
+  }
+
   componentWillUnmount() {
     clearInterval(this.state.rollDiceInterval);
+    window.removeEventListener("resize", this.checkWindowOrientation);
   }
+
+  checkWindowOrientation = () => {
+    this.setState({
+      windowIsLandscape: window.innerWidth > window.innerHeight
+    });
+  };
 
   changeArmies = () => {
     clearInterval(this.state.rollDiceInterval);
@@ -100,7 +113,7 @@ class RiskDiceRoller extends React.Component {
     var key = armiesAttacker.toString() + "vs" + armiesDefender.toString();
     var probabilities = [];
     try {
-      probabilities = require("./riskProbs/riskProbs_A1-100_D1-100_1000.json")[
+      probabilities = require("./riskProbs/riskProbs_A1-200_D1-200_1000.json")[
         key
       ];
     } catch (error) {
@@ -397,10 +410,10 @@ class RiskDiceRoller extends React.Component {
     }
 
     var chartMargins;
-    if (window.innerHeight > window.innerWidth) {
-      chartMargins = [5, 5, 5, 5];
-    } else {
+    if (this.state.windowIsLandscape) {
       chartMargins = [50, 100, 100, 100];
+    } else {
+      chartMargins = [5, 5, 5, 5];
     }
 
     return (

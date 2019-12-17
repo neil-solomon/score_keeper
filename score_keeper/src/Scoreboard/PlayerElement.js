@@ -12,7 +12,7 @@ class PlayerElement extends React.Component {
   };
 
   inputStyle = {
-    width: (40 / parseInt(this.props.numPlayers) - 3).toString() + "vw",
+    width: (40 / parseInt(this.props.numPlayers)).toString() + "vw",
     height: "20px"
   };
 

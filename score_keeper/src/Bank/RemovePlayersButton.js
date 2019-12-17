@@ -2,7 +2,7 @@ import React from "react";
 import { Icon } from "antd";
 import "./Bank.css";
 
-class AddPlayerButton extends React.Component {
+class RemovePlayersButton extends React.Component {
   state = { className: "Bank_addPlayerButton" };
 
   changeClassName = className => {
@@ -10,7 +10,8 @@ class AddPlayerButton extends React.Component {
   };
 
   handleClick = () => {
-    this.props.toggleModalVisible();
+    this.props.toggleRemovePlayers();
+    this.changeClassName("Bank_addPlayerButtonClicked");
   };
 
   render() {
@@ -34,7 +35,7 @@ class AddPlayerButton extends React.Component {
         className={this.state.className}
       >
         <Icon
-          type="user-add"
+          type="usergroup-delete"
           onMouseEnter={() =>
             this.changeClassName("Bank_addPlayerButtonHoverIn")
           }
@@ -48,4 +49,4 @@ class AddPlayerButton extends React.Component {
   }
 }
 
-export default AddPlayerButton;
+export default RemovePlayersButton;

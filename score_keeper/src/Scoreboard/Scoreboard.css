@@ -4,9 +4,11 @@
 }
 
 .Scoreboard_saveScoreboardWarning {
+  color: red;
   font-size: 14px;
   width: 250px;
   height: 50px;
+  animation: fadeIn 0.5s forwards;
 }
 
 .Scoreboard_mainButtons {

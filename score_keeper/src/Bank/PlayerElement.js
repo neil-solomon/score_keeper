@@ -11,6 +11,7 @@ class PlayerElement extends React.Component {
   styleLandscape = {
     width: "175px",
     height: "75px",
+    marginBottom: "25px",
     borderStyle: "solid",
     borderWidth: "2px",
     borderRadius: "10px",
@@ -21,6 +22,7 @@ class PlayerElement extends React.Component {
   stylePortrait = {
     width: "100px",
     height: "50px",
+    marginBottom: "10px",
     borderStyle: "solid",
     borderWidth: "2px",
     borderRadius: "10px",
@@ -28,35 +30,39 @@ class PlayerElement extends React.Component {
     cursor: "pointer"
   };
 
-  changeClassName1 = className => {
-    if (
-      !this.state.selected1 ||
-      className.slice(0, 26) === "Bank_playerElementClickOff"
-    ) {
-      this.setState({ className1: className });
+  handleHoverIn1 = () => {
+    if (this.props.windowIsLandscape && !this.props.selected[0]) {
+      this.setState({ className1: "Bank_playerElementHoverIn" });
     }
   };
-  changeClassName2 = className => {
-    if (
-      !this.state.selected2 ||
-      className.slice(0, 26) === "Bank_playerElementClickOff"
-    ) {
-      this.setState({ className2: className });
+  handleHoverIn2 = () => {
+    if (this.props.windowIsLandscape && !this.props.selected[1]) {
+      this.setState({ className2: "Bank_playerElementHoverIn" });
+    }
+  };
+  handleHoverOut1 = () => {
+    if (this.props.windowIsLandscape && !this.props.selected[0]) {
+      this.setState({ className1: "Bank_playerElementHoverOut" });
+    }
+  };
+  handleHoverOut2 = () => {
+    if (this.props.windowIsLandscape && !this.props.selected[1]) {
+      this.setState({ className2: "Bank_playerElementHoverOut" });
     }
   };
 
   handleClick1 = () => {
     if (this.state.selected1) {
-      if (window.innerWidth > window.innerHeight) {
-        this.changeClassName1("Bank_playerElementClickOffLandscape");
+      if (this.props.windowIsLandscape) {
+        this.setState({ className1: "Bank_playerElementClickOffLandscape" });
       } else {
-        this.changeClassName1("Bank_playerElementClickOffPortrait");
+        this.setState({ className1: "Bank_playerElementClickOffPortrait" });
       }
     } else {
-      if (window.innerWidth > window.innerHeight) {
-        this.changeClassName1("Bank_playerElementClickOnLandscape");
+      if (this.props.windowIsLandscape) {
+        this.setState({ className1: "Bank_playerElementClickOnLandscape" });
       } else {
-        this.changeClassName1("Bank_playerElementClickOffPortrait");
+        this.setState({ className1: "Bank_playerElementClickOnPortrait" });
       }
     }
     this.props.toggleSelected(1, this.props.playerId);
@@ -64,16 +70,16 @@ class PlayerElement extends React.Component {
   };
   handleClick2 = () => {
     if (this.state.selected2) {
-      if (window.innerWidth > window.innerHeight) {
-        this.changeClassName2("Bank_playerElementClickOffLandscape");
+      if (this.props.windowIsLandscape) {
+        this.setState({ className2: "Bank_playerElementClickOffLandscape" });
       } else {
-        this.changeClassName2("Bank_playerElementClickOffPortrait");
+        this.setState({ className2: "Bank_playerElementClickOffPortrait" });
       }
     } else {
-      if (window.innerWidth > window.innerHeight) {
-        this.changeClassName2("Bank_playerElementClickOnLandscape");
+      if (this.props.windowIsLandscape) {
+        this.setState({ className2: "Bank_playerElementClickOnLandscape" });
       } else {
-        this.changeClassName2("Bank_playerElementClickOffPortrait");
+        this.setState({ className2: "Bank_playerElementClickOnPortrait" });
       }
     }
     this.props.toggleSelected(2, this.props.playerId);
@@ -82,22 +88,18 @@ class PlayerElement extends React.Component {
 
   render() {
     var style;
-    if (window.innerHeight > window.innerWidth) {
-      style = this.stylePortrait;
-    } else {
+    if (this.props.windowIsLandscape) {
       style = this.styleLandscape;
+    } else {
+      style = this.stylePortrait;
     }
 
     return (
       <tr>
         <td>
           <div
-            onMouseEnter={() =>
-              this.changeClassName1("Bank_playerElementHoverIn")
-            }
-            onMouseLeave={() =>
-              this.changeClassName1("Bank_playerElementHoverOut")
-            }
+            onMouseEnter={this.handleHoverIn1}
+            onMouseLeave={this.handleHoverOut1}
             onClick={this.handleClick1}
             className={this.state.className1}
             style={style}
@@ -109,12 +111,8 @@ class PlayerElement extends React.Component {
         <td></td>
         <td>
           <div
-            onMouseEnter={() =>
-              this.changeClassName2("Bank_playerElementHoverIn")
-            }
-            onMouseLeave={() =>
-              this.changeClassName2("Bank_playerElementHoverOut")
-            }
+            onMouseEnter={this.handleHoverIn2}
+            onMouseLeave={this.handleHoverOut2}
             onClick={this.handleClick2}
             className={this.state.className2}
             style={style}
