@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "cfc0858ad1972ba59e4a5ef42d0ec57e",
+    "revision": "db27a61ead6acd00d193e469b33cc472",
     "url": "/score_keeper/index.html"
   },
   {
