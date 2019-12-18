@@ -137,7 +137,7 @@ class DiceRoller extends React.Component {
               onClick={() => this.changeNumDice(1)}
             ></Icon>
           </div>
-          <div className="DiceRoller_menuItem">
+          {/* <div className="DiceRoller_menuItem">
             Number of Sides: {numSidesString}
             <Icon
               type="minus-circle"
@@ -149,7 +149,7 @@ class DiceRoller extends React.Component {
               style={this.iconStyle}
               onClick={() => this.changeNumSides(1)}
             ></Icon>
-          </div>
+          </div> */}
         </div>
         <div className="DiceRoller_diceRolls">
           {this.state.diceRolls.map((roll, index) => (

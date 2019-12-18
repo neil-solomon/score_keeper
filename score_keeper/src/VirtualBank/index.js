@@ -17,7 +17,14 @@ class Bank extends React.Component {
     loadModalVisible: false,
     badNewPlayerName: false,
     players: [
-      { name: "BANK", money: "$$$$", bank: true, selected: [false, false] }
+      {
+        name: "BANK",
+        money: "$$$$",
+        bank: true,
+        selected: [false, false],
+        losingMoney: false,
+        gainingMoney: false
+      }
     ],
     windowIsLandscape: true,
     savedBanks: {},
@@ -116,7 +123,9 @@ class Bank extends React.Component {
       name: newPlayerName,
       money: newPlayerMoney,
       bank: false,
-      selected: [false, false]
+      selected: [false, false],
+      losingMoney: false,
+      gainingMoney: false
     });
     this.setState({ players });
     this.toggleAddPlayerModalVisible();
@@ -252,20 +261,25 @@ class Bank extends React.Component {
       return;
     }
     var fromPlayers = [],
-      toPlayers = [];
-    for (let i = 0; i < this.state.players.length; ++i) {
-      if (this.state.players[i].selected[0]) {
+      toPlayers = [],
+      players = [...this.state.players];
+    for (let i = 0; i < players.length; ++i) {
+      if (players[i].selected[0]) {
         fromPlayers.push(i);
+        players[i].losingMoney = true;
       }
-      if (this.state.players[i].selected[1]) {
+      if (players[i].selected[1]) {
         toPlayers.push(i);
+        players[i].gainingMoney = true;
       }
     }
     this.setState({ transferAmount });
+    var intervalTime = Math.round(2000 / transferAmount);
     var transferMoneyInterval = setInterval(
       () => this.moveMoney(fromPlayers, toPlayers),
-      10
+      intervalTime
     );
+    this.setState({ players });
     this.setState({ transferEnabled: false });
     this.setState({ transferMoneyInterval });
   };
@@ -286,6 +300,11 @@ class Bank extends React.Component {
       this.setState({ transferAmount: 0 });
       this.setState({ transferAmountCount: 0 });
       this.setState({ transferEnabled: true });
+      for (let i = 0; i < players.length; ++i) {
+        players[i].losingMoney = false;
+        players[i].gainingMoney = false;
+      }
+      this.setState({ players });
       clearInterval(this.state.transferMoneyInterval);
       return;
     }
@@ -421,6 +440,8 @@ class Bank extends React.Component {
                 windowIsLandscape={this.state.windowIsLandscape}
                 removePlayersEnable={this.state.removePlayersEnable}
                 removePlayer={this.removePlayer}
+                losingMoney={player.losingMoney}
+                gainingMoney={player.gainingMoney}
               ></PlayerElement>
             ))}
           </tbody>

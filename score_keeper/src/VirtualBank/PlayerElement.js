@@ -122,6 +122,15 @@ class PlayerElement extends React.Component {
       );
     }
 
+    var dollorSignClassName;
+    if (this.props.losingMoney) {
+      dollorSignClassName = "VirtualBank_dollorSignLosing";
+    } else if (this.props.gainingMoney) {
+      dollorSignClassName = "VirtualBank_dollorSignGaining";
+    } else {
+      dollorSignClassName = "VirtualBank_dollorSign";
+    }
+
     return (
       <tr>
         <td>
@@ -133,7 +142,12 @@ class PlayerElement extends React.Component {
             style={style}
           >
             <div>{this.props.name}</div>
-            <div>${this.props.money}</div>
+            <div>
+              <span className={dollorSignClassName} key={dollorSignClassName}>
+                $
+              </span>
+              {this.props.money}
+            </div>
           </div>
         </td>
         <td>{removePlayer}</td>
@@ -146,7 +160,12 @@ class PlayerElement extends React.Component {
             style={style}
           >
             <div>{this.props.name}</div>
-            <div>${this.props.money}</div>
+            <div>
+              <span className={dollorSignClassName} key={dollorSignClassName}>
+                $
+              </span>
+              {this.props.money}
+            </div>
           </div>
         </td>
       </tr>

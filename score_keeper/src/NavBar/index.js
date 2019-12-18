@@ -65,6 +65,11 @@ class NavBar extends React.Component {
               name="Tic-Tac-Grow"
               link="./#/TicTacGrow"
             ></NavBarMenuItem>
+            <NavBarMenuItem
+              closeDrawer={this.toggleDrawerVisible}
+              name="Virtual Bank"
+              link="./#/VirtualBank"
+            ></NavBarMenuItem>
             <div
               style={{
                 color: "rgb(0, 0, 0, 0.5)",

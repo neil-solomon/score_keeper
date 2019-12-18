@@ -28,10 +28,10 @@ class TransferArrow extends React.Component {
         border: "1px solid black",
         borderRadius: "3px",
         boxShadow: "0px 1px 5px rgb(0,0,0,.5)",
-        color: "rgb(0,255,5)",
         fontSize: "20px",
         width: "100px",
-        marginRight: "10px"
+        marginRight: "10px",
+        outline: "none"
       };
     } else {
       fontSize = "25px";
@@ -39,11 +39,11 @@ class TransferArrow extends React.Component {
         fontWeight: "bold",
         border: "1px solid black",
         borderRadius: "3px",
-        boxShadow: "0px 1px 5px rgb(0,0,0,.5)",
-        color: "rgb(0,255,5)",
+        boxShadow: "0px .5px 5px rgb(0,0,0,.5)",
         fontSize: "16px",
         width: "75px",
-        marginRight: "5px"
+        marginRight: "5px",
+        outline: "none"
       };
     }
 
