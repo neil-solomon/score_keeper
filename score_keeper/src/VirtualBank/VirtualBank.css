@@ -1,14 +1,14 @@
 @media (max-aspect-ratio: 13/9) {
-  .Bank_middleTableHeader {
+  .VirtualBank_middleTableHeader {
     width: 250px;
   }
-  .Bank_table {
-    margin-left: 5px;
-    margin-right: 5px;
+  .VirtualBank_table {
+    margin-left: 10px;
+    margin-right: 10px;
   }
 }
 
-.Bank_modalWarning {
+.VirtualBank_modalWarning {
   height: 35px;
   font-size: 14px;
   font-weight: normal;
@@ -16,70 +16,86 @@
   animation: fadeIn 0.5s forwards;
 }
 
-.Bank_table {
+.VirtualBank_table {
   margin-left: none;
   margin-right: none;
+  animation: fadeIn 1s;
 }
 
-.Bank_middleTableHeader {
+.VirtualBank_middleTableHeader {
   width: 400px;
 }
 
-.Bank_addPlayerButton {
-  color: rgb(0, 0, 200);
+.VirtualBank_deleteButton {
+  color: rgb(155, 0, 0, 0.75);
+  animation: fadeIn 0.5s;
 }
 
-.Bank_addPlayerButtonHoverIn {
+.VirtualBank_deleteButtonHoverIn {
+  animation: deleteButtonHoverIn 0.5s forwards;
+}
+
+.VirtualBank_deleteButtonHoverOut {
+  animation: deleteButtonHoverOut 0.5s forwards;
+}
+
+@keyframes deleteButtonHoverIn {
+  0% {
+    color: rgb(155, 0, 0, 0.75);
+  }
+  100% {
+    color: rgb(255, 0, 100, 1);
+  }
+}
+
+@keyframes deleteButtonHoverOut {
+  0% {
+    color: rgb(255, 0, 100, 1);
+  }
+  100% {
+    color: rgb(155, 0, 0, 0.75);
+  }
+}
+
+.VirtualBank_addPlayerButton {
+  color: rgb(0, 0, 225);
+}
+
+.VirtualBank_addPlayerButtonHoverIn {
   animation: addPlayerButtonHoverIn 0.5s forwards;
 }
 
-.Bank_addPlayerButtonHoverOut {
+.VirtualBank_addPlayerButtonHoverOut {
   animation: addPlayerButtonHoverOut 0.5s forwards;
-}
-
-.Bank_addPlayerButtonClicked {
-  animation: addPlayerButtonClicked 0.5s forwards;
 }
 
 @keyframes addPlayerButtonHoverIn {
   0% {
-    color: rgb(0, 0, 200);
+    color: rgb(0, 0, 225);
   }
   100% {
-    color: rgb(0, 125, 255);
+    color: rgb(0, 175, 255);
   }
 }
 
 @keyframes addPlayerButtonHoverOut {
   0% {
-    color: rgb(0, 125, 255);
+    color: rgb(0, 175, 255);
   }
   100% {
-    color: rgb(0, 0, 200);
+    color: rgb(0, 0, 225);
   }
 }
 
-@keyframes addPlayerButtonClicked {
-  0% {
-    color: rgb(0, 125, 255);
-  }
-  50% {
-    color: rgb(0, 195, 255);
-  }
-  100% {
-    color: rgb(0, 125, 255);
-  }
-}
-
-.Bank_saveLoadButton {
+.VirtualBank_saveLoadButton {
   color: rgb(100, 100, 100);
 }
 
-.Bank_saveLoadButtonHoverIn {
+.VirtualBank_saveLoadButtonHoverIn {
   animation: saveLoadButtonHoverIn 0.5s forwards;
 }
 
-.Bank_saveLoadButtonHoverOut {
+.VirtualBank_saveLoadButtonHoverOut {
   animation: saveLoadButtonHoverOut 0.5s forwards;
 }
 
@@ -101,78 +117,62 @@
   }
 }
 
-.Bank_transferArrow {
-  color: rgb(0, 150, 0);
+.VirtualBank_transferArrow {
+  color: rgb(0, 175, 0);
 }
 
-.Bank_transferArrowHoverIn {
+.VirtualBank_transferArrowHoverIn {
   animation: transferArrowHoverIn 0.5s forwards;
 }
 
-.Bank_transferArrowHoverOut {
+.VirtualBank_transferArrowHoverOut {
   animation: transferArrowHoverOut 0.5s forwards;
-}
-
-.Bank_transferArrowClicked {
-  animation: transferArrowClicked 0.5s forwards;
-}
-
-@keyframes transferArrowClicked {
-  0% {
-    color: rgb(0, 205, 0);
-  }
-  50% {
-    color: rgb(0, 255, 125);
-  }
-  100% {
-    color: rgb(0, 205, 0);
-  }
 }
 
 @keyframes transferArrowHoverIn {
   0% {
-    color: rgb(0, 150, 0);
+    color: rgb(0, 175, 0);
   }
   100% {
-    color: rgb(0, 205, 0);
+    color: rgb(0, 255, 0);
   }
 }
 
 @keyframes transferArrowHoverOut {
   0% {
-    color: rgb(0, 205, 0);
+    color: rgb(0, 255, 0);
   }
   100% {
-    color: rgb(0, 150, 0);
+    color: rgb(0, 175, 0);
   }
 }
 
-.Bank_playerElement {
+.VirtualBank_playerElement {
   border-color: rgb(185, 185, 0, 0.5);
   background-color: rgb(225, 225, 0, 0.25);
 }
 
-.Bank_playerElementHoverIn {
+.VirtualBank_playerElementHoverIn {
   animation: playerElementHoverIn 0.5s forwards;
 }
 
-.Bank_playerElementHoverOut {
+.VirtualBank_playerElementHoverOut {
   animation: playerElementHoverOut 0.5s forwards;
 }
 
-.Bank_playerElementClickOnLandscape {
+.VirtualBank_playerElementClickOnLandscape {
   animation: playerElementClickOnLandscape 0.5s forwards;
 }
 
-.Bank_playerElementClickOffLandscape {
+.VirtualBank_playerElementClickOffLandscape {
   animation: playerElementClickOffLandscape 0.5s forwards;
 }
 
-.Bank_playerElementClickOnPortrait {
+.VirtualBank_playerElementClickOnPortrait {
   animation: playerElementClickOnPortrait 0.5s forwards;
 }
 
-.Bank_playerElementClickOffPortrait {
+.VirtualBank_playerElementClickOffPortrait {
   animation: playerElementClickOffPortrait 0.5s forwards;
 }
 
@@ -250,37 +250,37 @@
   }
 }
 
-.Bank_loadBankButton {
+.VirtualBank_loadBankButton {
   border-color: rgb(0, 150, 255, 0.5);
   background-color: rgb(0, 150, 255, 0.25);
-  color: black;
+  color: (0, 0, 0, 0.8);
 }
 
-.Bank_loadBankButtonHoverIn {
+.VirtualBank_loadBankButtonHoverIn {
   animation: loadBankButtonHoverIn 0.5s forwards;
 }
 
-.Bank_loadBankButtonHoverOut {
+.VirtualBank_loadBankButtonHoverOut {
   animation: loadBankButtonHoverOut 0.5s forwards;
 }
 
-.Bank_loadBankButtonClickOnLandscape {
+.VirtualBank_loadBankButtonClickOnLandscape {
   animation: loadBankButtonClickOnLandscape 0.5s forwards;
 }
 
-.Bank_loadBankButtonClickOffLandscape {
+.VirtualBank_loadBankButtonClickOffLandscape {
   animation: loadBankButtonClickOffLandscape 0.5s forwards;
 }
 
-.Bank_loadBankButtonClickOnPortrait {
+.VirtualBank_loadBankButtonClickOnPortrait {
   animation: loadBankButtonClickOnPortrait 0.5s forwards;
 }
 
-.Bank_loadBankButtonClickOffPortrait {
+.VirtualBank_loadBankButtonClickOffPortrait {
   animation: loadBankButtonClickOffPortrait 0.5s forwards;
 }
 
-.Bank_loadBankButtonClickOffNoHover {
+.VirtualBank_loadBankButtonClickOffNoHover {
   animation: loadBankButtonClickOffNoHover 0.5s forwards;
 }
 
@@ -293,7 +293,7 @@
   100% {
     border-color: rgb(0, 150, 255, 0.75);
     background-color: rgb(0, 150, 255, 0.25);
-    color: black;
+    color: (0, 0, 0, 0.8);
   }
 }
 
@@ -327,7 +327,7 @@
   0% {
     border-color: rgb(0, 150, 255, 0.75);
     background-color: rgb(0, 150, 255, 0.25);
-    color: black;
+    color: (0, 0, 0, 0.8);
   }
   100% {
     border-color: rgb(0, 150, 255, 1);
@@ -345,7 +345,7 @@
   100% {
     border-color: rgb(0, 150, 255, 0.75);
     background-color: rgb(0, 150, 255, 0.25);
-    color: black;
+    color: (0, 0, 0, 0.8);
   }
 }
 
@@ -353,7 +353,7 @@
   0% {
     border-color: rgb(0, 150, 255, 0.5);
     background-color: rgb(0, 150, 255, 0.25);
-    color: black;
+    color: (0, 0, 0, 0.8);
   }
   100% {
     border-color: rgb(0, 150, 255, 0.75);
@@ -371,8 +371,12 @@
   100% {
     border-color: rgb(0, 150, 255, 0.5);
     background-color: rgb(0, 150, 255, 0.25);
-    color: black;
+    color: (0, 0, 0, 0.8);
   }
+}
+
+.VirtualBank_fadeIn {
+  animation: fadeIn 0.5s forwards;
 }
 
 @keyframes fadeIn {

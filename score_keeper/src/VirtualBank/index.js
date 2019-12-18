@@ -1,13 +1,14 @@
 import React from "react";
 import { Modal, Icon, Popconfirm, notification } from "antd";
 import PlayerElement from "./PlayerElement.js";
-import "./Bank.css";
+import "./VirtualBank.css";
 import TransferArrow from "./TransferArrow.js";
 import AddPlayerButton from "./AddPlayerButton.js";
 import SaveButton from "./SaveButton.js";
 import LoadButton from "./LoadButton.js";
 import LoadBankButton from "./LoadBankButton";
 import RemovePlayersButton from "./RemovePlayersButton.js";
+import DeleteButton from "./DeleteButton";
 
 class Bank extends React.Component {
   state = {
@@ -21,7 +22,15 @@ class Bank extends React.Component {
     windowIsLandscape: true,
     savedBanks: {},
     savedBanksList: [],
-    saveBankTitle: ""
+    saveBankTitle: "",
+    loadedBankToggle: false,
+    removePlayersEnable: false,
+    transferEnabled: true,
+    transferMoneyInterval: null,
+    transferAmount: 0,
+    transferAmountCount: 0
+    // smileyColor: "rgb(100,0,0)",
+    // colorPeak: false
   };
 
   componentDidMount() {
@@ -44,6 +53,7 @@ class Bank extends React.Component {
 
   componentWillUnmount() {
     window.removeEventListener("resize", this.checkWindowOrientation);
+    clearInterval(this.state.transferMoneyInterval);
   }
 
   checkWindowOrientation = () => {
@@ -69,6 +79,11 @@ class Bank extends React.Component {
   };
 
   toggleLoadModalVisible = () => {
+    var savedBanksList = [...this.state.savedBanksList];
+    for (let i = 0; i < savedBanksList.length; ++i) {
+      savedBanksList[i].selected = false;
+    }
+    this.setState({ savedBanksList });
     this.setState({ loadModalVisible: !this.state.loadModalVisible });
   };
 
@@ -79,7 +94,24 @@ class Bank extends React.Component {
       return;
     }
     var players = [...this.state.players];
-    var newPlayerMoney = document.getElementById("newPlayerMoney").value;
+    var newPlayerMoney = parseInt(
+      document.getElementById("newPlayerMoney").value
+    );
+    if (isNaN(newPlayerMoney)) {
+      notification["warning"]({
+        message: "Starting Money must be a number!",
+        description: "",
+        placement: "bottomRight",
+        duration: 5,
+        style: {
+          height: "100px",
+          width: "300px",
+          fontSize: "20px",
+          backgroundColor: "rgb(255,255,0,.75)"
+        }
+      });
+      return;
+    }
     players.push({
       name: newPlayerName,
       money: newPlayerMoney,
@@ -123,39 +155,47 @@ class Bank extends React.Component {
     var savedBanks = this.state.savedBanks;
     var newBank = {
       title: this.state.saveBankTitle,
-      players: this.state.players,
+      players: [...this.state.players],
       dateModified: todaysDate
     };
+    for (let i = 0; i < newBank.players.length; ++i) {
+      newBank.players[i].selected[0] = false;
+      newBank.players[i].selected[1] = false;
+    }
     savedBanks[newBank.title] = newBank;
     var savedBanksList = [...this.state.savedBanksList];
-    savedBanksList.push({
-      title: newBank.title,
-      dateModified: newBank.dateModified,
-      selected: false
-    });
-    this.setState({ savedBanks });
+    var alreadyInList = false;
+    for (let i = 0; i < savedBanksList.length; ++i) {
+      if (savedBanksList[i].title === newBank.title) {
+        alreadyInList = true;
+      }
+    }
+    if (!alreadyInList) {
+      savedBanksList.push({
+        title: newBank.title,
+        dateModified: newBank.dateModified,
+        selected: false
+      });
+    }
     this.setState({ savedBanksList });
+    this.setState({ savedBanks });
     localStorage.setItem("GameNight_savedBanks", JSON.stringify(savedBanks));
     this.toggleSaveModalVisible();
   };
 
   loadBank = () => {
-    var newBank = "null";
+    var newBank = null;
     for (let i = 0; i < this.state.savedBanksList.length; ++i) {
       if (this.state.savedBanksList[i].selected) {
         newBank = this.state.savedBanksList[i].title;
       }
     }
-    if (newBank !== "null") {
+    if (newBank) {
       this.setState({
         players: this.state.savedBanks[newBank].players
       });
+      this.setState({ loadedBankToggle: !this.state.loadedBankToggle });
     }
-    var savedBanksList = [...this.state.savedBanksList];
-    for (let i = 0; i < savedBanksList.length; ++i) {
-      savedBanksList[i].selected = false;
-    }
-    this.setState({ savedBanksList });
     this.toggleLoadModalVisible();
   };
 
@@ -191,37 +231,148 @@ class Bank extends React.Component {
     this.setState({ savedBanksList });
   };
 
-  toggleRemovePlayers = () => {};
+  toggleRemovePlayers = () => {
+    this.setState({ removePlayersEnable: !this.state.removePlayersEnable });
+  };
+
+  removePlayer = playerId => {
+    var players = [...this.state.players];
+    players.splice(playerId, 1);
+    this.setState({ players });
+  };
+
+  transferMoney = () => {
+    var transferAmount = parseInt(
+      document.getElementById("transferAmount").value
+    );
+    if (isNaN(transferAmount)) {
+      return;
+    }
+    if (transferAmount < 0) {
+      return;
+    }
+    var fromPlayers = [],
+      toPlayers = [];
+    for (let i = 0; i < this.state.players.length; ++i) {
+      if (this.state.players[i].selected[0]) {
+        fromPlayers.push(i);
+      }
+      if (this.state.players[i].selected[1]) {
+        toPlayers.push(i);
+      }
+    }
+    this.setState({ transferAmount });
+    var transferMoneyInterval = setInterval(
+      () => this.moveMoney(fromPlayers, toPlayers),
+      10
+    );
+    this.setState({ transferEnabled: false });
+    this.setState({ transferMoneyInterval });
+  };
+
+  moveMoney = (fromPlayers, toPlayers) => {
+    var players = [...this.state.players];
+    for (let i = 0; i < fromPlayers.length; ++i) {
+      if (fromPlayers[i] !== 0) {
+        players[fromPlayers[i]].money -= 1 * toPlayers.length;
+      }
+    }
+    for (let i = 0; i < toPlayers.length; ++i) {
+      if (toPlayers[i] !== 0) {
+        players[toPlayers[i]].money += 1 * fromPlayers.length;
+      }
+    }
+    if (this.state.transferAmount - 1 === this.state.transferAmountCount) {
+      this.setState({ transferAmount: 0 });
+      this.setState({ transferAmountCount: 0 });
+      this.setState({ transferEnabled: true });
+      clearInterval(this.state.transferMoneyInterval);
+      return;
+    }
+    this.setState({ transferAmountCount: this.state.transferAmountCount + 1 });
+    this.setState(players);
+  };
+
+  nullFunction = () => {
+    return;
+  };
+
+  // animateSmiley = () => {
+  //   var interval = setInterval(this.changeColor, 10);
+  //   this.setState({ interval });
+  // };
+
+  // changeColor = () => {
+  //   var color = parseInt(this.state.smileyColor.slice(4, 7));
+  //   if (color === 250) {
+  //     this.setState({ colorPeak: true });
+  //   }
+  //   if (this.state.colorPeak) {
+  //     color -= 10;
+  //   } else {
+  //     color += 10;
+  //   }
+  //   var newColor = "rgb(" + color.toString() + ",0,0)";
+  //   console.log(newColor);
+  //   this.setState({ smileyColor: newColor });
+  //   if (color === 100 && this.state.colorPeak) {
+  //     clearInterval(this.state.interval);
+  //     this.setState({ colorPeak: false });
+  //   }
+  // };
 
   render() {
     var badNewPlayerNameWarning;
     if (this.state.badNewPlayerName) {
       badNewPlayerNameWarning = (
-        <div key={this.state.badNewPlayerName} className="Bank_modalWarning">
+        <div
+          key={this.state.badNewPlayerName}
+          className="VirtualBank_modalWarning"
+        >
           Player name cannot be blank.
         </div>
       );
     } else {
-      badNewPlayerNameWarning = <div className="Bank_modalWarning"></div>;
+      badNewPlayerNameWarning = (
+        <div className="VirtualBank_modalWarning"></div>
+      );
     }
 
     var saveBankWarning;
     if (
       typeof this.state.savedBanks[this.state.saveBankTitle] === "undefined"
     ) {
-      saveBankWarning = <div className="Bank_modalWarning"></div>;
+      saveBankWarning = (
+        <div className="VirtualBank_modalWarning" id="saveBankWarning"></div>
+      );
     } else {
       saveBankWarning = (
-        <div key={this.state.saveBankTitle} className="Bank_modalWarning">
+        <div
+          key={this.state.saveBankTitle}
+          className="VirtualBank_modalWarning"
+          id="saveBankWarning"
+        >
           WARNING: This bank title already exists. Saving now will overwrite.
         </div>
       );
     }
 
+    var fromToStyle;
+    if (this.state.windowIsLandscape) {
+      fromToStyle = { fontWeight: "bold", fontSize: "18px" };
+    } else {
+      fromToStyle = { fontWeight: "bold", fontSize: "14px" };
+    }
+
     return (
       <div className="mainContainer">
-        <h1 className="pageHeader">Bank</h1>
-        <div className="Bank_menuButtons">
+        <h1 className="pageHeader">Virtual Bank</h1>
+        <div className="VirtualBank_menuButtons">
+          {/* <Icon
+            type="smile"
+            style={{ fontSize: "50px", color: this.state.smileyColor }}
+            onClick={this.animateSmiley}
+          ></Icon> */}
           <AddPlayerButton
             windowIsLandscape={this.state.windowIsLandscape}
             toggleModalVisible={this.toggleAddPlayerModalVisible}
@@ -239,16 +390,22 @@ class Bank extends React.Component {
             toggleModalVisible={this.toggleLoadModalVisible}
           ></LoadButton>
         </div>
-        <table align="center" className="Bank_table">
+        <table
+          align="center"
+          className="VirtualBank_table"
+          key={this.state.loadedBankToggle}
+        >
           <thead>
             <tr>
-              <th>FROM</th>
-              <th className="Bank_middleTableHeader">
+              <th style={fromToStyle}>FROM</th>
+              <th className="VirtualBank_middleTableHeader">
                 <TransferArrow
+                  transferEnabled={this.state.transferEnabled}
+                  handleClick={this.transferMoney}
                   windowIsLandscape={this.state.windowIsLandscape}
                 ></TransferArrow>
               </th>
-              <th>TO</th>
+              <th style={fromToStyle}>TO</th>
             </tr>
           </thead>
           <tbody>
@@ -262,6 +419,8 @@ class Bank extends React.Component {
                 selected={player.selected}
                 toggleSelected={this.togglePlayerSelected}
                 windowIsLandscape={this.state.windowIsLandscape}
+                removePlayersEnable={this.state.removePlayersEnable}
+                removePlayer={this.removePlayer}
               ></PlayerElement>
             ))}
           </tbody>
@@ -342,12 +501,12 @@ class Bank extends React.Component {
                   title={"Delete " + bank.title + " ?"}
                   onConfirm={() => this.deleteSavedBank(bank.title, index)}
                 >
-                  <Icon
-                    type="close-circle"
-                    theme="twoTone"
-                    twoToneColor="#fc9999"
-                    style={{ margin: "5px", fontSize: "20px" }}
-                  ></Icon>
+                  <div style={{ display: "inline-block", marginLeft: "5px" }}>
+                    <DeleteButton
+                      windowIsLandscape={this.props.windowIsLandscape}
+                      handleClick={this.nullFunction}
+                    ></DeleteButton>
+                  </div>
                 </Popconfirm>
               </div>
             ))}

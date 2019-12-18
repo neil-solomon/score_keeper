@@ -9,7 +9,7 @@ import DiceRoller from "./DiceRoller/index.js";
 import RiskDiceRoller from "./RiskDiceRoller/index.js";
 import TicTacGrow from "./TicTacGrow/index.js";
 import NavBar from "./NavBar/index.js";
-import Bank from "./Bank/index.js";
+import VirtualBank from "./VirtualBank/index.js";
 //import TestChart from "./TestChart/index.js";
 
 function App() {
@@ -26,7 +26,7 @@ function App() {
           <Route exact path="/Scoreboard" component={Scoreboard} />
           <Route exact path="/RiskDiceRoller" component={RiskDiceRoller} />
           <Route exact path="/TicTacGrow" component={TicTacGrow} />
-          <Route exact path="/Bank" component={Bank} />
+          <Route exact path="/VirtualBank" component={VirtualBank} />
         </div>
       </HashRouter>
     </div>

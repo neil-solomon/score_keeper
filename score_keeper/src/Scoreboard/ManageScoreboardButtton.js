@@ -20,7 +20,10 @@ class ManageScoreboardButtton extends React.Component {
 
   render() {
     var style;
-    if (this.state.hover || this.props.activated) {
+    if (
+      (this.state.hover && this.props.windowIsLandscape) ||
+      this.props.activated
+    ) {
       style = this.hoverStyle;
     } else {
       style = this.style;

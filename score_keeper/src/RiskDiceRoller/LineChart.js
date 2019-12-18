@@ -38,7 +38,7 @@ class LineChart extends React.Component {
           tickPadding: 5,
           tickRotation: 0,
           legend: "Armies Remaining",
-          legendOffset: -30,
+          legendOffset: -40,
           legendPosition: "middle"
         }}
         colors={["hsl(0,75%,50%)", "hsl(250,75%,50%)"]}

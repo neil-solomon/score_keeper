@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Modal, Icon, Popconfirm, Radio, notification } from "antd";
 import "./Scoreboard.css";
 import LineChart from "./LineChart.js";
-import LoadButton from "./LoadButton.js";
+import LoadScoreboardButton from "./LoadScoreboardButton.js";
 import PlayerElement from "./PlayerElement";
 import RoundElement from "./RoundElement.js";
 import ManageScoreboardButtton from "./ManageScoreboardButtton.js";
@@ -37,7 +37,6 @@ class Scoreboard extends React.Component {
     highScoreWinsRadio: 0,
     deleteUsersActivated: false,
     deleteRoundsActivated: false,
-    notificationEnable: true,
     windowIsLandscape: true
   };
 
@@ -106,7 +105,7 @@ class Scoreboard extends React.Component {
         // high score wins
         if (
           newLeaderboard[2] >= this.state.gameLimit &&
-          this.state.notificationEnable
+          this.state.windowIsLandscape
         ) {
           winner = true;
           notification["warning"]({
@@ -123,7 +122,7 @@ class Scoreboard extends React.Component {
         winner = true;
         if (
           newLeaderboard[2] >= this.state.gameLimit &&
-          this.state.notificationEnable
+          this.state.windowIsLandscape
         ) {
           winner = true;
           notification["warning"]({
@@ -142,7 +141,7 @@ class Scoreboard extends React.Component {
         // high score wins
         if (
           points.length >= this.state.gameLimit &&
-          this.state.notificationEnable
+          this.state.windowIsLandscape
         ) {
           winner = true;
           notification["warning"]({
@@ -158,7 +157,7 @@ class Scoreboard extends React.Component {
         // low score wins
         if (
           points.length >= this.state.gameLimit &&
-          this.state.notificationEnable
+          this.state.windowIsLandscape
         ) {
           winner = true;
           notification["warning"]({
@@ -177,7 +176,7 @@ class Scoreboard extends React.Component {
       if (
         newLeaderboard[0] !== oldLeaderboard[0] &&
         !winner &&
-        this.state.notificationEnable
+        this.state.windowIsLandscape
       ) {
         notification["warning"]({
           message: newLeaderboard[0] + " takes the lead!",
@@ -190,7 +189,7 @@ class Scoreboard extends React.Component {
       } else if (
         newLeaderboard[1] !== oldLeaderboard[1] &&
         !winner &&
-        this.state.notificationEnable
+        this.state.windowIsLandscape
       ) {
         notification["warning"]({
           message: newLeaderboard[1] + " falls to last place!",
@@ -205,7 +204,7 @@ class Scoreboard extends React.Component {
       if (
         newLeaderboard[1] !== oldLeaderboard[1] &&
         !winner &&
-        this.state.notificationEnable
+        this.state.windowIsLandscape
       ) {
         notification["warning"]({
           message: newLeaderboard[1] + " takes the lead!",
@@ -218,7 +217,7 @@ class Scoreboard extends React.Component {
       } else if (
         newLeaderboard[0] !== oldLeaderboard[0] &&
         !winner &&
-        this.state.notificationEnable
+        this.state.windowIsLandscape
       ) {
         notification["warning"]({
           message: newLeaderboard[0] + " falls to last place!",
@@ -906,24 +905,28 @@ class Scoreboard extends React.Component {
                   description="Add a player."
                   activated={false}
                   handleClick={this.addPlayer}
+                  windowIsLandscape={this.state.windowIsLandscape}
                 ></ManageScoreboardButtton>
                 <ManageScoreboardButtton
                   type="usergroup-delete"
                   description="Remove players."
                   activated={this.state.deleteUsersActivated}
                   handleClick={this.toggleDeleteUsersActivated}
+                  windowIsLandscape={this.state.windowIsLandscape}
                 ></ManageScoreboardButtton>
                 <ManageScoreboardButtton
                   type="plus-circle"
                   description="Add a round."
                   activated={false}
                   handleClick={this.addRound}
+                  windowIsLandscape={this.state.windowIsLandscape}
                 ></ManageScoreboardButtton>
                 <ManageScoreboardButtton
                   type="minus-circle"
                   description="Remove rounds."
                   activated={this.state.deleteRoundsActivated}
                   handleClick={this.toggleDeleteRoundsActivated}
+                  windowIsLandscape={this.state.windowIsLandscape}
                 ></ManageScoreboardButtton>
               </th>
               {emptyScoreboard}
@@ -976,14 +979,15 @@ class Scoreboard extends React.Component {
             <br></br>
             {this.state.scoreboardsList.map((scoreboard, index) => (
               <div key={"loadButton" + index}>
-                <LoadButton
+                <LoadScoreboardButton
                   key={"scoreboard-" + index.toString()}
                   id={index}
                   name={scoreboard.title}
                   dateModified={scoreboard.dateModified}
-                  activated={this.state.scoreboardsList[index].selected}
+                  selected={this.state.scoreboardsList[index].selected}
                   onClick={this.loadButtonSelect}
-                ></LoadButton>
+                  windowIsLandscape={this.state.windowIsLandscape}
+                ></LoadScoreboardButton>
                 <Popconfirm
                   title={"Delete " + scoreboard.title + " ?"}
                   onConfirm={() =>

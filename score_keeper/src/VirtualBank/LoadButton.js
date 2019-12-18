@@ -1,17 +1,19 @@
 import React from "react";
 import { Icon } from "antd";
-import "./Bank.css";
+import "./VirtualBank.css";
 
-class RemovePlayersButton extends React.Component {
-  state = { className: "Bank_addPlayerButton" };
+class LoadButton extends React.Component {
+  state = { className: "VirtualBank_saveLoadButton" };
 
   changeClassName = className => {
+    if (!this.props.windowIsLandscape) {
+      return;
+    }
     this.setState({ className: className });
   };
 
   handleClick = () => {
-    this.props.toggleRemovePlayers();
-    this.changeClassName("Bank_addPlayerButtonClicked");
+    this.props.toggleModalVisible();
   };
 
   render() {
@@ -35,12 +37,12 @@ class RemovePlayersButton extends React.Component {
         className={this.state.className}
       >
         <Icon
-          type="usergroup-delete"
+          type="hdd"
           onMouseEnter={() =>
-            this.changeClassName("Bank_addPlayerButtonHoverIn")
+            this.changeClassName("VirtualBank_saveLoadButtonHoverIn")
           }
           onMouseLeave={() =>
-            this.changeClassName("Bank_addPlayerButtonHoverOut")
+            this.changeClassName("VirtualBank_saveLoadButtonHoverOut")
           }
           onClick={this.handleClick}
         ></Icon>
@@ -49,4 +51,4 @@ class RemovePlayersButton extends React.Component {
   }
 }
 
-export default RemovePlayersButton;
+export default LoadButton;

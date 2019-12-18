@@ -1,9 +1,9 @@
 import React from "react";
 import { Icon } from "antd";
-import "./Bank.css";
+import "./VirtualBank.css";
 
-class LoadButton extends React.Component {
-  state = { className: "Bank_saveLoadButton" };
+class AddPlayerButton extends React.Component {
+  state = { className: "VirtualBank_addPlayerButton" };
 
   changeClassName = className => {
     this.setState({ className: className });
@@ -34,12 +34,12 @@ class LoadButton extends React.Component {
         className={this.state.className}
       >
         <Icon
-          type="hdd"
+          type="user-add"
           onMouseEnter={() =>
-            this.changeClassName("Bank_saveLoadButtonHoverIn")
+            this.changeClassName("VirtualBank_addPlayerButtonHoverIn")
           }
           onMouseLeave={() =>
-            this.changeClassName("Bank_saveLoadButtonHoverOut")
+            this.changeClassName("VirtualBank_addPlayerButtonHoverOut")
           }
           onClick={this.handleClick}
         ></Icon>
@@ -48,4 +48,4 @@ class LoadButton extends React.Component {
   }
 }
 
-export default LoadButton;
+export default AddPlayerButton;

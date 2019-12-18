@@ -1,6 +1,6 @@
 .TicTacGrow_table {
   animation-name: fadeIn;
-  animation-duration: 3s;
+  animation-duration: 2.5s;
   width: 80vh;
   height: 80vh;
 }
@@ -26,8 +26,7 @@
   font-weight: bold;
   border: 1px double black;
   background-color: rgb(255, 255, 255, 1);
-  animation-name: newCell;
-  animation-duration: 1s;
+  animation: newCell 0.5s;
 }
 
 .TicTacGrow_cellWinner {
@@ -56,10 +55,15 @@
 }
 
 @keyframes newCell {
-  from {
+  0% {
+    border: 1px double rgb(205, 205, 205);
+    background-color: rgb(205, 205, 205);
+  }
+  50% {
+    border: 1px double black;
     background-color: red;
   }
-  to {
+  100% {
     background-color: white;
   }
 }

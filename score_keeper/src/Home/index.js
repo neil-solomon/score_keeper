@@ -5,6 +5,7 @@ import scoreboard from "./images/scoreboard.jpg";
 import dice from "./images/dice.jpg";
 import risk from "./images/risk.jpg";
 import tictactoe from "./images/tictactoe.png";
+import money from "./images/money.jpg";
 
 class Home extends React.Component {
   render() {
@@ -57,6 +58,15 @@ class Home extends React.Component {
           how many X's or O's in a row it takes to win and how big you
           want the board to grow. The possibilities are nearly endless
           and the results are entirely unpredictable!"
+        ></Article>
+        <Article
+          title="Virtual Bank"
+          link="./#/VirtualBank"
+          image={money}
+          imageAdjust="-30vw"
+          description="Did you spill beer all over your Monopoly money AGAIN?! Use
+          the Game Night! Virtual Bank to keep track of all of your players money
+          and never have to make change or do math again!"
         ></Article>
       </div>
     );

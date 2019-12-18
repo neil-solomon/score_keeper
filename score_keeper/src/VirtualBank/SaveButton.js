@@ -1,11 +1,14 @@
 import React from "react";
 import { Icon } from "antd";
-import "./Bank.css";
+import "./VirtualBank.css";
 
 class SaveButton extends React.Component {
-  state = { className: "Bank_saveLoadButton" };
+  state = { className: "VirtualBank_saveLoadButton" };
 
   changeClassName = className => {
+    if (!this.props.windowIsLandscape) {
+      return;
+    }
     this.setState({ className: className });
   };
 
@@ -36,10 +39,10 @@ class SaveButton extends React.Component {
         <Icon
           type="save"
           onMouseEnter={() =>
-            this.changeClassName("Bank_saveLoadButtonHoverIn")
+            this.changeClassName("VirtualBank_saveLoadButtonHoverIn")
           }
           onMouseLeave={() =>
-            this.changeClassName("Bank_saveLoadButtonHoverOut")
+            this.changeClassName("VirtualBank_saveLoadButtonHoverOut")
           }
           onClick={this.handleClick}
         ></Icon>

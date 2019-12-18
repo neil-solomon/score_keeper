@@ -53,6 +53,131 @@
   animation-duration: 1s;
 }
 
+.Scoreboard_loadScoreboardButton {
+  border-color: rgb(0, 150, 255, 0.5);
+  background-color: rgb(0, 150, 255, 0.25);
+  color: (0, 0, 0, 0.8);
+}
+
+.Scoreboard_loadScoreboardButtonHoverIn {
+  animation: loadScoreboardButtonHoverIn 0.5s forwards;
+}
+
+.Scoreboard_loadScoreboardButtonHoverOut {
+  animation: loadScoreboardButtonHoverOut 0.5s forwards;
+}
+
+.Scoreboard_loadScoreboardButtonClickOnLandscape {
+  animation: loadScoreboardButtonClickOnLandscape 0.5s forwards;
+}
+
+.Scoreboard_loadScoreboardButtonClickOffLandscape {
+  animation: loadScoreboardButtonClickOffLandscape 0.5s forwards;
+}
+
+.Scoreboard_loadScoreboardButtonClickOnPortrait {
+  animation: loadScoreboardButtonClickOnPortrait 0.5s forwards;
+}
+
+.Scoreboard_loadScoreboardButtonClickOffPortrait {
+  animation: loadScoreboardButtonClickOffPortrait 0.5s forwards;
+}
+
+.Scoreboard_loadScoreboardButtonClickOffNoHover {
+  animation: loadScoreboardButtonClickOffNoHover 0.5s forwards;
+}
+
+@keyframes loadScoreboardButtonClickOffNoHover {
+  0% {
+    border-color: rgb(0, 150, 255, 1);
+    background-color: rgb(0, 150, 255, 0.5);
+    color: rgb(0, 50, 255);
+  }
+  100% {
+    border-color: rgb(0, 150, 255, 0.75);
+    background-color: rgb(0, 150, 255, 0.25);
+    color: (0, 0, 0, 0.8);
+  }
+}
+
+@keyframes loadScoreboardButtonClickOnLandscape {
+  0% {
+    border-color: rgb(0, 150, 255, 0.75);
+    background-color: rgb(0, 150, 255, 0.25);
+    color: rgb(0, 50, 255);
+  }
+  100% {
+    border-color: rgb(0, 150, 255, 1);
+    background-color: rgb(0, 150, 255, 0.5);
+    color: rgb(0, 50, 255);
+  }
+}
+
+@keyframes loadScoreboardButtonClickOffLandscape {
+  0% {
+    border-color: rgb(0, 150, 255, 1);
+    background-color: rgb(0, 150, 255, 0.5);
+    color: rgb(0, 50, 255);
+  }
+  100% {
+    border-color: rgb(0, 150, 255, 0.75);
+    background-color: rgb(0, 150, 255, 0.25);
+    color: rgb(0, 50, 255);
+  }
+}
+
+@keyframes loadScoreboardButtonClickOnPortrait {
+  0% {
+    border-color: rgb(0, 150, 255, 0.75);
+    background-color: rgb(0, 150, 255, 0.25);
+    color: (0, 0, 0, 0.8);
+  }
+  100% {
+    border-color: rgb(0, 150, 255, 1);
+    background-color: rgb(0, 150, 255, 0.5);
+    color: rgb(0, 50, 255);
+  }
+}
+
+@keyframes loadScoreboardButtonClickOffPortrait {
+  0% {
+    border-color: rgb(0, 150, 255, 1);
+    background-color: rgb(0, 150, 255, 0.5);
+    color: rgb(0, 50, 255);
+  }
+  100% {
+    border-color: rgb(0, 150, 255, 0.75);
+    background-color: rgb(0, 150, 255, 0.25);
+    color: (0, 0, 0, 0.8);
+  }
+}
+
+@keyframes loadScoreboardButtonHoverIn {
+  0% {
+    border-color: rgb(0, 150, 255, 0.5);
+    background-color: rgb(0, 150, 255, 0.25);
+    color: (0, 0, 0, 0.8);
+  }
+  100% {
+    border-color: rgb(0, 150, 255, 0.75);
+    background-color: rgb(0, 150, 255, 0.25);
+    color: rgb(0, 50, 255);
+  }
+}
+
+@keyframes loadScoreboardButtonHoverOut {
+  0% {
+    border-color: rgb(0, 150, 255, 0.75);
+    background-color: rgb(0, 150, 255, 0.25);
+    color: rgb(0, 50, 255);
+  }
+  100% {
+    border-color: rgb(0, 150, 255, 0.5);
+    background-color: rgb(0, 150, 255, 0.25);
+    color: (0, 0, 0, 0.8);
+  }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -69,6 +194,7 @@
 
   .Scoreboard_scoreboardLineChart {
     display: block;
+    margin-left: 2.5vw;
     width: 95vw;
     height: 40vw;
   }

@@ -1,8 +1,8 @@
 import React from "react";
 
-class LoadBankButton extends React.Component {
+class LoadScoreboardButton extends React.Component {
   state = {
-    className: "Bank_loadBankButton",
+    className: "Scoreboard_loadScoreboardButton",
     hover: false
   };
 
@@ -36,20 +36,22 @@ class LoadBankButton extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.selected && !this.props.selected && !this.state.hover) {
-      this.setState({ className: "Bank_loadBankButtonClickOffNoHover" });
+      this.setState({
+        className: "Scoreboard_loadScoreboardButtonClickOffNoHover"
+      });
     }
   }
 
   handleHoverIn = () => {
     if (this.props.windowIsLandscape && !this.props.selected) {
-      this.setState({ className: "Bank_loadBankButtonHoverIn" });
+      this.setState({ className: "Scoreboard_loadScoreboardButtonHoverIn" });
     }
     this.setState({ hover: true });
   };
 
   handleHoverOut = () => {
     if (this.props.windowIsLandscape && !this.props.selected) {
-      this.setState({ className: "Bank_loadBankButtonHoverOut" });
+      this.setState({ className: "Scoreboard_loadScoreboardButtonHoverOut" });
     }
     this.setState({ hover: false });
   };
@@ -57,15 +59,23 @@ class LoadBankButton extends React.Component {
   handleClick = () => {
     if (this.props.selected) {
       if (this.props.windowIsLandscape) {
-        this.setState({ className: "Bank_loadBankButtonClickOffLandscape" });
+        this.setState({
+          className: "Scoreboard_loadScoreboardButtonClickOffLandscape"
+        });
       } else {
-        this.setState({ className: "Bank_loadBankButtonClickOffPortrait" });
+        this.setState({
+          className: "Scoreboard_loadScoreboardButtonClickOffPortrait"
+        });
       }
     } else {
       if (this.props.windowIsLandscape) {
-        this.setState({ className: "Bank_loadBankButtonClickOnLandscape" });
+        this.setState({
+          className: "Scoreboard_loadScoreboardButtonClickOnLandscape"
+        });
       } else {
-        this.setState({ className: "Bank_loadBankButtonClickOnPortrait" });
+        this.setState({
+          className: "Scoreboard_loadScoreboardButtonClickOnPortrait"
+        });
       }
     }
     this.props.onClick(this.props.id);
@@ -95,4 +105,4 @@ class LoadBankButton extends React.Component {
   }
 }
 
-export default LoadBankButton;
+export default LoadScoreboardButton;

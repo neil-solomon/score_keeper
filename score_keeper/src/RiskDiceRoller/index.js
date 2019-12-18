@@ -357,7 +357,7 @@ class RiskDiceRoller extends React.Component {
       keepRollingButton = (
         <span className="RiskDiceRoller_menuItem">
           <Button
-            type="seconday"
+            type="secondary"
             onClick={this.clearRollDiceInterval}
             className="menuButton"
           >
@@ -372,9 +372,17 @@ class RiskDiceRoller extends React.Component {
       );
     }
 
-    var vpButtonType, probabilitiesViewA, probabilitiesViewD;
+    var viewProbsButton, probabilitiesViewA, probabilitiesViewD;
     if (this.state.viewProbabilities) {
-      vpButtonType = "primary";
+      viewProbsButton = (
+        <Button
+          type="primary"
+          onClick={this.toggleProbabilities}
+          className="menuButton"
+        >
+          Hide Probabilities
+        </Button>
+      );
       probabilitiesViewA = (
         <div
           className="RiskDiceRoller_probabilities"
@@ -404,7 +412,15 @@ class RiskDiceRoller extends React.Component {
         </div>
       );
     } else {
-      vpButtonType = "secondary";
+      viewProbsButton = (
+        <Button
+          type="secondary"
+          onClick={this.toggleProbabilities}
+          className="menuButton"
+        >
+          View Probabilities
+        </Button>
+      );
       probabilitiesViewA = <div className="RiskDiceRoller_probabilities"></div>;
       probabilitiesViewD = <div className="RiskDiceRoller_probabilities"></div>;
     }
@@ -430,15 +446,7 @@ class RiskDiceRoller extends React.Component {
             </Button>{" "}
           </div>
           {keepRollingButton}
-          <div className="RiskDiceRoller_menuItem">
-            <Button
-              type={vpButtonType}
-              onClick={this.toggleProbabilities}
-              className="menuButton"
-            >
-              View Probabilities
-            </Button>
-          </div>
+          <div className="RiskDiceRoller_menuItem">{viewProbsButton}</div>
         </div>
         <table className="RiskDiceRoller_table" align="center">
           <thead>
