@@ -34,8 +34,8 @@
 }
 
 .VirtualBank_table {
-  margin-left: 20vw;
-  margin-right: 20vw;
+  margin-left: none;
+  margin-right: none;
   animation: fadeIn 1s;
 }
 
@@ -269,7 +269,7 @@
 
 .VirtualBank_loadBankButton {
   border-color: rgb(0, 150, 255, 0.5);
-  background-color: rgb(0, 150, 255, 0.25);
+  background-color: rgb(0, 150, 255, 0.15);
   color: (0, 0, 0, 0.8);
 }
 
@@ -309,7 +309,7 @@
   }
   100% {
     border-color: rgb(0, 150, 255, 0.75);
-    background-color: rgb(0, 150, 255, 0.25);
+    background-color: rgb(0, 150, 255, 0.15);
     color: (0, 0, 0, 0.8);
   }
 }
@@ -343,7 +343,7 @@
 @keyframes loadBankButtonClickOnPortrait {
   0% {
     border-color: rgb(0, 150, 255, 0.75);
-    background-color: rgb(0, 150, 255, 0.25);
+    background-color: rgb(0, 150, 255, 0.15);
     color: (0, 0, 0, 0.8);
   }
   100% {
@@ -361,7 +361,7 @@
   }
   100% {
     border-color: rgb(0, 150, 255, 0.75);
-    background-color: rgb(0, 150, 255, 0.25);
+    background-color: rgb(0, 150, 255, 0.15);
     color: (0, 0, 0, 0.8);
   }
 }
@@ -369,7 +369,7 @@
 @keyframes loadBankButtonHoverIn {
   0% {
     border-color: rgb(0, 150, 255, 0.5);
-    background-color: rgb(0, 150, 255, 0.25);
+    background-color: rgb(0, 150, 255, 0.15);
     color: (0, 0, 0, 0.8);
   }
   100% {
@@ -387,7 +387,7 @@
   }
   100% {
     border-color: rgb(0, 150, 255, 0.5);
-    background-color: rgb(0, 150, 255, 0.25);
+    background-color: rgb(0, 150, 255, 0.15);
     color: (0, 0, 0, 0.8);
   }
 }

@@ -55,7 +55,7 @@
 
 .Scoreboard_loadScoreboardButton {
   border-color: rgb(0, 150, 255, 0.5);
-  background-color: rgb(0, 150, 255, 0.25);
+  background-color: rgb(0, 150, 255, 0.15);
   color: (0, 0, 0, 0.8);
 }
 
@@ -95,7 +95,7 @@
   }
   100% {
     border-color: rgb(0, 150, 255, 0.75);
-    background-color: rgb(0, 150, 255, 0.25);
+    background-color: rgb(0, 150, 255, 0.15);
     color: (0, 0, 0, 0.8);
   }
 }
@@ -129,7 +129,7 @@
 @keyframes loadScoreboardButtonClickOnPortrait {
   0% {
     border-color: rgb(0, 150, 255, 0.75);
-    background-color: rgb(0, 150, 255, 0.25);
+    background-color: rgb(0, 150, 255, 0.15);
     color: (0, 0, 0, 0.8);
   }
   100% {
@@ -147,7 +147,7 @@
   }
   100% {
     border-color: rgb(0, 150, 255, 0.75);
-    background-color: rgb(0, 150, 255, 0.25);
+    background-color: rgb(0, 150, 255, 0.15);
     color: (0, 0, 0, 0.8);
   }
 }
@@ -155,7 +155,7 @@
 @keyframes loadScoreboardButtonHoverIn {
   0% {
     border-color: rgb(0, 150, 255, 0.5);
-    background-color: rgb(0, 150, 255, 0.25);
+    background-color: rgb(0, 150, 255, 0.15);
     color: (0, 0, 0, 0.8);
   }
   100% {
@@ -173,7 +173,7 @@
   }
   100% {
     border-color: rgb(0, 150, 255, 0.5);
-    background-color: rgb(0, 150, 255, 0.25);
+    background-color: rgb(0, 150, 255, 0.15);
     color: (0, 0, 0, 0.8);
   }
 }
