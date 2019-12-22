@@ -18,7 +18,9 @@ class TicTacGrow extends React.Component {
       height: "4vh",
       width: "4vh"
     },
-    gridNotInitialized: true
+    gridNotInitialized: true,
+    playingComputer: false,
+    computerMoveTimeout: null
   };
 
   buttonStyle = {
@@ -43,6 +45,7 @@ class TicTacGrow extends React.Component {
   componentWillUnmount() {
     clearInterval(this.state.randomClicksInterval);
     window.removeEventListener("resize", this.resizeGrid);
+    clearTimeout(this.state.computerMoveTimeout);
   }
 
   resizeGrid = () => {
@@ -207,6 +210,9 @@ class TicTacGrow extends React.Component {
     if (this.state.someoneWon) {
       return;
     }
+    if (this.state.playingComputer && !this.state.player1Turn) {
+      return;
+    }
     var grid = [...this.state.grid];
     if (
       !grid[row][column].exists ||
@@ -222,10 +228,280 @@ class TicTacGrow extends React.Component {
       grid[row][column].player2 = true;
       grid[row][column].text = "O";
     }
+
     this.checkForWinner(grid);
+    // for (let i = this.state.numToWin; i >= 3; --i) {
+    //   var longRuns = this.findLongRuns(i);
+    //   console.log(i, longRuns);
+    // }
     this.setState({ grid });
     this.setState({ player1Turn: !this.state.player1Turn });
     this.addCell();
+    if (this.state.playingComputer && this.state.player1Turn) {
+      var computerMoveTimeout = setTimeout(
+        () => this.makeComputerMove(row, column),
+        2000
+      );
+      this.setState({ computerMoveTimeout });
+    }
+  };
+
+  makeComputerMove = (player1Row, player1Col) => {
+    if (this.state.someoneWon) {
+      return;
+    }
+    var grid = [...this.state.grid];
+
+    var computerDidntPlay = true;
+
+    for (let i = this.state.numToWin; i >= 3; --i) {
+      var longRuns = this.findLongRuns(i);
+      console.log(longRuns);
+      if (longRuns.player2.length !== 0) {
+        var ix;
+        if (longRuns.player2.length === 1) {
+          ix = 0;
+        } else {
+          ix = Math.round(Math.random() * 1000000) % longRuns.player2.length;
+        }
+        grid[longRuns.player2[ix][0]][longRuns.player2[ix][1]].player2 = true;
+        grid[longRuns.player2[ix][0]][longRuns.player2[ix][1]].text = "O";
+        computerDidntPlay = false;
+        console.log("extendLongRun", longRuns.player2[ix]);
+        break;
+      }
+      if (longRuns.player1.length !== 0) {
+        var ix;
+        if (longRuns.player1.length === 1) {
+          ix = 0;
+        } else {
+          ix = Math.round(Math.random() * 1000000) % longRuns.player1.length;
+        }
+        grid[longRuns.player1[ix][0]][longRuns.player1[ix][1]].player2 = true;
+        grid[longRuns.player1[ix][0]][longRuns.player1[ix][1]].text = "O";
+        computerDidntPlay = false;
+        console.log("blockLongRun", longRuns.player1[ix]);
+        break;
+      }
+    }
+
+    if (computerDidntPlay) {
+      // Pick random cell of the cells closest to the center
+      var candidateCells = [];
+      for (let i = 0; i < grid.length; ++i) {
+        for (let j = 0; j < grid.length; ++j) {
+          if (grid[i][j].exists && !grid[i][j].player1 && !grid[i][j].player2) {
+            candidateCells.push([i, j]);
+          }
+        }
+      }
+      var minDistFromCenter = Math.sqrt(2 * Math.pow(grid.length, 2)),
+        candidateCellsMinDist = [];
+      for (let i = 0; i < candidateCells.length - 1; ++i) {
+        var distFromCenter = Math.sqrt(
+          Math.pow(candidateCells[i][0] - Math.round(grid.length / 2), 2) +
+            Math.pow(candidateCells[i][1] - Math.round(grid.length / 2), 2)
+        );
+        if (distFromCenter < minDistFromCenter) {
+          minDistFromCenter = distFromCenter;
+          candidateCellsMinDist = [];
+          candidateCellsMinDist.push(candidateCells[i]);
+        } else if (distFromCenter === minDistFromCenter) {
+          candidateCellsMinDist.push(candidateCells[i]);
+        }
+      }
+      if (candidateCellsMinDist.length === 0) {
+        // grid is full, no moves available
+        return;
+      }
+      console.log("closest", candidateCellsMinDist);
+      var random =
+        Math.round(Math.random() * 1000000) % candidateCellsMinDist.length;
+      grid[candidateCellsMinDist[random][0]][
+        candidateCellsMinDist[random][1]
+      ].player2 = true;
+      grid[candidateCellsMinDist[random][0]][
+        candidateCellsMinDist[random][1]
+      ].text = "O";
+    }
+
+    this.checkForWinner(grid);
+    this.setState({ grid });
+    this.addCell();
+    this.setState({ player1Turn: !this.state.player1Turn });
+    clearTimeout(this.state.computerMoveTimeout);
+  };
+
+  findLongRuns = numCellsToCheck => {
+    var player1Count,
+      player2Count,
+      longRunsPlayer1 = [],
+      longRunsPlayer2 = [];
+
+    // check rows
+    for (let i = 0; i < this.state.grid.length; ++i) {
+      for (let j = 0; j <= this.state.grid.length - numCellsToCheck; ++j) {
+        if (this.state.grid[i][j].exists) {
+          player1Count = 0;
+          player2Count = 0;
+          for (let k = 0; k < numCellsToCheck; ++k) {
+            if (this.state.grid[i][j + k].player1) {
+              ++player1Count;
+            }
+            if (this.state.grid[i][j + k].player2) {
+              ++player2Count;
+            }
+          }
+          if (player1Count === numCellsToCheck - 1 && player2Count === 0) {
+            for (let k = 0; k < numCellsToCheck; ++k) {
+              // find empty cell
+              if (
+                !this.state.grid[i][j + k].player1 &&
+                this.state.grid[i][j + k].exists
+              ) {
+                longRunsPlayer1.push([i, j + k]);
+              }
+            }
+          }
+          if (player2Count === numCellsToCheck - 1 && player1Count === 0) {
+            for (let k = 0; k < numCellsToCheck; ++k) {
+              // find empty cell
+              if (
+                !this.state.grid[i][j + k].player2 &&
+                this.state.grid[i][j + k].exists
+              ) {
+                longRunsPlayer2.push([i, j + k]);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // check columns
+    for (let i = 0; i < this.state.grid.length; ++i) {
+      for (let j = 0; j <= this.state.grid.length - numCellsToCheck; ++j) {
+        if (this.state.grid[j][i].exists) {
+          player1Count = 0;
+          player2Count = 0;
+          for (let k = 0; k < numCellsToCheck; ++k) {
+            if (this.state.grid[j + k][i].player1) {
+              ++player1Count;
+            }
+            if (this.state.grid[j + k][i].player2) {
+              ++player2Count;
+            }
+          }
+          if (player1Count === numCellsToCheck - 1 && player2Count === 0) {
+            for (let k = 0; k < numCellsToCheck; ++k) {
+              // find empty cell
+              if (
+                !this.state.grid[j + k][i].player1 &&
+                this.state.grid[j + k][i].exists
+              ) {
+                longRunsPlayer1.push([j + k, i]);
+              }
+            }
+          }
+          if (player2Count === numCellsToCheck - 1 && player1Count === 0) {
+            for (let k = 0; k < numCellsToCheck; ++k) {
+              // find empty cell
+              if (
+                !this.state.grid[j + k][i].player2 &&
+                this.state.grid[j + k][i].exists
+              ) {
+                longRunsPlayer2.push([j + k, i]);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // check up diags
+    for (let i = numCellsToCheck - 1; i < this.state.grid.length; ++i) {
+      for (let j = 0; j <= this.state.grid.length - numCellsToCheck; ++j) {
+        if (this.state.grid[i][j].exists) {
+          player1Count = 0;
+          player2Count = 0;
+          for (let k = 0; k < numCellsToCheck; ++k) {
+            if (this.state.grid[i - k][j + k].player1) {
+              ++player1Count;
+            }
+            if (this.state.grid[i - k][j + k].player2) {
+              ++player2Count;
+            }
+          }
+          if (player1Count === numCellsToCheck - 1 && player2Count === 0) {
+            for (let k = 0; k < numCellsToCheck; ++k) {
+              // find empty cell
+              if (
+                this.state.grid[i - k][j + k].exists &&
+                !this.state.grid[i - k][j + k].player1
+              ) {
+                longRunsPlayer1.push([i - k, j + k]);
+              }
+            }
+          }
+          if (player2Count === numCellsToCheck - 1 && player1Count === 0) {
+            // find empty cell
+            for (let k = 0; k < numCellsToCheck; ++k) {
+              if (
+                this.state.grid[i - k][j + k].exists &&
+                !this.state.grid[i - k][j + k].player2
+              ) {
+                longRunsPlayer2.push([i - k, j + k]);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // check down diags
+    for (let i = 0; i <= this.state.grid.length - numCellsToCheck; ++i) {
+      for (let j = 0; j <= this.state.grid.length - numCellsToCheck; ++j) {
+        if (this.state.grid[i][j].exists) {
+          player1Count = 0;
+          player2Count = 0;
+          for (let k = 0; k < numCellsToCheck; ++k) {
+            if (this.state.grid[i + k][j + k].player1) {
+              ++player1Count;
+            }
+            if (this.state.grid[i + k][j + k].player2) {
+              ++player2Count;
+            }
+          }
+          if (player1Count === numCellsToCheck - 1 && player2Count === 0) {
+            for (let k = 0; k < numCellsToCheck; ++k) {
+              // find empty cell
+              if (
+                this.state.grid[i + k][j + k].exists &&
+                !this.state.grid[i + k][j + k].player1
+              ) {
+                longRunsPlayer1.push([i + k, j + k]);
+              }
+            }
+          }
+          if (player2Count === numCellsToCheck - 1 && player1Count === 0) {
+            // find empty cell
+            for (let k = 0; k < numCellsToCheck; ++k) {
+              if (
+                this.state.grid[i + k][j + k].exists &&
+                !this.state.grid[i + k][j + k].player2
+              ) {
+                longRunsPlayer2.push([i + k, j + k]);
+              }
+            }
+          }
+        }
+      }
+    }
+    var longRuns = {
+      player1: longRunsPlayer1,
+      player2: longRunsPlayer2
+    };
+    return longRuns;
   };
 
   startRandomClicks = () => {
@@ -496,12 +772,31 @@ class TicTacGrow extends React.Component {
     }
   };
 
+  changePlayingComputer = value => {
+    this.setState({ playingComputer: value });
+  };
+
   render() {
-    var boardMessage;
+    var boardMessage, player2, playComputerStyle, playHumanStyle;
+    if (this.state.playingComputer) {
+      player2 = "Computer";
+      playComputerStyle = {
+        color: "rgb(0, 100, 255)",
+        backgroundColor: "rgb(0, 200, 255, 0.5)"
+      };
+      playHumanStyle = {};
+    } else {
+      player2 = "Player 2";
+      playComputerStyle = {};
+      playHumanStyle = {
+        color: "rgb(0, 100, 255)",
+        backgroundColor: "rgb(0, 200, 255, 0.5)"
+      };
+    }
     if (this.state.player1Turn) {
       if (this.state.someoneWon) {
         boardMessage = (
-          <div className="TicTacGrow_turn">Player&nbsp;2&nbsp;Wins!!!</div>
+          <div className="TicTacGrow_turn">{player2}&nbsp;Wins!!!</div>
         );
       } else {
         boardMessage = (
@@ -515,7 +810,7 @@ class TicTacGrow extends React.Component {
         );
       } else {
         boardMessage = (
-          <div className="TicTacGrow_turn">Player&nbsp;2's&nbsp;Turn</div>
+          <div className="TicTacGrow_turn">{player2}'s&nbsp;Turn</div>
         );
       }
     }
@@ -541,16 +836,27 @@ class TicTacGrow extends React.Component {
                 this.initializeBoard(this.state.numToWin, this.state.gridSize)
               }
             >
-              Reset Board
+              New Game
             </Button>
           </div>
           <div className="TicTacGrow_menuButton">
             <Button
-              type="danger"
+              type="secondary"
               className="menuButton"
-              onClick={this.startRandomClicks}
+              style={playComputerStyle}
+              onClick={() => this.changePlayingComputer(true)}
             >
-              Random Clicks
+              Play Computer
+            </Button>
+          </div>
+          <div className="TicTacGrow_menuButton">
+            <Button
+              type="secondary"
+              className="menuButton"
+              style={playHumanStyle}
+              onClick={() => this.changePlayingComputer(false)}
+            >
+              Play Human
             </Button>
           </div>
           <div className="TicTacGrow_menuButton">
