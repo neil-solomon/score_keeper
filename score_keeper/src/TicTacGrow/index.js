@@ -12,7 +12,8 @@ class TicTacGrow extends React.Component {
     numToWin: 4,
     gridSize: 7,
     maxGridSize: 31,
-    someoneWon: false,
+    gameHasWinner: false,
+    gameIsDraw: false,
     cellExistsStyle: {
       fontSize: "2vh",
       height: "4vh",
@@ -146,7 +147,10 @@ class TicTacGrow extends React.Component {
     this.setState({ player1Turn: true });
     this.setState({ numToWin });
     this.setState({ gridSize });
-    this.setState({ someoneWon: false });
+    this.setState({ gameHasWinner: false });
+    this.setState({
+      gameIsDraw: false
+    });
     this.setState({ randomClicksInterval: "" });
     this.setState({ grid });
     this.setState({ candidateCells });
@@ -207,7 +211,7 @@ class TicTacGrow extends React.Component {
   };
 
   cellClick = (row, column) => {
-    if (this.state.someoneWon) {
+    if (this.state.gameHasWinner || this.state.gameIsDraw) {
       return;
     }
     if (this.state.playingComputer && !this.state.player1Turn) {
@@ -230,6 +234,7 @@ class TicTacGrow extends React.Component {
     }
 
     this.checkForWinner(grid);
+    this.checkForDraw(grid);
     // for (let i = this.state.numToWin; i >= 3; --i) {
     //   var longRuns = this.findLongRuns(i);
     //   console.log(i, longRuns);
@@ -247,7 +252,7 @@ class TicTacGrow extends React.Component {
   };
 
   makeComputerMove = (player1Row, player1Col) => {
-    if (this.state.someoneWon) {
+    if (this.state.gameHasWinner || this.state.gameIsDraw) {
       return;
     }
     var grid = [...this.state.grid];
@@ -326,6 +331,7 @@ class TicTacGrow extends React.Component {
     }
 
     this.checkForWinner(grid);
+    this.checkForDraw(grid);
     this.setState({ grid });
     this.addCell();
     this.setState({ player1Turn: !this.state.player1Turn });
@@ -617,7 +623,7 @@ class TicTacGrow extends React.Component {
         ].style = this.state.cellExistsStyle;
       }
       this.setState({ grid });
-      this.setState({ someoneWon: true });
+      this.setState({ gameHasWinner: true });
       clearInterval(this.state.randomClicksInterval);
       return;
     }
@@ -664,7 +670,7 @@ class TicTacGrow extends React.Component {
         ].style = this.state.cellExistsStyle;
       }
       this.setState({ grid });
-      this.setState({ someoneWon: true });
+      this.setState({ gameHasWinner: true });
       clearInterval(this.state.randomClicksInterval);
       return;
     }
@@ -715,7 +721,7 @@ class TicTacGrow extends React.Component {
         ].style = this.state.cellExistsStyle;
       }
       this.setState({ grid });
-      this.setState({ someoneWon: true });
+      this.setState({ gameHasWinner: true });
       clearInterval(this.state.randomClicksInterval);
       return;
     }
@@ -766,51 +772,88 @@ class TicTacGrow extends React.Component {
         ].style = this.state.cellExistsStyle;
       }
       this.setState({ grid });
-      this.setState({ someoneWon: true });
+      this.setState({ gameHasWinner: true });
       clearInterval(this.state.randomClicksInterval);
       return;
     }
   };
 
+  checkForDraw = grid => {
+    for (let i = 0; i < grid.length; ++i) {
+      for (let j = 0; j < grid.length; ++j) {
+        if (
+          !grid[i][j].exists ||
+          (!grid[i][j].player1 && !grid[i][j].player2)
+        ) {
+          return;
+        }
+      }
+    }
+    this.setState({ gameIsDraw: true });
+  };
+
   changePlayingComputer = value => {
+    this.initializeBoard(this.state.numToWin, this.state.gridSize);
     this.setState({ playingComputer: value });
   };
 
   render() {
-    var boardMessage, player2, playComputerStyle, playHumanStyle;
+    var player2, playComputerStyle, playHumanStyle;
     if (this.state.playingComputer) {
       player2 = "Computer";
       playComputerStyle = {
-        color: "rgb(0, 100, 255)",
-        backgroundColor: "rgb(0, 200, 255, 0.5)"
+        color: "rgb(0, 0, 255)",
+        backgroundColor: "rgb(0, 200, 255, .75)"
       };
       playHumanStyle = {};
     } else {
       player2 = "Player 2";
       playComputerStyle = {};
       playHumanStyle = {
-        color: "rgb(0, 100, 255)",
-        backgroundColor: "rgb(0, 200, 255, 0.5)"
+        color: "rgb(0, 0, 255)",
+        backgroundColor: "rgb(0, 200, 255, .75)"
       };
     }
+
+    var boardMessage;
     if (this.state.player1Turn) {
-      if (this.state.someoneWon) {
+      if (this.state.gameHasWinner) {
         boardMessage = (
-          <div className="TicTacGrow_turn">{player2}&nbsp;Wins!!!</div>
+          <div className="TicTacGrow_turnWinner" key={this.state.player1Turn}>
+            {player2}&nbsp;Wins!!!
+          </div>
+        );
+      } else if (this.state.gameIsDraw) {
+        boardMessage = (
+          <div className="TicTacGrow_turnWinner" key={this.state.player1Turn}>
+            It's a Draw!!!
+          </div>
         );
       } else {
         boardMessage = (
-          <div className="TicTacGrow_turn">Player&nbsp;1's&nbsp;Turn</div>
+          <div className="TicTacGrow_turn" key={this.state.player1Turn}>
+            Player&nbsp;1's&nbsp;Turn
+          </div>
         );
       }
     } else {
-      if (this.state.someoneWon) {
+      if (this.state.gameHasWinner) {
         boardMessage = (
-          <div className="TicTacGrow_turn">Player&nbsp;1&nbsp;Wins!!!</div>
+          <div className="TicTacGrow_turnWinner" key={this.state.player1Turn}>
+            Player&nbsp;1&nbsp;Wins!!!
+          </div>
+        );
+      } else if (this.state.gameIsDraw) {
+        boardMessage = (
+          <div className="TicTacGrow_turnWinner" key={this.state.player1Turn}>
+            It's a Draw!!!
+          </div>
         );
       } else {
         boardMessage = (
-          <div className="TicTacGrow_turn">{player2}'s&nbsp;Turn</div>
+          <div className="TicTacGrow_turn" key={this.state.player1Turn}>
+            {player2}'s&nbsp;Turn
+          </div>
         );
       }
     }
@@ -828,17 +871,15 @@ class TicTacGrow extends React.Component {
       <div className="mainContainer">
         <h1 className="pageHeader">Tic-Tac-Grow</h1>
         <div className="TicTacGrow_menuButtons">
-          <div className="TicTacGrow_menuButton">
+          {/* <div className="TicTacGrow_menuButton">
             <Button
-              type="primary"
+              type="danger"
               className="menuButton"
-              onClick={() =>
-                this.initializeBoard(this.state.numToWin, this.state.gridSize)
-              }
+              onClick={this.startRandomClicks}
             >
-              New Game
+              Random Clicks
             </Button>
-          </div>
+          </div> */}
           <div className="TicTacGrow_menuButton">
             <Button
               type="secondary"
@@ -857,6 +898,17 @@ class TicTacGrow extends React.Component {
               onClick={() => this.changePlayingComputer(false)}
             >
               Play Human
+            </Button>
+          </div>
+          <div className="TicTacGrow_menuButton">
+            <Button
+              type="primary"
+              className="menuButton"
+              onClick={() =>
+                this.initializeBoard(this.state.numToWin, this.state.gridSize)
+              }
+            >
+              New Game
             </Button>
           </div>
           <div className="TicTacGrow_menuButton">

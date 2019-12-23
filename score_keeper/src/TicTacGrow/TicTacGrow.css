@@ -7,8 +7,16 @@
 
 .TicTacGrow_turn {
   text-align: center;
-  margin: 5px;
-  font-size: 24px;
+  margin-top: 10px;
+  font-size: 26px;
+  animation: fadeIn 1s;
+}
+
+.TicTacGrow_turnWinner {
+  text-align: center;
+  margin: 10px;
+  font-size: 26px;
+  animation: turnWinner 1s infinite;
 }
 
 .TicTacGrow_menuButtons {
@@ -54,6 +62,18 @@
   }
 }
 
+@keyframes turnWinner {
+  0% {
+    color: black;
+  }
+  50% {
+    color: rgb(225, 225, 0);
+  }
+  100% {
+    color: black;
+  }
+}
+
 @keyframes newCell {
   0% {
     border: 1px double rgb(205, 205, 205);
@@ -85,12 +105,18 @@
     font-size: 14px;
     margin-left: 5px;
     margin-right: 5px;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin-top: 2.5px;
+    margin-bottom: 2.5px;
   }
 
   .TicTacGrow_turn {
-    font-size: 18px;
+    margin-top: 5px;
+    font-size: 20px;
+  }
+
+  .TicTacGrow_turnWinner {
+    margin-top: 5px;
+    font-size: 20px;
   }
 
   .TicTacGrow_table {
