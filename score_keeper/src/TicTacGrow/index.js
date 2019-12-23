@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Icon } from "antd";
+import { Button, Icon, Modal } from "antd";
 import "./TicTacGrow.css";
 
 class TicTacGrow extends React.Component {
@@ -7,10 +7,15 @@ class TicTacGrow extends React.Component {
     player1Turn: true,
     grid: [],
     candidateCells: [],
+    addingNewCell: false,
     boardReset: false,
     randomClicksInterval: "",
+    playingComputer: true,
     numToWin: 4,
     gridSize: 7,
+    playingComputerModal: true,
+    numToWinModal: 4,
+    gridSizeModal: 7,
     maxGridSize: 31,
     gameHasWinner: false,
     gameIsDraw: false,
@@ -20,8 +25,9 @@ class TicTacGrow extends React.Component {
       width: "4vh"
     },
     gridNotInitialized: true,
-    playingComputer: false,
-    computerMoveTimeout: null
+    computerMoveTimeout: null,
+    addCellTimeout: null,
+    newGameModalVisible: false
   };
 
   buttonStyle = {
@@ -44,9 +50,10 @@ class TicTacGrow extends React.Component {
   }
 
   componentWillUnmount() {
-    clearInterval(this.state.randomClicksInterval);
     window.removeEventListener("resize", this.resizeGrid);
+    clearInterval(this.state.randomClicksInterval);
     clearTimeout(this.state.computerMoveTimeout);
+    clearTimeout(this.state.addCellTimeout);
   }
 
   resizeGrid = () => {
@@ -160,10 +167,16 @@ class TicTacGrow extends React.Component {
 
   addCell = () => {
     if (this.state.numToWin === 3 && this.state.gridSize === 3) {
+      clearTimeout(this.state.addCellTimeout);
+      this.setState({ addingNewCell: false });
       return;
     }
     var candidateCells = [...this.state.candidateCells];
-    if (candidateCells.length < 1) return;
+    if (candidateCells.length < 1) {
+      clearTimeout(this.state.addCellTimeout);
+      this.setState({ addingNewCell: false });
+      return;
+    }
     var random = Math.round(Math.random() * 1000000) % candidateCells.length;
     var newCell = candidateCells[random];
     var grid = [...this.state.grid];
@@ -194,6 +207,8 @@ class TicTacGrow extends React.Component {
       }
     }
 
+    clearTimeout(this.state.addCellTimeout);
+    this.setState({ addingNewCell: false });
     this.setState({ grid });
     this.setState({ candidateCells });
   };
@@ -211,10 +226,12 @@ class TicTacGrow extends React.Component {
   };
 
   cellClick = (row, column) => {
-    if (this.state.gameHasWinner || this.state.gameIsDraw) {
-      return;
-    }
-    if (this.state.playingComputer && !this.state.player1Turn) {
+    if (
+      this.state.gameHasWinner ||
+      this.state.gameIsDraw ||
+      this.state.addingNewCell ||
+      (this.state.playingComputer && !this.state.player1Turn)
+    ) {
       return;
     }
     var grid = [...this.state.grid];
@@ -228,24 +245,28 @@ class TicTacGrow extends React.Component {
     if (this.state.player1Turn) {
       grid[row][column].player1 = true;
       grid[row][column].text = "X";
+      grid[row][column].className = "TicTacGrow_cellOccupied";
     } else {
       grid[row][column].player2 = true;
       grid[row][column].text = "O";
+      grid[row][column].className = "TicTacGrow_cellOccupied";
     }
 
     this.checkForWinner(grid);
     this.checkForDraw(grid);
-    // for (let i = this.state.numToWin; i >= 3; --i) {
+    // for (let i = this.state.numToWin - 1; i > 1; --i) {
     //   var longRuns = this.findLongRuns(i);
-    //   console.log(i, longRuns);
+    //   console.log(longRuns);
     // }
     this.setState({ grid });
     this.setState({ player1Turn: !this.state.player1Turn });
-    this.addCell();
+    var addCellTimeout = setTimeout(() => this.addCell(), 500);
+    this.setState({ addingNewCell: true });
+    this.setState({ addCellTimeout });
     if (this.state.playingComputer && this.state.player1Turn) {
       var computerMoveTimeout = setTimeout(
         () => this.makeComputerMove(row, column),
-        2000
+        3000
       );
       this.setState({ computerMoveTimeout });
     }
@@ -255,13 +276,13 @@ class TicTacGrow extends React.Component {
     if (this.state.gameHasWinner || this.state.gameIsDraw) {
       return;
     }
-    var grid = [...this.state.grid];
 
+    var grid = [...this.state.grid];
     var computerDidntPlay = true;
 
-    for (let i = this.state.numToWin; i >= 3; --i) {
+    for (let i = this.state.numToWin - 1; i > 1; --i) {
       var longRuns = this.findLongRuns(i);
-      console.log(longRuns);
+      //console.log(longRuns);
       if (longRuns.player2.length !== 0) {
         var ix;
         if (longRuns.player2.length === 1) {
@@ -271,6 +292,8 @@ class TicTacGrow extends React.Component {
         }
         grid[longRuns.player2[ix][0]][longRuns.player2[ix][1]].player2 = true;
         grid[longRuns.player2[ix][0]][longRuns.player2[ix][1]].text = "O";
+        grid[longRuns.player2[ix][0]][longRuns.player2[ix][1]].className =
+          "TicTacGrow_cellOccupied";
         computerDidntPlay = false;
         console.log("extendLongRun", longRuns.player2[ix]);
         break;
@@ -284,6 +307,8 @@ class TicTacGrow extends React.Component {
         }
         grid[longRuns.player1[ix][0]][longRuns.player1[ix][1]].player2 = true;
         grid[longRuns.player1[ix][0]][longRuns.player1[ix][1]].text = "O";
+        grid[longRuns.player1[ix][0]][longRuns.player1[ix][1]].className =
+          "TicTacGrow_cellOccupied";
         computerDidntPlay = false;
         console.log("blockLongRun", longRuns.player1[ix]);
         break;
@@ -304,8 +329,8 @@ class TicTacGrow extends React.Component {
         candidateCellsMinDist = [];
       for (let i = 0; i < candidateCells.length - 1; ++i) {
         var distFromCenter = Math.sqrt(
-          Math.pow(candidateCells[i][0] - Math.round(grid.length / 2), 2) +
-            Math.pow(candidateCells[i][1] - Math.round(grid.length / 2), 2)
+          Math.pow(candidateCells[i][0] - Math.floor(grid.length / 2), 2) +
+            Math.pow(candidateCells[i][1] - Math.floor(grid.length / 2), 2)
         );
         if (distFromCenter < minDistFromCenter) {
           minDistFromCenter = distFromCenter;
@@ -328,17 +353,25 @@ class TicTacGrow extends React.Component {
       grid[candidateCellsMinDist[random][0]][
         candidateCellsMinDist[random][1]
       ].text = "O";
+      grid[candidateCellsMinDist[random][0]][
+        candidateCellsMinDist[random][1]
+      ].className = "TicTacGrow_cellOccupied";
     }
 
     this.checkForWinner(grid);
     this.checkForDraw(grid);
     this.setState({ grid });
-    this.addCell();
+    var addCellTimeout = setTimeout(() => this.addCell(), 500);
+    this.setState({ addingNewCell: true });
+    this.setState({ addCellTimeout });
     this.setState({ player1Turn: !this.state.player1Turn });
     clearTimeout(this.state.computerMoveTimeout);
   };
 
-  findLongRuns = numCellsToCheck => {
+  findLongRuns = runSize => {
+    /* Find all runs of cells that contain runSize of player1 or player2,
+    and contain numToWin-runSize of empty cells. */
+
     var player1Count,
       player2Count,
       longRunsPlayer1 = [],
@@ -346,38 +379,36 @@ class TicTacGrow extends React.Component {
 
     // check rows
     for (let i = 0; i < this.state.grid.length; ++i) {
-      for (let j = 0; j <= this.state.grid.length - numCellsToCheck; ++j) {
-        if (this.state.grid[i][j].exists) {
-          player1Count = 0;
-          player2Count = 0;
-          for (let k = 0; k < numCellsToCheck; ++k) {
-            if (this.state.grid[i][j + k].player1) {
-              ++player1Count;
-            }
-            if (this.state.grid[i][j + k].player2) {
-              ++player2Count;
+      for (let j = 0; j <= this.state.grid.length - this.state.numToWin; ++j) {
+        player1Count = 0;
+        player2Count = 0;
+        for (let k = 0; k < this.state.numToWin; ++k) {
+          if (this.state.grid[i][j + k].player1) {
+            ++player1Count;
+          }
+          if (this.state.grid[i][j + k].player2) {
+            ++player2Count;
+          }
+        }
+        if (player1Count === runSize && player2Count === 0) {
+          for (let k = 0; k < this.state.numToWin; ++k) {
+            // find empty cells
+            if (
+              !this.state.grid[i][j + k].player1 &&
+              this.state.grid[i][j + k].exists
+            ) {
+              longRunsPlayer1.push([i, j + k]);
             }
           }
-          if (player1Count === numCellsToCheck - 1 && player2Count === 0) {
-            for (let k = 0; k < numCellsToCheck; ++k) {
-              // find empty cell
-              if (
-                !this.state.grid[i][j + k].player1 &&
-                this.state.grid[i][j + k].exists
-              ) {
-                longRunsPlayer1.push([i, j + k]);
-              }
-            }
-          }
-          if (player2Count === numCellsToCheck - 1 && player1Count === 0) {
-            for (let k = 0; k < numCellsToCheck; ++k) {
-              // find empty cell
-              if (
-                !this.state.grid[i][j + k].player2 &&
-                this.state.grid[i][j + k].exists
-              ) {
-                longRunsPlayer2.push([i, j + k]);
-              }
+        }
+        if (player2Count === runSize && player1Count === 0) {
+          for (let k = 0; k < this.state.numToWin; ++k) {
+            // find empty cell
+            if (
+              !this.state.grid[i][j + k].player2 &&
+              this.state.grid[i][j + k].exists
+            ) {
+              longRunsPlayer2.push([i, j + k]);
             }
           }
         }
@@ -386,38 +417,36 @@ class TicTacGrow extends React.Component {
 
     // check columns
     for (let i = 0; i < this.state.grid.length; ++i) {
-      for (let j = 0; j <= this.state.grid.length - numCellsToCheck; ++j) {
-        if (this.state.grid[j][i].exists) {
-          player1Count = 0;
-          player2Count = 0;
-          for (let k = 0; k < numCellsToCheck; ++k) {
-            if (this.state.grid[j + k][i].player1) {
-              ++player1Count;
-            }
-            if (this.state.grid[j + k][i].player2) {
-              ++player2Count;
+      for (let j = 0; j <= this.state.grid.length - this.state.numToWin; ++j) {
+        player1Count = 0;
+        player2Count = 0;
+        for (let k = 0; k < this.state.numToWin; ++k) {
+          if (this.state.grid[j + k][i].player1) {
+            ++player1Count;
+          }
+          if (this.state.grid[j + k][i].player2) {
+            ++player2Count;
+          }
+        }
+        if (player1Count === runSize && player2Count === 0) {
+          for (let k = 0; k < this.state.numToWin; ++k) {
+            // find empty cell
+            if (
+              !this.state.grid[j + k][i].player1 &&
+              this.state.grid[j + k][i].exists
+            ) {
+              longRunsPlayer1.push([j + k, i]);
             }
           }
-          if (player1Count === numCellsToCheck - 1 && player2Count === 0) {
-            for (let k = 0; k < numCellsToCheck; ++k) {
-              // find empty cell
-              if (
-                !this.state.grid[j + k][i].player1 &&
-                this.state.grid[j + k][i].exists
-              ) {
-                longRunsPlayer1.push([j + k, i]);
-              }
-            }
-          }
-          if (player2Count === numCellsToCheck - 1 && player1Count === 0) {
-            for (let k = 0; k < numCellsToCheck; ++k) {
-              // find empty cell
-              if (
-                !this.state.grid[j + k][i].player2 &&
-                this.state.grid[j + k][i].exists
-              ) {
-                longRunsPlayer2.push([j + k, i]);
-              }
+        }
+        if (player2Count === runSize && player1Count === 0) {
+          for (let k = 0; k < this.state.numToWin; ++k) {
+            // find empty cell
+            if (
+              !this.state.grid[j + k][i].player2 &&
+              this.state.grid[j + k][i].exists
+            ) {
+              longRunsPlayer2.push([j + k, i]);
             }
           }
         }
@@ -425,39 +454,37 @@ class TicTacGrow extends React.Component {
     }
 
     // check up diags
-    for (let i = numCellsToCheck - 1; i < this.state.grid.length; ++i) {
-      for (let j = 0; j <= this.state.grid.length - numCellsToCheck; ++j) {
-        if (this.state.grid[i][j].exists) {
-          player1Count = 0;
-          player2Count = 0;
-          for (let k = 0; k < numCellsToCheck; ++k) {
-            if (this.state.grid[i - k][j + k].player1) {
-              ++player1Count;
-            }
-            if (this.state.grid[i - k][j + k].player2) {
-              ++player2Count;
-            }
+    for (let i = this.state.numToWin - 1; i < this.state.grid.length; ++i) {
+      for (let j = 0; j <= this.state.grid.length - this.state.numToWin; ++j) {
+        player1Count = 0;
+        player2Count = 0;
+        for (let k = 0; k < this.state.numToWin; ++k) {
+          if (this.state.grid[i - k][j + k].player1) {
+            ++player1Count;
           }
-          if (player1Count === numCellsToCheck - 1 && player2Count === 0) {
-            for (let k = 0; k < numCellsToCheck; ++k) {
-              // find empty cell
-              if (
-                this.state.grid[i - k][j + k].exists &&
-                !this.state.grid[i - k][j + k].player1
-              ) {
-                longRunsPlayer1.push([i - k, j + k]);
-              }
-            }
+          if (this.state.grid[i - k][j + k].player2) {
+            ++player2Count;
           }
-          if (player2Count === numCellsToCheck - 1 && player1Count === 0) {
+        }
+        if (player1Count === runSize && player2Count === 0) {
+          for (let k = 0; k < this.state.numToWin; ++k) {
             // find empty cell
-            for (let k = 0; k < numCellsToCheck; ++k) {
-              if (
-                this.state.grid[i - k][j + k].exists &&
-                !this.state.grid[i - k][j + k].player2
-              ) {
-                longRunsPlayer2.push([i - k, j + k]);
-              }
+            if (
+              this.state.grid[i - k][j + k].exists &&
+              !this.state.grid[i - k][j + k].player1
+            ) {
+              longRunsPlayer1.push([i - k, j + k]);
+            }
+          }
+        }
+        if (player2Count === runSize && player1Count === 0) {
+          // find empty cell
+          for (let k = 0; k < this.state.numToWin; ++k) {
+            if (
+              this.state.grid[i - k][j + k].exists &&
+              !this.state.grid[i - k][j + k].player2
+            ) {
+              longRunsPlayer2.push([i - k, j + k]);
             }
           }
         }
@@ -465,44 +492,43 @@ class TicTacGrow extends React.Component {
     }
 
     // check down diags
-    for (let i = 0; i <= this.state.grid.length - numCellsToCheck; ++i) {
-      for (let j = 0; j <= this.state.grid.length - numCellsToCheck; ++j) {
-        if (this.state.grid[i][j].exists) {
-          player1Count = 0;
-          player2Count = 0;
-          for (let k = 0; k < numCellsToCheck; ++k) {
-            if (this.state.grid[i + k][j + k].player1) {
-              ++player1Count;
-            }
-            if (this.state.grid[i + k][j + k].player2) {
-              ++player2Count;
-            }
+    for (let i = 0; i <= this.state.grid.length - this.state.numToWin; ++i) {
+      for (let j = 0; j <= this.state.grid.length - this.state.numToWin; ++j) {
+        player1Count = 0;
+        player2Count = 0;
+        for (let k = 0; k < this.state.numToWin; ++k) {
+          if (this.state.grid[i + k][j + k].player1) {
+            ++player1Count;
           }
-          if (player1Count === numCellsToCheck - 1 && player2Count === 0) {
-            for (let k = 0; k < numCellsToCheck; ++k) {
-              // find empty cell
-              if (
-                this.state.grid[i + k][j + k].exists &&
-                !this.state.grid[i + k][j + k].player1
-              ) {
-                longRunsPlayer1.push([i + k, j + k]);
-              }
-            }
+          if (this.state.grid[i + k][j + k].player2) {
+            ++player2Count;
           }
-          if (player2Count === numCellsToCheck - 1 && player1Count === 0) {
+        }
+        if (player1Count === runSize && player2Count === 0) {
+          for (let k = 0; k < this.state.numToWin; ++k) {
             // find empty cell
-            for (let k = 0; k < numCellsToCheck; ++k) {
-              if (
-                this.state.grid[i + k][j + k].exists &&
-                !this.state.grid[i + k][j + k].player2
-              ) {
-                longRunsPlayer2.push([i + k, j + k]);
-              }
+            if (
+              this.state.grid[i + k][j + k].exists &&
+              !this.state.grid[i + k][j + k].player1
+            ) {
+              longRunsPlayer1.push([i + k, j + k]);
+            }
+          }
+        }
+        if (player2Count === runSize && player1Count === 0) {
+          // find empty cell
+          for (let k = 0; k < this.state.numToWin; ++k) {
+            if (
+              this.state.grid[i + k][j + k].exists &&
+              !this.state.grid[i + k][j + k].player2
+            ) {
+              longRunsPlayer2.push([i + k, j + k]);
             }
           }
         }
       }
     }
+
     var longRuns = {
       player1: longRunsPlayer1,
       player2: longRunsPlayer2
@@ -538,38 +564,6 @@ class TicTacGrow extends React.Component {
     var random = Math.round(Math.random() * 1000000) % candidateCells.length;
     var newCell = candidateCells[random];
     this.cellClick(newCell[0], newCell[1]);
-  };
-
-  changeNumToWin = value => {
-    if (value) {
-      if (this.state.numToWin + 1 > this.state.gridSize) {
-        return;
-      } else {
-        this.initializeBoard(this.state.numToWin + 1, this.state.gridSize);
-      }
-    } else {
-      if (this.state.numToWin - 1 < 2) {
-        return;
-      } else {
-        this.initializeBoard(this.state.numToWin - 1, this.state.gridSize);
-      }
-    }
-  };
-
-  changeGridSize = value => {
-    if (value) {
-      if (this.state.gridSize + 2 > this.state.maxGridSize) {
-        return;
-      } else {
-        this.initializeBoard(this.state.numToWin, this.state.gridSize + 2);
-      }
-    } else {
-      if (this.state.gridSize - 2 < this.state.numToWin) {
-        return;
-      } else {
-        this.initializeBoard(this.state.numToWin, this.state.gridSize - 2);
-      }
-    }
   };
 
   checkForWinner = newGrid => {
@@ -778,6 +772,42 @@ class TicTacGrow extends React.Component {
     }
   };
 
+  changeNumToWinModal = value => {
+    if (value) {
+      if (this.state.numToWinModal + 1 > this.state.gridSizeModal) {
+        return;
+      } else {
+        this.setState({ numToWinModal: this.state.numToWinModal + 1 });
+      }
+    } else {
+      if (this.state.numToWinModal - 1 < 2) {
+        return;
+      } else {
+        this.setState({ numToWinModal: this.state.numToWinModal - 1 });
+      }
+    }
+  };
+
+  changeGridSizeModal = value => {
+    if (value) {
+      if (this.state.gridSizeModal + 2 > this.state.maxGridSize) {
+        return;
+      } else {
+        this.setState({ gridSizeModal: this.state.gridSizeModal + 2 });
+      }
+    } else {
+      if (this.state.gridSizeModal - 2 < this.state.numToWinModal) {
+        return;
+      } else {
+        this.setState({ gridSizeModal: this.state.gridSizeModal - 2 });
+      }
+    }
+  };
+
+  changePlayingComputerModal = value => {
+    this.setState({ playingComputerModal: value });
+  };
+
   checkForDraw = grid => {
     for (let i = 0; i < grid.length; ++i) {
       for (let j = 0; j < grid.length; ++j) {
@@ -792,27 +822,48 @@ class TicTacGrow extends React.Component {
     this.setState({ gameIsDraw: true });
   };
 
-  changePlayingComputer = value => {
-    this.initializeBoard(this.state.numToWin, this.state.gridSize);
-    this.setState({ playingComputer: value });
+  toggleNewGameModal = () => {
+    this.setState({ newGameModalVisible: !this.state.newGameModalVisible });
+  };
+
+  okNewGameModal = () => {
+    clearTimeout(this.state.computerMoveTimeout);
+    clearTimeout(this.state.addCellTimeout);
+    this.setState({ numToWin: this.state.numToWinModal });
+    this.setState({ gridSize: this.state.gridSizeModal });
+    this.setState({ playingComputer: this.state.playingComputerModal });
+    this.initializeBoard(this.state.numToWinModal, this.state.gridSizeModal);
+    this.toggleNewGameModal();
+  };
+
+  cancelNewGameModal = () => {
+    this.setState({ numToWinModal: this.state.numToWin });
+    this.setState({ gridSizeModal: this.state.gridSize });
+    this.setState({ playingComputerModal: this.state.playingComputer });
+    this.toggleNewGameModal();
   };
 
   render() {
-    var player2, playComputerStyle, playHumanStyle;
-    if (this.state.playingComputer) {
-      player2 = "Computer";
+    var playComputerStyle, playHumanStyle;
+    if (this.state.playingComputerModal) {
       playComputerStyle = {
         color: "rgb(0, 0, 255)",
         backgroundColor: "rgb(0, 200, 255, .75)"
       };
       playHumanStyle = {};
     } else {
-      player2 = "Player 2";
       playComputerStyle = {};
       playHumanStyle = {
         color: "rgb(0, 0, 255)",
         backgroundColor: "rgb(0, 200, 255, .75)"
       };
+    }
+
+    var player2;
+    if (this.state.playingComputer) {
+      player2 = "Computer";
+    } else {
+      player2 = "Player 2";
     }
 
     var boardMessage;
@@ -858,8 +909,8 @@ class TicTacGrow extends React.Component {
       }
     }
 
-    var numToWinString = this.state.numToWin.toString(),
-      gridSizeString = this.state.gridSize.toString();
+    var numToWinString = this.state.numToWinModal.toString(),
+      gridSizeString = this.state.gridSizeModal.toString();
     if (numToWinString.length < 2) {
       numToWinString = "0" + numToWinString;
     }
@@ -882,61 +933,12 @@ class TicTacGrow extends React.Component {
           </div> */}
           <div className="TicTacGrow_menuButton">
             <Button
-              type="secondary"
-              className="menuButton"
-              style={playComputerStyle}
-              onClick={() => this.changePlayingComputer(true)}
-            >
-              Play Computer
-            </Button>
-          </div>
-          <div className="TicTacGrow_menuButton">
-            <Button
-              type="secondary"
-              className="menuButton"
-              style={playHumanStyle}
-              onClick={() => this.changePlayingComputer(false)}
-            >
-              Play Human
-            </Button>
-          </div>
-          <div className="TicTacGrow_menuButton">
-            <Button
               type="primary"
               className="menuButton"
-              onClick={() =>
-                this.initializeBoard(this.state.numToWin, this.state.gridSize)
-              }
+              onClick={this.toggleNewGameModal}
             >
               New Game
             </Button>
-          </div>
-          <div className="TicTacGrow_menuButton">
-            Number in a row to win: <strong>{numToWinString}</strong>{" "}
-            <Icon
-              type="minus-circle"
-              style={this.iconStyle}
-              onClick={() => this.changeNumToWin(0)}
-            ></Icon>
-            <Icon
-              type="plus-circle"
-              style={this.iconStyle}
-              onClick={() => this.changeNumToWin(1)}
-            ></Icon>
-          </div>
-          <div className="TicTacGrow_menuButton">
-            {" "}
-            Maximum grid size: <strong>{gridSizeString}</strong>{" "}
-            <Icon
-              type="minus-circle"
-              style={this.iconStyle}
-              onClick={() => this.changeGridSize(0)}
-            ></Icon>
-            <Icon
-              type="plus-circle"
-              style={this.iconStyle}
-              onClick={() => this.changeGridSize(1)}
-            ></Icon>
           </div>
         </div>
         <h2>{boardMessage}</h2>
@@ -962,6 +964,73 @@ class TicTacGrow extends React.Component {
             ))}
           </tbody>
         </table>
+        <Modal
+          visible={this.state.newGameModalVisible}
+          title="New Game"
+          onOk={this.okNewGameModal}
+          onCancel={this.cancelNewGameModal}
+        >
+          <div className="TicTacGrow_menuButtons">
+            <div className="TicTacGrow_menuButton">
+              <Button
+                type="secondary"
+                className="menuButton"
+                style={playComputerStyle}
+                onClick={() => this.changePlayingComputerModal(true)}
+              >
+                Play Computer
+              </Button>
+            </div>
+            <div className="TicTacGrow_menuButton">
+              <Button
+                type="secondary"
+                className="menuButton"
+                style={playHumanStyle}
+                onClick={() => this.changePlayingComputerModal(false)}
+              >
+                Play Human
+              </Button>
+            </div>
+            <div className="TicTacGrow_menuButton">
+              Number in a row to win:{" "}
+              <span
+                key={"numToWin" + numToWinString}
+                className="TicTacGrow_fadeInFast"
+              >
+                <strong>{numToWinString}</strong>
+              </span>{" "}
+              <Icon
+                type="minus-circle"
+                style={this.iconStyle}
+                onClick={() => this.changeNumToWinModal(0)}
+              ></Icon>
+              <Icon
+                type="plus-circle"
+                style={this.iconStyle}
+                onClick={() => this.changeNumToWinModal(1)}
+              ></Icon>
+            </div>
+            <div className="TicTacGrow_menuButton">
+              Maximum grid size:{" "}
+              <span
+                key={"gridSize" + gridSizeString}
+                className="TicTacGrow_fadeInFast"
+              >
+                <strong>{gridSizeString}</strong>
+              </span>{" "}
+              <Icon
+                type="minus-circle"
+                style={this.iconStyle}
+                onClick={() => this.changeGridSizeModal(0)}
+              ></Icon>
+              <Icon
+                type="plus-circle"
+                style={this.iconStyle}
+                onClick={() => this.changeGridSizeModal(1)}
+              ></Icon>
+            </div>
+          </div>
+        </Modal>
       </div>
     );
   }

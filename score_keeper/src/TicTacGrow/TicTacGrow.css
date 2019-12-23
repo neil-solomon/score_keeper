@@ -8,14 +8,14 @@
 .TicTacGrow_turn {
   text-align: center;
   margin-top: 10px;
-  font-size: 26px;
+  font-size: 24px;
   animation: fadeIn 1s;
 }
 
 .TicTacGrow_turnWinner {
   text-align: center;
   margin: 10px;
-  font-size: 26px;
+  font-size: 24px;
   animation: turnWinner 1s infinite;
 }
 
@@ -24,17 +24,22 @@
 }
 
 .TicTacGrow_menuButton {
-  margin-left: 15px;
-  margin-right: 15px;
+  margin: 15px;
   font-size: 18px;
-  display: inline-block;
 }
 
 .TicTacGrow_cellExists {
   font-weight: bold;
   border: 1px double black;
   background-color: rgb(255, 255, 255, 1);
-  animation: newCell 0.5s;
+  animation: newCell 1s;
+}
+
+.TicTacGrow_cellOccupied {
+  font-weight: bold;
+  border: 1px double black;
+  background-color: rgb(255, 255, 255, 1);
+  animation: cellOccupied 1s;
 }
 
 .TicTacGrow_cellWinner {
@@ -49,8 +54,11 @@
 }
 
 .TicTacGrow_fadeIn {
-  animation-name: fadeIn;
-  animation-duration: 1s;
+  animation: fadeIn 1s;
+}
+
+.TicTacGrow_fadeInFast {
+  animation: fadeIn 0.5s;
 }
 
 @keyframes fadeIn {
@@ -81,7 +89,19 @@
   }
   50% {
     border: 1px double black;
-    background-color: red;
+    background-color: rgb(0, 255, 0, 0.75);
+  }
+  100% {
+    background-color: white;
+  }
+}
+
+@keyframes cellOccupied {
+  0% {
+    background-color: rgb(205, 205, 205);
+  }
+  50% {
+    background-color: rgb(0, 200, 255, 0.5);
   }
   100% {
     background-color: white;
@@ -103,15 +123,11 @@
 @media (max-aspect-ratio: 13/9) {
   .TicTacGrow_menuButton {
     font-size: 14px;
-    margin-left: 5px;
-    margin-right: 5px;
-    margin-top: 2.5px;
-    margin-bottom: 2.5px;
   }
 
   .TicTacGrow_turn {
     margin-top: 5px;
-    font-size: 20px;
+    font-size: 18px;
   }
 
   .TicTacGrow_turnWinner {
