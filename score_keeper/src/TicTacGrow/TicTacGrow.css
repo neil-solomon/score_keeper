@@ -53,6 +53,11 @@
   border: 1px solid rgb(205, 205, 205);
 }
 
+.TicTacGrow_numInARow {
+  text-align: center;
+  font-size: 16px;
+}
+
 .TicTacGrow_fadeIn {
   animation: fadeIn 1s;
 }
@@ -121,13 +126,17 @@
 }
 
 @media (max-aspect-ratio: 13/9) {
+  .TicTacGrow_numInARow {
+    font-size: 14px;
+  }
+
   .TicTacGrow_menuButton {
     font-size: 14px;
   }
 
   .TicTacGrow_turn {
     margin-top: 5px;
-    font-size: 18px;
+    font-size: 20px;
   }
 
   .TicTacGrow_turnWinner {

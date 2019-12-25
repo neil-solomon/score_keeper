@@ -844,19 +844,13 @@ class TicTacGrow extends React.Component {
   };
 
   render() {
-    var playComputerStyle, playHumanStyle;
+    var playComputerButtonType, playHumanButtonType;
     if (this.state.playingComputerModal) {
-      playComputerStyle = {
-        color: "rgb(0, 0, 255)",
-        backgroundColor: "rgb(0, 200, 255, .75)"
-      };
-      playHumanStyle = {};
+      playComputerButtonType = "primary";
+      playHumanButtonType = "secondary";
     } else {
-      playComputerStyle = {};
-      playHumanStyle = {
-        color: "rgb(0, 0, 255)",
-        backgroundColor: "rgb(0, 200, 255, .75)"
-      };
+      playComputerButtonType = "secondary";
+      playHumanButtonType = "primary";
     }
 
     var player2;
@@ -880,6 +874,12 @@ class TicTacGrow extends React.Component {
             It's a Draw!!!
           </div>
         );
+      } else if (this.state.playingComputer) {
+        boardMessage = (
+          <div className="TicTacGrow_turn" key={this.state.player1Turn}>
+            Your&nbsp;Turn
+          </div>
+        );
       } else {
         boardMessage = (
           <div className="TicTacGrow_turn" key={this.state.player1Turn}>
@@ -889,11 +889,19 @@ class TicTacGrow extends React.Component {
       }
     } else {
       if (this.state.gameHasWinner) {
-        boardMessage = (
-          <div className="TicTacGrow_turnWinner" key={this.state.player1Turn}>
-            Player&nbsp;1&nbsp;Wins!!!
-          </div>
-        );
+        if (this.state.playingComputer) {
+          boardMessage = (
+            <div className="TicTacGrow_turnWinner" key={this.state.player1Turn}>
+              You&nbsp;Win!!!
+            </div>
+          );
+        } else {
+          boardMessage = (
+            <div className="TicTacGrow_turnWinner" key={this.state.player1Turn}>
+              Player&nbsp;1&nbsp;Wins!!!
+            </div>
+          );
+        }
       } else if (this.state.gameIsDraw) {
         boardMessage = (
           <div className="TicTacGrow_turnWinner" key={this.state.player1Turn}>
@@ -940,6 +948,9 @@ class TicTacGrow extends React.Component {
               New Game
             </Button>
           </div>
+          <div className="TicTacGrow_numInARow">
+            {this.state.numToWin} in a row to win.
+          </div>
         </div>
         <h2>{boardMessage}</h2>
         <table
@@ -975,7 +986,7 @@ class TicTacGrow extends React.Component {
               <Button
                 type="secondary"
                 className="menuButton"
-                style={playComputerStyle}
+                type={playComputerButtonType}
                 onClick={() => this.changePlayingComputerModal(true)}
               >
                 Play Computer
@@ -985,7 +996,7 @@ class TicTacGrow extends React.Component {
               <Button
                 type="secondary"
                 className="menuButton"
-                style={playHumanStyle}
+                type={playHumanButtonType}
                 onClick={() => this.changePlayingComputerModal(false)}
               >
                 Play Human

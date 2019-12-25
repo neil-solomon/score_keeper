@@ -4,7 +4,7 @@ import Article from "./Article.js";
 import scoreboard from "./images/scoreboard.jpg";
 import dice from "./images/dice.jpg";
 import risk from "./images/risk.jpg";
-import tictactoe from "./images/tictactoe.png";
+import tictactoe from "./images/tictactoe_blue.png";
 import money from "./images/money.jpg";
 
 class Home extends React.Component {
