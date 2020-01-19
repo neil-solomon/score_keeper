@@ -96,7 +96,14 @@ class Scoreboard extends React.Component {
     points[pointsIndex[0]][pointsIndex[1]] = newPoints;
     var totalPoints = [...this.state.totalPoints];
     var oldLeaderboard = this.makeLeaderboard(totalPoints);
-    totalPoints[pointsIndex[1]] += newPoints;
+    for (let i = 0; i < totalPoints.length; ++i) {
+      totalPoints[i] = 0;
+    }
+    for (let i = 0; i < points.length; ++i) {
+      for (let j = 0; j < points[i].length; ++j) {
+        totalPoints[j] += points[i][j];
+      }
+    }
     var newLeaderboard = this.makeLeaderboard(totalPoints),
       winner = false;
     if (this.state.pointsOrRounds[0]) {
@@ -172,63 +179,63 @@ class Scoreboard extends React.Component {
       }
     }
 
-    if (this.state.highScoreWins) {
-      if (
-        newLeaderboard[0] !== oldLeaderboard[0] &&
-        !winner &&
-        this.state.windowIsLandscape
-      ) {
-        notification["warning"]({
-          message: newLeaderboard[0] + " takes the lead!",
-          description: "",
-          placement: "bottomRight",
-          duration: 5,
-          icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
-          style: this.notificationStyle
-        });
-      } else if (
-        newLeaderboard[1] !== oldLeaderboard[1] &&
-        !winner &&
-        this.state.windowIsLandscape
-      ) {
-        notification["warning"]({
-          message: newLeaderboard[1] + " falls to last place!",
-          description: "",
-          placement: "bottomRight",
-          duration: 5,
-          icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
-          style: this.notificationStyle
-        });
-      }
-    } else {
-      if (
-        newLeaderboard[1] !== oldLeaderboard[1] &&
-        !winner &&
-        this.state.windowIsLandscape
-      ) {
-        notification["warning"]({
-          message: newLeaderboard[1] + " takes the lead!",
-          description: "",
-          placement: "bottomRight",
-          duration: 5,
-          icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
-          style: this.notificationStyle
-        });
-      } else if (
-        newLeaderboard[0] !== oldLeaderboard[0] &&
-        !winner &&
-        this.state.windowIsLandscape
-      ) {
-        notification["warning"]({
-          message: newLeaderboard[0] + " falls to last place!",
-          description: "",
-          placement: "bottomRight",
-          duration: 5,
-          icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
-          style: this.notificationStyle
-        });
-      }
-    }
+    // if (this.state.highScoreWins) {
+    //   if (
+    //     newLeaderboard[0] !== oldLeaderboard[0] &&
+    //     !winner &&
+    //     this.state.windowIsLandscape
+    //   ) {
+    //     notification["warning"]({
+    //       message: newLeaderboard[0] + " takes the lead!",
+    //       description: "",
+    //       placement: "bottomRight",
+    //       duration: 5,
+    //       icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
+    //       style: this.notificationStyle
+    //     });
+    //   } else if (
+    //     newLeaderboard[1] !== oldLeaderboard[1] &&
+    //     !winner &&
+    //     this.state.windowIsLandscape
+    //   ) {
+    //     notification["warning"]({
+    //       message: newLeaderboard[1] + " falls to last place!",
+    //       description: "",
+    //       placement: "bottomRight",
+    //       duration: 5,
+    //       icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
+    //       style: this.notificationStyle
+    //     });
+    //   }
+    // } else {
+    //   if (
+    //     newLeaderboard[1] !== oldLeaderboard[1] &&
+    //     !winner &&
+    //     this.state.windowIsLandscape
+    //   ) {
+    //     notification["warning"]({
+    //       message: newLeaderboard[1] + " takes the lead!",
+    //       description: "",
+    //       placement: "bottomRight",
+    //       duration: 5,
+    //       icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
+    //       style: this.notificationStyle
+    //     });
+    //   } else if (
+    //     newLeaderboard[0] !== oldLeaderboard[0] &&
+    //     !winner &&
+    //     this.state.windowIsLandscape
+    //   ) {
+    //     notification["warning"]({
+    //       message: newLeaderboard[0] + " falls to last place!",
+    //       description: "",
+    //       placement: "bottomRight",
+    //       duration: 5,
+    //       icon: <Icon type="alert" style={{ color: "rgb(0,0,255,.75)" }} />,
+    //       style: this.notificationStyle
+    //     });
+    //   }
+    // }
 
     this.setState({ points });
     this.setState({ totalPoints });
